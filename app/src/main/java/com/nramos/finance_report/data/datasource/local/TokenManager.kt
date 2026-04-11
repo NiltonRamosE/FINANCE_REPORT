@@ -21,7 +21,7 @@ class TokenManager @Inject constructor(
     companion object {
         private val TOKEN_KEY = stringPreferencesKey("access_token")
         private val TOKEN_TYPE_KEY = stringPreferencesKey("token_type")
-        private val USER_ID_KEY = longPreferencesKey("user_id")
+        private val USER_PROFILE_ID_KEY = stringPreferencesKey("profile_id")
         private val USER_NAME_KEY = stringPreferencesKey("user_name")
         private val USER_EMAIL_KEY = stringPreferencesKey("user_email")
         private val IS_LOGGED_IN_KEY = booleanPreferencesKey("is_logged_in")
@@ -30,14 +30,14 @@ class TokenManager @Inject constructor(
     suspend fun saveAuthData(
         token: String,
         tokenType: String,
-        userId: Long,
+        profileId: String,
         userName: String,
         userEmail: String
     ) {
         context.dataStore.edit { preferences ->
             preferences[TOKEN_KEY] = token
             preferences[TOKEN_TYPE_KEY] = tokenType
-            preferences[USER_ID_KEY] = userId
+            preferences[USER_PROFILE_ID_KEY] = profileId
             preferences[USER_NAME_KEY] = userName
             preferences[USER_EMAIL_KEY] = userEmail
             preferences[IS_LOGGED_IN_KEY] = true
@@ -68,22 +68,22 @@ class TokenManager @Inject constructor(
         }.first()
     }
 
-    suspend fun getUserId(): Long {
+    suspend fun getUserProfileId(): String {
         return context.dataStore.data.map { preferences ->
-            preferences[USER_ID_KEY] ?: 0
+            preferences[USER_PROFILE_ID_KEY] ?: ""
         }.first()
     }
 
     suspend fun getUserName(): String {
         return context.dataStore.data.map { preferences ->
-            preferences[USER_NAME_KEY] ?: 0
-        }.first() as String
+            preferences[USER_NAME_KEY] ?: ""
+        }.first()
     }
 
     suspend fun getUserEmail(): String {
         return context.dataStore.data.map { preferences ->
-            preferences[USER_EMAIL_KEY] ?: 0
-        }.first() as String
+            preferences[USER_EMAIL_KEY] ?: ""
+        }.first()
     }
 
     suspend fun clearAuthData() {

@@ -4,8 +4,8 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class User(
-    val userId: Long,
+data class UserProfile(
+    val profileId: String,
     val name: String,
     val email: String,
     val paternalSurname: String? = null,

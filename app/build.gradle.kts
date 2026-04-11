@@ -1,3 +1,37 @@
+import java.util.Properties
+import java.io.FileInputStream
+
+val localProperties = Properties()
+val localPropertiesFile = rootProject.file("local.properties")
+
+if (localPropertiesFile.exists()) {
+    localProperties.load(FileInputStream(localPropertiesFile))
+}
+
+val supabaseUrl: String = localProperties.getProperty("SUPABASE_URL")
+    ?: "https://fallback.supabase.co"
+
+val supabaseAnonKey: String = localProperties.getProperty("SUPABASE_ANON_KEY")
+    ?: "fallback_key"
+
+val googleWebClientId: String = localProperties.getProperty("GOOGLE_WEB_CLIENT_ID")
+    ?: "web_client_id"
+
+val googleAndroidClientId: String = localProperties.getProperty("GOOGLE_ANDROID_CLIENT_ID")
+    ?: "android_client_id"
+
+val keystorePath: String = localProperties.getProperty("KEYSTORE_PATH")
+    ?: "keystore_path"
+
+val keystorePassword: String = localProperties.getProperty("KEYSTORE_PASSWORD")
+    ?: "keystore_password"
+
+val keyAliasVal: String = localProperties.getProperty("KEY_ALIAS")
+    ?: "key_alias"
+
+val keyPasswordVal: String = localProperties.getProperty("KEY_PASSWORD")
+    ?: "key_password"
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -18,14 +52,40 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        buildConfigField("String", "SUPABASE_URL", "\"$supabaseUrl\"")
+        buildConfigField("String", "SUPABASE_ANON_KEY", "\"$supabaseAnonKey\"")
+        buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")
+        buildConfigField("String", "GOOGLE_ANDROID_CLIENT_ID", "\"$googleAndroidClientId\"")
     }
 
     buildFeatures {
         viewBinding = true
+        buildConfig = true
+    }
+
+    signingConfigs {
+        create("release") {
+            storeFile = file(keystorePath)
+            storePassword = keystorePassword
+            keyAlias = keyAliasVal
+            keyPassword = keyPasswordVal
+        }
+
+        getByName("debug") {
+            storeFile = file(keystorePath)
+            storePassword = keystorePassword
+            keyAlias = keyAliasVal
+            keyPassword = keyPasswordVal
+        }
     }
 
     buildTypes {
+        debug {
+            signingConfig = signingConfigs.getByName("debug")
+        }
         release {
+            signingConfig = signingConfigs.getByName("release")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -82,6 +142,18 @@ dependencies {
 
     // Glide
     implementation(libs.glide)
+
+    // Google Sign-In
+    implementation("com.google.android.gms:play-services-auth:21.0.0")
+
+    // Supabase client (para la autenticación)
+    implementation("io.github.jan-tennert.supabase:gotrue-kt:2.0.0")
+    implementation("io.ktor:ktor-client-android:2.3.7")
+
+    // Para manejar JWT
+    implementation("io.jsonwebtoken:jjwt-api:0.12.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
+    runtimeOnly("io.jsonwebtoken:jjwt-orgjson:0.12.5")
 
     // Testing
     testImplementation(libs.junit)

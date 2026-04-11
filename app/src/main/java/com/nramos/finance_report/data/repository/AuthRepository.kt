@@ -1,11 +1,13 @@
 package com.nramos.finance_report.data.repository
 
 import com.nramos.finance_report.data.api.ApiService
-import com.nramos.finance_report.data.api.responses.LoginResponse
+import com.nramos.finance_report.data.auth.GoogleSignInResult
+import com.nramos.finance_report.data.auth.SupabaseUser
+import com.nramos.finance_report.data.auth.SupabaseAuthManager
 import com.nramos.finance_report.data.datasource.local.TokenManager
 import com.nramos.finance_report.data.model.request.LoginRequest
 import com.nramos.finance_report.data.model.request.RegisterRequest
-import com.nramos.finance_report.domain.model.User
+import com.nramos.finance_report.domain.model.UserProfile
 import com.nramos.finance_report.domain.repository.IAuthRepository
 import com.nramos.finance_report.utils.NetworkResult
 import kotlinx.coroutines.flow.Flow
@@ -19,7 +21,9 @@ class AuthRepository @Inject constructor(
     private val tokenManager: TokenManager
 ) : IAuthRepository {
 
-    override suspend fun login(email: String, password: String): Flow<NetworkResult<User>> = flow {
+    private val supabaseAuthManager: SupabaseAuthManager = SupabaseAuthManager()
+
+    override suspend fun login(email: String, password: String): Flow<NetworkResult<UserProfile>> = flow {
         emit(NetworkResult.Loading())
 
         try {
@@ -28,17 +32,16 @@ class AuthRepository @Inject constructor(
             if (response.isSuccessful && response.body()?.success == true) {
                 val loginData = response.body()?.data
                 if (loginData != null) {
-                    // Guardar datos de autenticación
                     tokenManager.saveAuthData(
                         token = loginData.token,
                         tokenType = loginData.tokenType,
-                        userId = loginData.userId,
+                        profileId = loginData.profileId,
                         userName = loginData.name,
                         userEmail = loginData.email
                     )
 
-                    val user = User(
-                        userId = loginData.userId,
+                    val user = UserProfile(
+                        profileId = loginData.profileId,
                         name = loginData.name,
                         email = loginData.email
                     )
@@ -56,6 +59,67 @@ class AuthRepository @Inject constructor(
         }
     }
 
+    override suspend fun loginWithGoogle(googleResult: GoogleSignInResult): Flow<NetworkResult<UserProfile>> = flow {
+        emit(NetworkResult.Loading())
+
+        try {
+            // 1. Intercambiar token de Google por JWT de Supabase
+            val supabaseResult = supabaseAuthManager.exchangeGoogleToken(googleResult.idToken)
+
+            if (supabaseResult.isSuccess) {
+                val supabaseToken = supabaseResult.getOrNull()!!
+
+                // 2. Obtener perfil del usuario desde Supabase
+                val userProfile = supabaseAuthManager.getUserProfile(supabaseToken)
+
+                if (userProfile.isSuccess) {
+                    val supabaseUser = userProfile.getOrNull()!!
+
+                    // 3. Crear/actualizar perfil en tu tabla profiles con los datos de Google
+                    val createProfileResult = supabaseAuthManager.createOrUpdateProfile(
+                        supabaseToken,
+                        googleResult
+                    )
+
+                    if (createProfileResult.isFailure) {
+                        emit(NetworkResult.Error("Error al crear perfil de usuario"))
+                        return@flow
+                    }
+
+                    // 4. Guardar token y datos del usuario
+                    tokenManager.saveAuthData(
+                        token = supabaseToken,
+                        tokenType = "Bearer",
+                        profileId = supabaseUser.id,
+                        userName = googleResult.name,
+                        userEmail = googleResult.email
+                    )
+
+                    val user = UserProfile(
+                        profileId = supabaseUser.id,
+                        name = googleResult.name,
+                        email = googleResult.email
+                    )
+
+                    emit(NetworkResult.Success(user))
+                } else {
+                    emit(NetworkResult.Error("Error al obtener perfil de usuario"))
+                }
+            } else {
+                val error = supabaseResult.exceptionOrNull()
+                emit(NetworkResult.Error(error?.message ?: "Error al autenticar con Google"))
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "Error desconocido"))
+        }
+    }
+
+    private suspend fun ensureUserProfileExists(supabaseUser: SupabaseUser) {
+        // Verificar si el usuario existe en tu tabla profiles
+        // Si no existe, crearlo con los datos de Google
+        // Implementa esto según tu lógica
+    }
+
     override suspend fun register(
         name: String,
         email: String,
@@ -63,7 +127,7 @@ class AuthRepository @Inject constructor(
         paternalSurname: String?,
         maternalSurname: String?,
         gender: Char?
-    ): Flow<NetworkResult<User>> = flow {
+    ): Flow<NetworkResult<UserProfile>> = flow {
         emit(NetworkResult.Loading())
 
         try {
@@ -84,13 +148,13 @@ class AuthRepository @Inject constructor(
                     tokenManager.saveAuthData(
                         token = userData.token,
                         tokenType = userData.tokenType,
-                        userId = userData.userId,
+                        profileId = userData.profileId,
                         userName = userData.name,
                         userEmail = userData.email
                     )
 
-                    val user = User(
-                        userId = userData.userId,
+                    val user = UserProfile(
+                        profileId = userData.profileId,
                         name = userData.name,
                         email = userData.email
                     )
@@ -129,10 +193,10 @@ class AuthRepository @Inject constructor(
         return tokenManager.isLoggedIn()
     }
 
-    override suspend fun getCurrentUser(): User? {
+    override suspend fun getCurrentUser(): UserProfile? {
         return if (tokenManager.isLoggedIn()) {
-            User(
-                userId = tokenManager.getUserId(),
+            UserProfile(
+                profileId = tokenManager.getUserProfileId(),
                 name = tokenManager.getUserName(),
                 email = tokenManager.getUserEmail()
             )

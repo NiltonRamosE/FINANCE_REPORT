@@ -3,7 +3,9 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:fillViewport="true"
+    tools:context=".ui.auth.login.LoginActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -98,6 +100,18 @@
             android:enabled="false"
             app:icon="@android:drawable/ic_lock_idle_lock"
             app:iconGravity="textStart" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGoogleLogin"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:layout_marginTop="16dp"
+            android:text="Continuar con Google"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            app:icon="@drawable/ic_google"
+            app:iconGravity="textStart"
+            style="@style/Widget.Material3.Button.OutlinedButton" />
 
         <!-- Separador -->
         <View
