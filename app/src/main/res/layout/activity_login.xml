@@ -33,53 +33,6 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="48dp" />
 
-        <!-- Campo Email -->
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Correo electrónico"
-            app:endIconMode="clear_text">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textEmailAddress"
-                android:imeOptions="actionNext" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Campo Contraseña -->
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:hint="Contraseña"
-            app:endIconMode="password_toggle">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etPassword"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="textPassword"
-                android:imeOptions="actionDone" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- Olvidé contraseña -->
-        <TextView
-            android:id="@+id/tvForgotPassword"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="¿Olvidaste tu contraseña?"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="14sp"
-            android:clickable="true"
-            android:layout_gravity="end" />
-
         <!-- ProgressBar -->
         <ProgressBar
             android:id="@+id/progressBar"
@@ -87,19 +40,6 @@
             android:layout_height="48dp"
             android:layout_marginTop="24dp"
             android:visibility="gone" />
-
-        <!-- Botón Login -->
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnLogin"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:layout_marginTop="24dp"
-            android:text="Iniciar Sesión"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:enabled="false"
-            app:icon="@android:drawable/ic_lock_idle_lock"
-            app:iconGravity="textStart" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnGoogleLogin"
@@ -112,24 +52,5 @@
             app:icon="@drawable/ic_google"
             app:iconGravity="textStart"
             style="@style/Widget.Material3.Button.OutlinedButton" />
-
-        <!-- Separador -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginTop="32dp"
-            android:background="?android:attr/listDivider" />
-
-        <!-- Registro -->
-        <TextView
-            android:id="@+id/tvRegister"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="¿No tienes cuenta? Regístrate"
-            android:textColor="?attr/colorPrimary"
-            android:textSize="14sp"
-            android:clickable="true" />
-
     </LinearLayout>
 </ScrollView>

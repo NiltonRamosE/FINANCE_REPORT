@@ -7,18 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface IAuthRepository {
 
-    suspend fun login(email: String, password: String): Flow<NetworkResult<UserProfile>>
-
     suspend fun loginWithGoogle(googleResult: GoogleSignInResult): Flow<NetworkResult<UserProfile>>
-
-    suspend fun register(
-        name: String,
-        email: String,
-        password: String,
-        paternalSurname: String? = null,
-        maternalSurname: String? = null,
-        gender: Char? = null
-    ): Flow<NetworkResult<UserProfile>>
 
     suspend fun logout(): Flow<NetworkResult<Unit>>
 

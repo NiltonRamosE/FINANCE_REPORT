@@ -4,7 +4,6 @@ import android.content.Intent
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nramos.finance_report.data.auth.GoogleSignInManager
-import com.nramos.finance_report.domain.usecase.auth.LoginUseCase
 import com.nramos.finance_report.domain.usecase.auth.LoginWithGoogleUseCase
 import com.nramos.finance_report.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -17,7 +16,6 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginUseCase: LoginUseCase,
     private val loginWithGoogleUseCase: LoginWithGoogleUseCase,
     private val googleSignInManager: GoogleSignInManager
 ) : ViewModel() {
@@ -27,58 +25,8 @@ class LoginViewModel @Inject constructor(
 
     fun onEvent(event: LoginEvent) {
         when (event) {
-            is LoginEvent.OnEmailChange -> {
-                _state.update { it.copy(email = event.email) }
-                validateForm()
-            }
-            is LoginEvent.OnPasswordChange -> {
-                _state.update { it.copy(password = event.password) }
-                validateForm()
-            }
-            LoginEvent.OnLoginClick -> {
-                login()
-            }
             LoginEvent.OnGoogleLoginClick -> {
                 _state.update { it.copy(isGoogleLoginRequested = true) }
-            }
-        }
-    }
-
-    private fun validateForm() {
-        val isValid = _state.value.email.isNotBlank() &&
-                _state.value.password.isNotBlank() &&
-                android.util.Patterns.EMAIL_ADDRESS.matcher(_state.value.email).matches()
-
-        _state.update { it.copy(isFormValid = isValid) }
-    }
-
-    private fun login() {
-        viewModelScope.launch {
-            _state.update { it.copy(isLoading = true, error = null) }
-
-            loginUseCase(_state.value.email, _state.value.password).collect { result ->
-                when (result) {
-                    is NetworkResult.Loading -> {
-                        _state.update { it.copy(isLoading = true) }
-                    }
-                    is NetworkResult.Success -> {
-                        _state.update {
-                            it.copy(
-                                isLoading = false,
-                                isSuccess = true,
-                                user = result.data
-                            )
-                        }
-                    }
-                    is NetworkResult.Error -> {
-                        _state.update {
-                            it.copy(
-                                isLoading = false,
-                                error = result.message
-                            )
-                        }
-                    }
-                }
             }
         }
     }

@@ -5,8 +5,6 @@ import com.nramos.finance_report.data.auth.GoogleSignInResult
 import com.nramos.finance_report.data.auth.SupabaseUser
 import com.nramos.finance_report.data.auth.SupabaseAuthManager
 import com.nramos.finance_report.data.datasource.local.TokenManager
-import com.nramos.finance_report.data.model.request.LoginRequest
-import com.nramos.finance_report.data.model.request.RegisterRequest
 import com.nramos.finance_report.domain.model.UserProfile
 import com.nramos.finance_report.domain.repository.IAuthRepository
 import com.nramos.finance_report.utils.NetworkResult
@@ -22,42 +20,6 @@ class AuthRepository @Inject constructor(
 ) : IAuthRepository {
 
     private val supabaseAuthManager: SupabaseAuthManager = SupabaseAuthManager()
-
-    override suspend fun login(email: String, password: String): Flow<NetworkResult<UserProfile>> = flow {
-        emit(NetworkResult.Loading())
-
-        try {
-            val response = apiService.login(LoginRequest(email, password))
-
-            if (response.isSuccessful && response.body()?.success == true) {
-                val loginData = response.body()?.data
-                if (loginData != null) {
-                    tokenManager.saveAuthData(
-                        token = loginData.token,
-                        tokenType = loginData.tokenType,
-                        profileId = loginData.profileId,
-                        userName = loginData.name,
-                        userEmail = loginData.email
-                    )
-
-                    val user = UserProfile(
-                        profileId = loginData.profileId,
-                        name = loginData.name,
-                        email = loginData.email
-                    )
-
-                    emit(NetworkResult.Success(user))
-                } else {
-                    emit(NetworkResult.Error("Datos de usuario no encontrados"))
-                }
-            } else {
-                val errorMsg = response.body()?.message ?: "Error en el servidor"
-                emit(NetworkResult.Error(errorMsg))
-            }
-        } catch (e: Exception) {
-            emit(NetworkResult.Error(e.message ?: "Error de conexión"))
-        }
-    }
 
     override suspend fun loginWithGoogle(googleResult: GoogleSignInResult): Flow<NetworkResult<UserProfile>> = flow {
         emit(NetworkResult.Loading())
@@ -118,57 +80,6 @@ class AuthRepository @Inject constructor(
         // Verificar si el usuario existe en tu tabla profiles
         // Si no existe, crearlo con los datos de Google
         // Implementa esto según tu lógica
-    }
-
-    override suspend fun register(
-        name: String,
-        email: String,
-        password: String,
-        paternalSurname: String?,
-        maternalSurname: String?,
-        gender: Char?
-    ): Flow<NetworkResult<UserProfile>> = flow {
-        emit(NetworkResult.Loading())
-
-        try {
-            val request = RegisterRequest(
-                name = name,
-                email = email,
-                password = password,
-                paternalSurname = paternalSurname,
-                maternalSurname = maternalSurname,
-                gender = gender
-            )
-
-            val response = apiService.register(request)
-
-            if (response.isSuccessful && response.body()?.success == true) {
-                val userData = response.body()?.data
-                if (userData != null) {
-                    tokenManager.saveAuthData(
-                        token = userData.token,
-                        tokenType = userData.tokenType,
-                        profileId = userData.profileId,
-                        userName = userData.name,
-                        userEmail = userData.email
-                    )
-
-                    val user = UserProfile(
-                        profileId = userData.profileId,
-                        name = userData.name,
-                        email = userData.email
-                    )
-
-                    emit(NetworkResult.Success(user))
-                } else {
-                    emit(NetworkResult.Error("Error al registrar usuario"))
-                }
-            } else {
-                emit(NetworkResult.Error(response.body()?.message ?: "Error en el registro"))
-            }
-        } catch (e: Exception) {
-            emit(NetworkResult.Error(e.message ?: "Error de conexión"))
-        }
     }
 
     override suspend fun logout(): Flow<NetworkResult<Unit>> = flow {

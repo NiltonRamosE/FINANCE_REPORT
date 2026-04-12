@@ -5,7 +5,6 @@ import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.widget.addTextChangedListener
 import androidx.lifecycle.lifecycleScope
 import com.nramos.finance_report.databinding.ActivityLoginBinding
 import com.nramos.finance_report.ui.main.MainActivity
@@ -57,7 +56,6 @@ class LoginActivity : AppCompatActivity() {
     private fun setupObservers() {
         lifecycleScope.launch {
             viewModel.state.collectLatest { state ->
-                binding.btnLogin.isEnabled = state.isFormValid && !state.isLoading
                 binding.btnGoogleLogin.isEnabled = !state.isLoading
                 binding.progressBar.visibility = if (state.isLoading) android.view.View.VISIBLE else android.view.View.GONE
 
@@ -77,22 +75,6 @@ class LoginActivity : AppCompatActivity() {
 
     private fun setupListeners() {
         binding.apply {
-            etEmail.addTextChangedListener { text ->
-                viewModel.onEvent(LoginEvent.OnEmailChange(text.toString()))
-            }
-
-            etPassword.addTextChangedListener { text ->
-                viewModel.onEvent(LoginEvent.OnPasswordChange(text.toString()))
-            }
-
-            btnLogin.setOnClickListener {
-                viewModel.onEvent(LoginEvent.OnLoginClick)
-            }
-
-            tvRegister.setOnClickListener {
-
-            }
-
             btnGoogleLogin.setOnClickListener {
                 viewModel.onEvent(LoginEvent.OnGoogleLoginClick)
                 val signInIntent = googleSignInManager.getSignInIntent()

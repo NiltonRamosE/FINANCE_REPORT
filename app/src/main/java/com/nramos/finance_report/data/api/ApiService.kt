@@ -3,7 +3,6 @@ package com.nramos.finance_report.data.api
 import com.nramos.finance_report.data.api.responses.BaseResponse
 import com.nramos.finance_report.data.api.responses.LoginResponse
 import com.nramos.finance_report.data.model.request.LoginRequest
-import com.nramos.finance_report.data.model.request.RegisterRequest
 import com.nramos.finance_report.data.model.request.ReportRequest
 import com.nramos.finance_report.data.model.response.CategoryResponse
 import com.nramos.finance_report.data.model.response.ModalityResponse
@@ -16,11 +15,6 @@ interface ApiService {
     @POST("auth/login")
     suspend fun login(
         @Body request: LoginRequest
-    ): Response<BaseResponse<LoginResponse>>
-
-    @POST("auth/register")
-    suspend fun register(
-        @Body request: RegisterRequest
     ): Response<BaseResponse<LoginResponse>>
 
     @POST("auth/logout")

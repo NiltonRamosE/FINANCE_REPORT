@@ -1,9 +1,9 @@
 package com.nramos.finance_report.data.api
 
+import com.nramos.finance_report.BuildConfig
 import com.nramos.finance_report.data.api.interceptors.AuthInterceptor
 import com.nramos.finance_report.data.api.interceptors.NetworkInterceptor
 import com.nramos.finance_report.data.datasource.local.TokenManager
-import com.nramos.finance_report.utils.constants.ApiConstants
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -61,7 +61,7 @@ object NetworkModule {
     @Singleton
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
-            .baseUrl(ApiConstants.SUPABASE_URL)
+            .baseUrl(BuildConfig.SUPABASE_URL)
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

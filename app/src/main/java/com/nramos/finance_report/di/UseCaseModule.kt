@@ -1,7 +1,7 @@
 package com.nramos.finance_report.di
 
-import com.nramos.finance_report.domain.usecase.auth.LoginUseCase
 import com.nramos.finance_report.domain.repository.IAuthRepository
+import com.nramos.finance_report.domain.usecase.auth.LoginWithGoogleUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -16,7 +16,7 @@ object UseCaseModule {
     @Singleton
     fun provideLoginUseCase(
         authRepository: IAuthRepository
-    ): LoginUseCase {
-        return LoginUseCase(authRepository)
+    ): LoginWithGoogleUseCase {
+        return LoginWithGoogleUseCase(authRepository)
     }
 }
