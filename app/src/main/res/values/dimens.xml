@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="spacing_screen_horizontal">24dp</dimen>
+    <dimen name="login_min_height">700dp</dimen>
+    <dimen name="card_corner_radius">20dp</dimen>
+    <dimen name="logo_size">88dp</dimen>
+    <dimen name="button_height_primary">52dp</dimen>
+    <dimen name="button_height_secondary">44dp</dimen>
+</resources>

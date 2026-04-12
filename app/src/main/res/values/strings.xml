@@ -1,3 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">FINANCE_REPORT</string>
+    <string name="app_name">Finance Report</string>
+
+    <string name="app_name_display">Finance Report</string>
+
+    <string name="app_category">Personal Finance Manager</string>
+
+    <string name="app_tagline">Tu camino hacia la libertad financiera comienza aquí</string>
+
+    <string name="logo_content_description">Logo de Finance Report</string>
+
+    <string name="login_section_label">Iniciar sesión con</string>
+
+    <string name="btn_continue_google">Continuar con Google</string>
+
+    <string name="coming_soon_label">Próximamente</string>
+
+    <string name="btn_placeholder_github">Github</string>
+    <string name="btn_placeholder_facebook">Facebook</string>
+    <string name="btn_placeholder_discord">Discord</string>
+
+    <string name="badge_secure_data">Datos seguros</string>
+    <string name="badge_ssl">Encriptado SSL</string>
+
+    <string name="legal_notice">Al continuar, aceptas nuestros Términos de uso y Política de privacidad</string>
+
+    <string name="loading_message">Iniciando sesión…</string>
+    <string name="error_google_signin">No se pudo iniciar sesión con Google. Inténtalo de nuevo.</string>
+    <string name="error_network">Sin conexión a internet. Verifica tu red.</string>
+    <string name="error_generic">Ocurrió un error inesperado. Inténtalo más tarde.</string>
 </resources>
