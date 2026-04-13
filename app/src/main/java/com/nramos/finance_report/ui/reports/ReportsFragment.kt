@@ -79,6 +79,9 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
                     viewModel.onEvent(ReportsEvent.OnTypeSelected(type))
                 }
             }
+            btnAddCategory.setOnClickListener {
+                viewModel.onEvent(ReportsEvent.OnCreateCategory)
+            }
         }
     }
 
