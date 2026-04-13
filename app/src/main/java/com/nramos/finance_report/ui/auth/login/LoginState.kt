@@ -12,7 +12,3 @@ data class LoginState(
     val user: UserProfile? = null,
     val isGoogleLoginRequested: Boolean = false
 )
-
-sealed class LoginEvent {
-    object OnGoogleLoginClick : LoginEvent()
-}
