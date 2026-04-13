@@ -1,7 +1,6 @@
 package com.nramos.finance_report.data.repository
 
 import android.util.Log
-import com.nramos.finance_report.data.api.ApiService
 import com.nramos.finance_report.data.auth.GoogleSignInResult
 import com.nramos.finance_report.data.auth.SupabaseUser
 import com.nramos.finance_report.data.auth.SupabaseAuthManager
@@ -16,7 +15,6 @@ import javax.inject.Singleton
 
 @Singleton
 class AuthRepository @Inject constructor(
-    private val apiService: ApiService,
     private val tokenManager: TokenManager
 ) : IAuthRepository {
 

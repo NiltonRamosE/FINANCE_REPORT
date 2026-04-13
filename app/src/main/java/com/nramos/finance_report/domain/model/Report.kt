@@ -1,12 +1,12 @@
 package com.nramos.finance_report.domain.model
 
 data class Report(
-    val reportId: Long,
-    val categoryId: Long,
+    val reportId: String,
+    val categoryId: String,
     val categoryName: String,
-    val subcategoryId: Long?,
+    val subcategoryId: String?,
     val subcategoryName: String?,
-    val modalityId: Long,
+    val modalityId: String,
     val modalityName: String,
     val concept: String?,
     val date: String,
