@@ -10,8 +10,10 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nramos.finance_report.R
 import com.nramos.finance_report.databinding.DialogCreateCategoryBinding
+import com.nramos.finance_report.databinding.DialogCreateSubcategoryBinding
 import com.nramos.finance_report.databinding.FragmentReportsBinding
 import com.nramos.finance_report.domain.model.Category
+import com.nramos.finance_report.domain.model.Subcategory
 import com.nramos.finance_report.utils.extensions.showToast
 import com.nramos.finance_report.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,6 +28,7 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
     private val viewModel: ReportsViewModel by viewModels()
 
     private var categoryAdapter: ArrayAdapter<Category>? = null
+    private var subcategoryAdapter: ArrayAdapter<Subcategory>? = null
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -34,6 +37,7 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
         setupObservers()
         setupListeners()
         setupCategoryAutoComplete()
+        setupSubcategoryAutoComplete()
         setupTypeSelectionVisual()
 
         viewModel.onEvent(ReportsEvent.OnTypeSelected('I'))
@@ -44,6 +48,8 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
             viewModel.state.collectLatest { state ->
                 // Actualizar categorías
                 updateCategoryDropdown(state.categories)
+
+                updateSubcategoryDropdown(state.subcategories)
 
                 // Mostrar loading
                 binding.progressBar.visibility = if (state.isLoadingCategories) View.VISIBLE else View.GONE
@@ -58,10 +64,21 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
                     showCreateCategoryDialog()
                 }
 
+                // Mostrar diálogo para crear subcategoría
+                if (state.showSubcategoryDialog) {
+                    showCreateSubcategoryDialog()
+                }
+
                 // Categoría creada exitosamente
                 state.categoryCreated?.let { category ->
                     showToast("Categoría '${category.name}' creada exitosamente")
                     viewModel.clearCategoryCreated()
+                }
+
+                // Subcategoría creada exitosamente
+                state.subcategoryCreated?.let { subcategory ->
+                    showToast("Subcategoría '${subcategory.name}' creada exitosamente")
+                    viewModel.clearSubcategoryCreated()
                 }
             }
         }
@@ -81,6 +98,14 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
             }
             btnAddCategory.setOnClickListener {
                 viewModel.onEvent(ReportsEvent.OnCreateCategory)
+            }
+            btnAddSubcategory.setOnClickListener {
+                val selectedCategory = viewModel.state.value.selectedCategory
+                if (selectedCategory == null) {
+                    showToast("Primero selecciona una categoría")
+                } else {
+                    viewModel.onEvent(ReportsEvent.OnCreateSubcategory)
+                }
             }
         }
     }
@@ -130,6 +155,8 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
             selectedCategory?.let {
                 viewModel.onEvent(ReportsEvent.OnCategorySelected(it))
                 binding.etCategory.setText(it.name, false)
+
+                binding.etSubcategory.setText("", false)
             }
         }
 
@@ -230,6 +257,86 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
             button.setBackgroundColor(resources.getColor(R.color.surface_light_200, null))
             button.setTextColor(resources.getColor(R.color.text_on_light_secondary, null))
         }
+    }
+
+    private fun setupSubcategoryAutoComplete() {
+        subcategoryAdapter = object : ArrayAdapter<Subcategory>(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            mutableListOf()
+        ) {
+            fun toString(obj: Subcategory?): String {
+                return obj?.name ?: ""
+            }
+
+            override fun getItem(position: Int): Subcategory? {
+                return super.getItem(position)
+            }
+        }
+        binding.etSubcategory.setAdapter(subcategoryAdapter)
+
+        binding.etSubcategory.setOnItemClickListener { _, _, position, _ ->
+            val selectedSubcategory = subcategoryAdapter?.getItem(position)
+            selectedSubcategory?.let {
+                viewModel.onEvent(ReportsEvent.OnSubcategorySelected(it))
+                binding.etSubcategory.setText(it.name, false)
+            }
+        }
+    }
+
+    private fun updateSubcategoryDropdown(subcategories: List<Subcategory>) {
+        subcategoryAdapter?.clear()
+
+        if (subcategories.isNotEmpty()) {
+            subcategoryAdapter?.addAll(subcategories)
+            subcategoryAdapter?.notifyDataSetChanged()
+
+            binding.etSubcategory.hint = "Selecciona una subcategoría (opcional)"
+
+            val currentSelected = viewModel.state.value.selectedSubcategory
+            if (currentSelected != null && subcategories.any { it.subCategoryId == currentSelected.subCategoryId }) {
+                binding.etSubcategory.setText(currentSelected.name, false)
+            } else {
+                binding.etSubcategory.setText("", false)
+            }
+        } else {
+            subcategoryAdapter?.notifyDataSetChanged()
+            binding.etSubcategory.setText("", false)
+            binding.etSubcategory.hint = "Subcategoría (opcional)"
+        }
+    }
+
+    private fun showCreateSubcategoryDialog() {
+
+        val selectedCategory = viewModel.state.value.selectedCategory
+
+        if (selectedCategory == null) {
+            showToast("Primero debes seleccionar una categoría")
+            viewModel.dismissSubcategoryDialog()
+            return
+        }
+
+        val dialogBinding = DialogCreateSubcategoryBinding.inflate(layoutInflater)
+
+        dialogBinding.etParentCategory.setText(selectedCategory.name, false)
+        dialogBinding.etParentCategory.isEnabled = false
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Nueva Subcategoría")
+            .setView(dialogBinding.root)
+            .setPositiveButton("Crear") { _, _ ->
+                val name = dialogBinding.etSubcategoryName.text.toString().trim()
+                if (name.isNotEmpty()) {
+                    viewModel.createSubcategory(name, selectedCategory.categoryId)
+                } else {
+                    showToast("El nombre no puede estar vacío")
+                }
+                viewModel.dismissSubcategoryDialog()
+            }
+            .setNegativeButton("Cancelar") { _, _ ->
+                viewModel.dismissSubcategoryDialog()
+            }
+            .show()
     }
 
     override fun onDestroyView() {

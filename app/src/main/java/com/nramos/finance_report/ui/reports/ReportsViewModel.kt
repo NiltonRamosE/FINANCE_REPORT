@@ -3,6 +3,7 @@ package com.nramos.finance_report.ui.reports
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nramos.finance_report.data.repository.CategoryRepository
+import com.nramos.finance_report.data.repository.SubcategoryRepository
 import com.nramos.finance_report.domain.model.Category
 import com.nramos.finance_report.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class ReportsViewModel @Inject constructor(
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val subcategoryRepository: SubcategoryRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ReportsState())
@@ -23,6 +25,8 @@ class ReportsViewModel @Inject constructor(
 
     private var isLoadingCategories = false
     private var isCreatingCategory = false
+    private var isLoadingSubcategories = false
+    private var isCreatingSubcategory = false
 
     fun onEvent(event: ReportsEvent) {
         when (event) {
@@ -32,14 +36,18 @@ class ReportsViewModel @Inject constructor(
                         it.copy(
                             selectedType = event.type,
                             selectedCategory = null,
-                            categories = emptyList()
+                            categories = emptyList(),
+                            selectedSubcategory = null,
+                            subcategories = emptyList()
                         )
                     }
                     loadCategories(event.type)
                 }
             }
             is ReportsEvent.OnCategorySelected -> {
-                _state.update { it.copy(selectedCategory = event.category) }
+                _state.update { it.copy(selectedCategory = event.category, selectedSubcategory = null) }
+                // Cargar subcategorías cuando se selecciona una categoría
+                loadSubcategories(event.category.categoryId)
             }
             is ReportsEvent.OnCreateCategory -> {
                 if (!_state.value.showDialog) {
@@ -49,6 +57,21 @@ class ReportsViewModel @Inject constructor(
             is ReportsEvent.OnCategoryCreated -> {
                 _state.update { it.copy(selectedCategory = event.category) }
                 loadCategories(_state.value.selectedType)
+            }
+            // Subcategorías
+            is ReportsEvent.OnCreateSubcategory -> {
+                if (!_state.value.showSubcategoryDialog) {
+                    _state.update { it.copy(showSubcategoryDialog = true) }
+                }
+            }
+            is ReportsEvent.OnSubcategorySelected -> {
+                _state.update { it.copy(selectedSubcategory = event.subcategory) }
+            }
+            is ReportsEvent.OnSubcategoryCreated -> {
+                _state.update { it.copy(selectedSubcategory = event.subcategory) }
+                if (_state.value.selectedCategory != null) {
+                    loadSubcategories(_state.value.selectedCategory!!.categoryId)
+                }
             }
         }
     }
@@ -60,11 +83,9 @@ class ReportsViewModel @Inject constructor(
         viewModelScope.launch {
             _state.update { it.copy(isLoadingCategories = true) }
 
-
             categoryRepository.getCategoriesByType(type).collect { result ->
                 when (result) {
-                    is NetworkResult.Loading -> {
-                    }
+                    is NetworkResult.Loading -> {}
                     is NetworkResult.Success -> {
                         val categories = result.data ?: emptyList()
                         _state.update {
@@ -90,25 +111,54 @@ class ReportsViewModel @Inject constructor(
         }
     }
 
-    fun createCategory(name: String, inputType: Char) {
+    private fun loadSubcategories(categoryId: String) {
+        if (isLoadingSubcategories) return
 
+        isLoadingSubcategories = true
+        viewModelScope.launch {
+            _state.update { it.copy(isLoadingSubcategories = true) }
+
+            subcategoryRepository.getSubcategoriesByCategory(categoryId).collect { result ->
+                when (result) {
+                    is NetworkResult.Loading -> {}
+                    is NetworkResult.Success -> {
+                        val subcategories = result.data ?: emptyList()
+                        _state.update {
+                            it.copy(
+                                isLoadingSubcategories = false,
+                                subcategories = subcategories,
+                                error = null
+                            )
+                        }
+                        isLoadingSubcategories = false
+                    }
+                    is NetworkResult.Error -> {
+                        _state.update {
+                            it.copy(
+                                isLoadingSubcategories = false,
+                                error = result.message
+                            )
+                        }
+                        isLoadingSubcategories = false
+                    }
+                }
+            }
+        }
+    }
+
+    fun createCategory(name: String, inputType: Char) {
         isCreatingCategory = true
 
         viewModelScope.launch {
-            _state.update {
-                it.copy(isCreatingCategory = true)
-            }
+            _state.update { it.copy(isCreatingCategory = true) }
 
             categoryRepository.createCategory(name, inputType).collect { result ->
-
                 when (result) {
                     is NetworkResult.Loading -> {
                         _state.update { it.copy(isCreatingCategory = true) }
                     }
-
                     is NetworkResult.Success -> {
                         val newCategory = result.data
-
                         if (newCategory != null) {
                             val currentCategories = _state.value.categories.toMutableList()
                             currentCategories.add(newCategory)
@@ -122,6 +172,8 @@ class ReportsViewModel @Inject constructor(
                                     showDialog = false
                                 )
                             }
+                            // Cargar subcategorías para la nueva categoría
+                            loadSubcategories(newCategory.categoryId)
                         } else {
                             _state.update {
                                 it.copy(
@@ -132,7 +184,6 @@ class ReportsViewModel @Inject constructor(
                         }
                         isCreatingCategory = false
                     }
-
                     is NetworkResult.Error -> {
                         _state.update {
                             it.copy(
@@ -147,29 +198,69 @@ class ReportsViewModel @Inject constructor(
         }
     }
 
+    fun createSubcategory(name: String, categoryId: String) {
+        isCreatingSubcategory = true
+
+        viewModelScope.launch {
+            _state.update { it.copy(isCreatingSubcategory = true) }
+
+            subcategoryRepository.createSubcategory(name, categoryId).collect { result ->
+                when (result) {
+                    is NetworkResult.Loading -> {
+                        _state.update { it.copy(isCreatingSubcategory = true) }
+                    }
+                    is NetworkResult.Success -> {
+                        val newSubcategory = result.data
+                        if (newSubcategory != null) {
+                            val currentSubcategories = _state.value.subcategories.toMutableList()
+                            currentSubcategories.add(newSubcategory)
+
+                            _state.update {
+                                it.copy(
+                                    isCreatingSubcategory = false,
+                                    subcategories = currentSubcategories,
+                                    selectedSubcategory = newSubcategory,
+                                    subcategoryCreated = newSubcategory,
+                                    showSubcategoryDialog = false
+                                )
+                            }
+                        } else {
+                            _state.update {
+                                it.copy(
+                                    isCreatingSubcategory = false,
+                                    error = "Error al crear subcategoría: datos nulos"
+                                )
+                            }
+                        }
+                        isCreatingSubcategory = false
+                    }
+                    is NetworkResult.Error -> {
+                        _state.update {
+                            it.copy(
+                                isCreatingSubcategory = false,
+                                error = result.message
+                            )
+                        }
+                        isCreatingSubcategory = false
+                    }
+                }
+            }
+        }
+    }
+
     fun dismissDialog() {
         _state.update { it.copy(showDialog = false) }
+    }
+
+    fun dismissSubcategoryDialog() {
+        _state.update { it.copy(showSubcategoryDialog = false) }
     }
 
     fun clearCategoryCreated() {
         _state.update { it.copy(categoryCreated = null) }
     }
-}
 
-data class ReportsState(
-    val selectedType: Char = 'I',
-    val categories: List<Category> = emptyList(),
-    val selectedCategory: Category? = null,
-    val isLoadingCategories: Boolean = false,
-    val isCreatingCategory: Boolean = false,
-    val showDialog: Boolean = false,
-    val categoryCreated: Category? = null,
-    val error: String? = null
-)
-
-sealed class ReportsEvent {
-    data class OnTypeSelected(val type: Char) : ReportsEvent()
-    data class OnCategorySelected(val category: Category) : ReportsEvent()
-    object OnCreateCategory : ReportsEvent()
-    data class OnCategoryCreated(val category: Category) : ReportsEvent()
+    fun clearSubcategoryCreated() {
+        _state.update { it.copy(subcategoryCreated = null) }
+    }
 }
