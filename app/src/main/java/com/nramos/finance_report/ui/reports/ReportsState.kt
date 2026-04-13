@@ -1,6 +1,7 @@
 package com.nramos.finance_report.ui.reports
 
 import com.nramos.finance_report.domain.model.Category
+import com.nramos.finance_report.domain.model.Modality
 import com.nramos.finance_report.domain.model.Subcategory
 
 data class ReportsState(
@@ -17,6 +18,9 @@ data class ReportsState(
     val isCreatingSubcategory: Boolean = false,
     val showSubcategoryDialog: Boolean = false,
     val subcategoryCreated: Subcategory? = null,
+    val modalities: List<Modality> = emptyList(),
+    val selectedModality: Modality? = null,
+    val isLoadingModalities: Boolean = false,
     val selectedDate: String = "",
     val error: String? = null
 )

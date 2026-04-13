@@ -1,6 +1,7 @@
 package com.nramos.finance_report.ui.reports
 
 import com.nramos.finance_report.domain.model.Category
+import com.nramos.finance_report.domain.model.Modality
 import com.nramos.finance_report.domain.model.Subcategory
 
 sealed class ReportsEvent {
@@ -8,9 +9,9 @@ sealed class ReportsEvent {
     data class OnCategorySelected(val category: Category) : ReportsEvent()
     object OnCreateCategory : ReportsEvent()
     data class OnCategoryCreated(val category: Category) : ReportsEvent()
-
     object OnCreateSubcategory : ReportsEvent()
     data class OnSubcategorySelected(val subcategory: Subcategory) : ReportsEvent()
     data class OnSubcategoryCreated(val subcategory: Subcategory) : ReportsEvent()
+    data class OnModalitySelected(val modality: Modality) : ReportsEvent()
     data class OnDateSelected(val date: String) : ReportsEvent()
 }

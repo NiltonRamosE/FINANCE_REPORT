@@ -3,6 +3,7 @@ package com.nramos.finance_report.ui.reports
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nramos.finance_report.data.repository.CategoryRepository
+import com.nramos.finance_report.data.repository.ModalityRepository
 import com.nramos.finance_report.data.repository.SubcategoryRepository
 import com.nramos.finance_report.domain.model.Category
 import com.nramos.finance_report.utils.NetworkResult
@@ -17,7 +18,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ReportsViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
-    private val subcategoryRepository: SubcategoryRepository
+    private val subcategoryRepository: SubcategoryRepository,
+    private val modalityRepository: ModalityRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ReportsState())
@@ -27,7 +29,12 @@ class ReportsViewModel @Inject constructor(
     private var isCreatingCategory = false
     private var isLoadingSubcategories = false
     private var isCreatingSubcategory = false
+    private var isLoadingModalities = false
 
+    init {
+        // Cargar modalidades al iniciar
+        loadModalities()
+    }
     fun onEvent(event: ReportsEvent) {
         when (event) {
             is ReportsEvent.OnTypeSelected -> {
@@ -72,6 +79,9 @@ class ReportsViewModel @Inject constructor(
                 if (_state.value.selectedCategory != null) {
                     loadSubcategories(_state.value.selectedCategory!!.categoryId)
                 }
+            }
+            is ReportsEvent.OnModalitySelected -> {
+                _state.update { it.copy(selectedModality = event.modality) }
             }
             is ReportsEvent.OnDateSelected -> {
                 _state.update { it.copy(selectedDate = event.date) }
@@ -251,6 +261,43 @@ class ReportsViewModel @Inject constructor(
         }
     }
 
+    private fun loadModalities() {
+        if (isLoadingModalities) return
+
+        isLoadingModalities = true
+        viewModelScope.launch {
+            _state.update { it.copy(isLoadingModalities = true) }
+
+            modalityRepository.getModalities().collect { result ->
+                when (result) {
+                    is NetworkResult.Loading -> {}
+                    is NetworkResult.Success -> {
+                        val modalities = result.data ?: emptyList()
+                        _state.update {
+                            it.copy(
+                                isLoadingModalities = false,
+                                modalities = modalities,
+                                error = null
+                            )
+                        }
+                        if (modalities.isNotEmpty() && _state.value.selectedModality == null) {
+                            _state.update { it.copy(selectedModality = modalities.first()) }
+                        }
+                        isLoadingModalities = false
+                    }
+                    is NetworkResult.Error -> {
+                        _state.update {
+                            it.copy(
+                                isLoadingModalities = false,
+                                error = result.message
+                            )
+                        }
+                        isLoadingModalities = false
+                    }
+                }
+            }
+        }
+    }
     fun dismissDialog() {
         _state.update { it.copy(showDialog = false) }
     }

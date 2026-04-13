@@ -106,7 +106,6 @@
         </LinearLayout>
 
         <!-- Subcategoría -->
-        <!-- Subcategoría -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -153,6 +152,30 @@
 
         </LinearLayout>
 
+        <!-- Modalidad -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Modalidad"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="8dp" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            app:endIconMode="dropdown_menu">
+
+            <AutoCompleteTextView
+                android:id="@+id/etModality"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Selecciona una modalidad"
+                android:inputType="none" />
+
+        </com.google.android.material.textfield.TextInputLayout>
         <!-- Concepto -->
         <TextView
             android:layout_width="wrap_content"

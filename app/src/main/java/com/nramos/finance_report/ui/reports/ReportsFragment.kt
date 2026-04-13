@@ -16,6 +16,7 @@ import com.nramos.finance_report.databinding.DialogCreateCategoryBinding
 import com.nramos.finance_report.databinding.DialogCreateSubcategoryBinding
 import com.nramos.finance_report.databinding.FragmentReportsBinding
 import com.nramos.finance_report.domain.model.Category
+import com.nramos.finance_report.domain.model.Modality
 import com.nramos.finance_report.domain.model.Subcategory
 import com.nramos.finance_report.utils.extensions.showToast
 import com.nramos.finance_report.utils.showToast
@@ -37,6 +38,8 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
     private var categoryAdapter: ArrayAdapter<Category>? = null
     private var subcategoryAdapter: ArrayAdapter<Subcategory>? = null
 
+    private var modalityAdapter: ArrayAdapter<Modality>? = null
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentReportsBinding.bind(view)
@@ -45,6 +48,7 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
         setupListeners()
         setupCategoryAutoComplete()
         setupSubcategoryAutoComplete()
+        setupModalityAutoComplete()
         setupTypeSelectionVisual()
 
         val currentDate = formatDate(
@@ -63,7 +67,7 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
             viewModel.state.collectLatest { state ->
                 // Actualizar categorías
                 updateCategoryDropdown(state.categories)
-
+                updateModalityDropdown(state.modalities)
                 updateSubcategoryDropdown(state.subcategories)
 
                 // Mostrar loading
@@ -375,6 +379,47 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
                 viewModel.dismissSubcategoryDialog()
             }
             .show()
+    }
+
+    private fun setupModalityAutoComplete() {
+        modalityAdapter = object : ArrayAdapter<Modality>(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            mutableListOf()
+        ) {
+            fun toString(obj: Modality?): String {
+                return obj?.name ?: ""
+            }
+        }
+        binding.etModality.setAdapter(modalityAdapter)
+
+        binding.etModality.setOnItemClickListener { _, _, position, _ ->
+            val selectedModality = modalityAdapter?.getItem(position)
+            selectedModality?.let {
+                viewModel.onEvent(ReportsEvent.OnModalitySelected(it))
+                binding.etModality.setText(it.name, false)
+            }
+        }
+    }
+
+    private fun updateModalityDropdown(modalities: List<Modality>) {
+        modalityAdapter?.clear()
+
+        if (modalities.isNotEmpty()) {
+            modalityAdapter?.addAll(modalities)
+            modalityAdapter?.notifyDataSetChanged()
+
+            val currentSelected = viewModel.state.value.selectedModality
+            if (currentSelected != null && modalities.any { it.modalityId == currentSelected.modalityId }) {
+                binding.etModality.setText(currentSelected.name, false)
+            } else {
+                binding.etModality.setText("", false)
+            }
+        } else {
+            modalityAdapter?.notifyDataSetChanged()
+            binding.etModality.setText("", false)
+            binding.etModality.hint = "No hay modalidades disponibles"
+        }
     }
 
     override fun onDestroyView() {
