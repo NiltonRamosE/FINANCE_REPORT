@@ -83,11 +83,6 @@ class SupabaseAuthManager @Inject constructor() {
         }
     }
 
-    private suspend fun saveTokens(accessToken: String, refreshToken: String) {
-        // Guardar en DataStore o SharedPreferences
-        // Implementa esto según tu TokenManager
-    }
-
     suspend fun createOrUpdateProfile(
         accessToken: String,
         googleUser: GoogleSignInResult
@@ -136,6 +131,14 @@ class SupabaseAuthManager @Inject constructor() {
                 }
             }
 
+            Result.success(Unit)
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    suspend fun signOutFromGoogle(): Result<Unit> = withContext(Dispatchers.IO) {
+        try {
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)

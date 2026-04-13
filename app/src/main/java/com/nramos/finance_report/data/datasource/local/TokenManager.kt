@@ -24,6 +24,10 @@ class TokenManager @Inject constructor(
         private val USER_PROFILE_ID_KEY = stringPreferencesKey("profile_id")
         private val USER_NAME_KEY = stringPreferencesKey("user_name")
         private val USER_EMAIL_KEY = stringPreferencesKey("user_email")
+
+        private val USER_PATERNAL_SURNAME_KEY = stringPreferencesKey("user_paternal_surname")
+        private val USER_MATERNAL_SURNAME_KEY = stringPreferencesKey("user_maternal_surname")
+        private val USER_GENDER_KEY = stringPreferencesKey("user_gender")
         private val IS_LOGGED_IN_KEY = booleanPreferencesKey("is_logged_in")
     }
 
@@ -32,7 +36,10 @@ class TokenManager @Inject constructor(
         tokenType: String,
         profileId: String,
         userName: String,
-        userEmail: String
+        userEmail: String,
+        paternalSurname: String? = null,
+        maternalSurname: String? = null,
+        gender: Char? = null
     ) {
         context.dataStore.edit { preferences ->
             preferences[TOKEN_KEY] = token
@@ -40,6 +47,9 @@ class TokenManager @Inject constructor(
             preferences[USER_PROFILE_ID_KEY] = profileId
             preferences[USER_NAME_KEY] = userName
             preferences[USER_EMAIL_KEY] = userEmail
+            preferences[USER_PATERNAL_SURNAME_KEY] = paternalSurname ?: ""
+            preferences[USER_MATERNAL_SURNAME_KEY] = maternalSurname ?: ""
+            preferences[USER_GENDER_KEY] = gender?.toString() ?: ""
             preferences[IS_LOGGED_IN_KEY] = true
         }
     }
@@ -96,5 +106,24 @@ class TokenManager @Inject constructor(
         return context.dataStore.data.map { preferences ->
             preferences[TOKEN_KEY]
         }
+    }
+
+    suspend fun getUserPaternalSurname(): String {
+        return context.dataStore.data.map { preferences ->
+            preferences[USER_PATERNAL_SURNAME_KEY] ?: ""
+        }.first()
+    }
+
+    suspend fun getUserMaternalSurname(): String {
+        return context.dataStore.data.map { preferences ->
+            preferences[USER_MATERNAL_SURNAME_KEY] ?: ""
+        }.first()
+    }
+
+    suspend fun getUserGender(): Char? {
+        val gender = context.dataStore.data.map { preferences ->
+            preferences[USER_GENDER_KEY] ?: ""
+        }.first()
+        return gender.takeIf { it.isNotEmpty() }?.firstOrNull()
     }
 }

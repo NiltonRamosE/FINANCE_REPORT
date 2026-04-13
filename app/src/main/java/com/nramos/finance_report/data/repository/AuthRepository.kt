@@ -1,5 +1,6 @@
 package com.nramos.finance_report.data.repository
 
+import android.util.Log
 import com.nramos.finance_report.data.api.ApiService
 import com.nramos.finance_report.data.auth.GoogleSignInResult
 import com.nramos.finance_report.data.auth.SupabaseUser
@@ -76,27 +77,40 @@ class AuthRepository @Inject constructor(
         }
     }
 
-    private suspend fun ensureUserProfileExists(supabaseUser: SupabaseUser) {
-        // Verificar si el usuario existe en tu tabla profiles
-        // Si no existe, crearlo con los datos de Google
-        // Implementa esto según tu lógica
-    }
-
     override suspend fun logout(): Flow<NetworkResult<Unit>> = flow {
         emit(NetworkResult.Loading())
 
         try {
-            val token = tokenManager.getToken() ?: ""
-            val response = apiService.logout("Bearer $token")
+            tokenManager.clearAuthData()
 
-            if (response.isSuccessful) {
-                tokenManager.clearAuthData()
-                emit(NetworkResult.Success(Unit))
-            } else {
-                emit(NetworkResult.Error("Error al cerrar sesión"))
+            // Cerrar sesión en Google
+            val googleSignOutResult = supabaseAuthManager.signOutFromGoogle()
+            if (googleSignOutResult.isFailure) {
+                Log.e("AuthRepository", "Error al cerrar sesión en Google: ${googleSignOutResult.exceptionOrNull()?.message}")
             }
+
+            emit(NetworkResult.Success(Unit))
         } catch (e: Exception) {
-            emit(NetworkResult.Error(e.message ?: "Error de conexión"))
+            emit(NetworkResult.Error(e.message ?: "Error al cerrar sesión"))
+        }
+    }
+
+    override suspend fun getCurrentUserProfile(): UserProfile? {
+        return if (tokenManager.isLoggedIn()) {
+            val profileId = tokenManager.getUserProfileId()
+            val userName = tokenManager.getUserName()
+            val userEmail = tokenManager.getUserEmail()
+
+            UserProfile(
+                profileId = profileId,
+                name = userName,
+                email = userEmail,
+                paternalSurname = tokenManager.getUserPaternalSurname(),
+                maternalSurname = tokenManager.getUserMaternalSurname(),
+                gender = tokenManager.getUserGender()
+            )
+        } else {
+            null
         }
     }
 

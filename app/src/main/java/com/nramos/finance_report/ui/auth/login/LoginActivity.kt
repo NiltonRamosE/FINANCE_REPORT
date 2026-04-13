@@ -20,7 +20,7 @@ class LoginActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityLoginBinding
     private val viewModel: LoginViewModel by viewModels()
-    @Inject  // Inyectar GoogleSignInManager
+    @Inject
     lateinit var googleSignInManager: GoogleSignInManager
 
     private val googleSignInLauncher = registerForActivityResult(

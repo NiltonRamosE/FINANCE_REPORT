@@ -14,4 +14,6 @@ interface IAuthRepository {
     suspend fun isLoggedIn(): Boolean
 
     suspend fun getCurrentUser(): UserProfile?
+
+    suspend fun getCurrentUserProfile(): UserProfile?
 }
