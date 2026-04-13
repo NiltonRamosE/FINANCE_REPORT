@@ -17,5 +17,6 @@ data class ReportsState(
     val isCreatingSubcategory: Boolean = false,
     val showSubcategoryDialog: Boolean = false,
     val subcategoryCreated: Subcategory? = null,
+    val selectedDate: String = "",
     val error: String? = null
 )

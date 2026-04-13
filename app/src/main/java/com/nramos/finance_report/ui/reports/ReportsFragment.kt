@@ -1,12 +1,15 @@
 package com.nramos.finance_report.ui.reports
 
+import android.app.DatePickerDialog
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.nramos.finance_report.R
 import com.nramos.finance_report.databinding.DialogCreateCategoryBinding
@@ -19,6 +22,10 @@ import com.nramos.finance_report.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 
 @AndroidEntryPoint
 class ReportsFragment : Fragment(R.layout.fragment_reports) {
@@ -39,6 +46,14 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
         setupCategoryAutoComplete()
         setupSubcategoryAutoComplete()
         setupTypeSelectionVisual()
+
+        val currentDate = formatDate(
+            Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
+            Calendar.getInstance().get(Calendar.MONTH) + 1,
+            Calendar.getInstance().get(Calendar.YEAR)
+        )
+        viewModel.onEvent(ReportsEvent.OnDateSelected(currentDate))
+        binding.etDate.setText(currentDate)
 
         viewModel.onEvent(ReportsEvent.OnTypeSelected('I'))
     }
@@ -107,9 +122,32 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
                     viewModel.onEvent(ReportsEvent.OnCreateSubcategory)
                 }
             }
+            etDate.setOnClickListener {
+                showDatePicker()
+            }
         }
     }
 
+    private fun showDatePicker() {
+        val datePicker = MaterialDatePicker.Builder.datePicker()
+            .setTitleText("Selecciona la fecha")
+            .setSelection(MaterialDatePicker.todayInUtcMilliseconds())
+            .build()
+
+        datePicker.addOnPositiveButtonClickListener { selection ->
+            val sdf = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+            val date = Date(selection)
+            val formattedDate = sdf.format(date)
+            viewModel.onEvent(ReportsEvent.OnDateSelected(formattedDate))
+            binding.etDate.setText(formattedDate)
+        }
+
+        datePicker.show(parentFragmentManager, "DatePicker")
+    }
+
+    private fun formatDate(day: Int, month: Int, year: Int): String {
+        return String.format("%02d/%02d/%04d", day, month, year)
+    }
     private fun setupTypeSelectionVisual() {
         binding.apply {
             updateTypeButtonStyle(btnIncome, true)

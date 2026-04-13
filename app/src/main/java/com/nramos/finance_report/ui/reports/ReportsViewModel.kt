@@ -73,6 +73,9 @@ class ReportsViewModel @Inject constructor(
                     loadSubcategories(_state.value.selectedCategory!!.categoryId)
                 }
             }
+            is ReportsEvent.OnDateSelected -> {
+                _state.update { it.copy(selectedDate = event.date) }
+            }
         }
     }
 
