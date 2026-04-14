@@ -26,7 +26,8 @@
         android:text="Tipo"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:layout_marginBottom="8dp" />
+        android:layout_marginBottom="8dp"
+        android:textColor="@color/black"/>
 
     <com.google.android.material.button.MaterialButtonToggleGroup
         android:id="@+id/toggleType"

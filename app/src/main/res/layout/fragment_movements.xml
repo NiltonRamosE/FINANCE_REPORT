@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorSurface"
-        app:title="Mis Movimientos"
         app:menu="@menu/movements_menu" />
 
     <!-- Filtros -->
@@ -77,14 +76,14 @@
             android:layout_marginTop="16dp"
             android:text="No hay movimientos registrados"
             android:textSize="16sp"
-            android:textColor="?attr/colorOutline" />
+            android:textColor="@color/black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Comienza agregando tu primer movimiento"
             android:textSize="14sp"
-            android:textColor="?attr/colorOutlineVariant" />
+            android:textColor="@color/gold_700" />
 
     </LinearLayout>
 

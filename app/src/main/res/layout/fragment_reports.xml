@@ -21,7 +21,8 @@
             android:text="Registrar Movimiento"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:layout_marginBottom="24dp" />
+            android:layout_marginBottom="24dp"
+            android:textColor="@color/black"/>
 
         <!-- Tipo de transacción (Ingreso/Egreso) -->
         <TextView
@@ -30,7 +31,8 @@
             android:text="Tipo"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/black"/>
 
         <com.google.android.material.button.MaterialButtonToggleGroup
             android:id="@+id/toggleType"
@@ -64,7 +66,8 @@
             android:text="Categoría"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/black"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -85,7 +88,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Selecciona una categoría"
-                    android:inputType="none" />
+                    android:inputType="none"
+                    android:textColor="@color/navy_900"
+                    android:dropDownSelector="@color/navy_400"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -112,7 +117,8 @@
             android:text="Subcategoría (Opcional)"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/black"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -133,7 +139,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Selecciona una subcategoría"
-                    android:inputType="none" />
+                    android:inputType="none"
+                    android:textColor="@color/navy_900"
+                    android:dropDownSelector="@color/navy_400"/>
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -159,7 +167,8 @@
             android:text="Modalidad"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/black"/>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -173,7 +182,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Selecciona una modalidad"
-                android:inputType="none" />
+                android:inputType="none"
+                android:textColor="@color/navy_900"
+                android:dropDownSelector="@color/navy_400"/>
 
         </com.google.android.material.textfield.TextInputLayout>
         <!-- Concepto -->
@@ -183,7 +194,8 @@
             android:text="Concepto"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/black"/>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -207,7 +219,8 @@
             android:text="Fecha"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/black"/>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
@@ -234,7 +247,8 @@
             android:text="Monto"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:layout_marginBottom="8dp" />
+            android:layout_marginBottom="8dp"
+            android:textColor="@color/black"/>
 
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"

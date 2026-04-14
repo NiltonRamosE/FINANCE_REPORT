@@ -1,26 +1,5 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.FINANCE_REPORT.Dark" parent="Theme.FINANCE_REPORT">
-        <item name="colorPrimary">@color/blue_300</item>
-        <item name="colorOnPrimary">@color/navy_900</item>
-        <item name="colorPrimaryContainer">@color/navy_700</item>
-        <item name="colorOnPrimaryContainer">@color/blue_100</item>
 
-        <item name="colorSecondary">@color/gold_400</item>
-        <item name="colorOnSecondary">@color/navy_900</item>
-        <item name="colorSecondaryContainer">@color/navy_600</item>
-        <item name="colorOnSecondaryContainer">@color/gold_300</item>
-
-        <item name="colorSurface">@color/navy_900</item>
-        <item name="colorOnSurface">@color/text_on_dark_primary</item>
-        <item name="colorSurfaceVariant">@color/surface_dark_200</item>
-        <item name="colorOnSurfaceVariant">@color/text_on_dark_secondary</item>
-        <item name="colorSurfaceContainer">@color/surface_dark_100</item>
-        <item name="colorSurfaceContainerHigh">@color/surface_dark_300</item>
-
-        <item name="colorOutline">@color/text_on_dark_tertiary</item>
-        <item name="colorOutlineVariant">@color/border_dark_subtle</item>
-
-        <item name="android:colorBackground">@color/navy_950</item>
-        <item name="colorOnBackground">@color/text_on_dark_primary</item>
     </style>
 </resources>

@@ -31,7 +31,7 @@
                     android:layout_height="wrap_content"
                     android:text="Saldo Total"
                     android:textSize="14sp"
-                    android:textColor="?attr/colorOnPrimaryContainer"
+                    android:textColor="@color/navy_950"
                     android:textAllCaps="true" />
 
                 <TextView
@@ -55,7 +55,8 @@
             android:text="Resumen por Modalidad"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="12dp"
+            android:textColor="@color/black"/>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
@@ -89,7 +90,8 @@
                         android:layout_weight="1"
                         android:layout_marginStart="12dp"
                         android:text="Efectivo"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textColor="@color/black"/>
 
                     <TextView
                         android:id="@+id/tvCashBalance"
@@ -97,7 +99,8 @@
                         android:layout_height="wrap_content"
                         android:text="S/ 0.00"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="@color/black"/>
 
                 </LinearLayout>
 
@@ -119,7 +122,8 @@
                         android:layout_weight="1"
                         android:layout_marginStart="12dp"
                         android:text="Yape / Tarjeta BCP"
-                        android:textSize="14sp" />
+                        android:textSize="14sp"
+                        android:textColor="@color/black"/>
 
                     <TextView
                         android:id="@+id/tvYapeBalance"
@@ -127,7 +131,8 @@
                         android:layout_height="wrap_content"
                         android:text="S/ 0.00"
                         android:textSize="14sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:textColor="@color/black"/>
 
                 </LinearLayout>
 
@@ -142,7 +147,8 @@
             android:text="Últimos Movimientos"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_marginBottom="12dp" />
+            android:layout_marginBottom="12dp"
+            android:textColor="@color/black"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvRecentMovements"
