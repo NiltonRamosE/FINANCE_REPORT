@@ -125,7 +125,7 @@ class ReportRepository @Inject constructor(
                 }
 
                 // Construir URL con filtros
-                var url = "${BuildConfig.SUPABASE_URL}/rest/v1/reports?select=*&order=date.desc"
+                var url = "${BuildConfig.SUPABASE_URL}/rest/v1/reports?select=*&order=created_at.desc"
 
                 type?.let {
                     url += "&type=eq.$it"
