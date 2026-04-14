@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.snackbar.Snackbar
 import com.nramos.finance_report.R
 import com.nramos.finance_report.databinding.DialogCreateCategoryBinding
 import com.nramos.finance_report.databinding.DialogCreateSubcategoryBinding
@@ -73,11 +74,6 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
                 // Mostrar loading
                 binding.progressBar.visibility = if (state.isLoadingCategories) View.VISIBLE else View.GONE
 
-                // Mostrar error
-                state.error?.let { error ->
-                    showToast(error)
-                }
-
                 // Mostrar diálogo para crear categoría
                 if (state.showDialog) {
                     showCreateCategoryDialog()
@@ -111,13 +107,55 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
                 state.reportSaved?.let { report ->
                     showToast("Movimiento guardado exitosamente")
                     viewModel.clearReportSaved()
-                    // Limpiar formulario después de guardar
                     clearForm()
+                }
+
+                state.reportSaved?.let { report ->
+                    val message = when (report.type) {
+                        'I' -> "✓ Ingreso guardado: +${formatAmount(report.amount)}"
+                        'E' -> "✓ Egreso guardado: -${formatAmount(report.amount)}"
+                        else -> "✓ Movimiento guardado exitosamente"
+                    }
+                    when (report.type) {
+                        'I' -> showSuccessNotification(message, isIncome = true)
+                        'E' -> showSuccessNotification(message, isIncome = false)
+                        else -> showSuccessNotification(message, isIncome = true)
+                    }
+                    viewModel.clearReportSaved()
+                    clearForm()
+                }
+
+                state.error?.let { error ->
+                    showErrorNotification("✗ Error: $error")
                 }
             }
         }
     }
+    private fun formatAmount(amount: Double): String {
+        return String.format(Locale.getDefault(), "S/ %.2f", amount)
+    }
 
+    private fun showSuccessNotification(message: String, isIncome: Boolean = true) {
+        val backgroundColor = if (isIncome) {
+            resources.getColor(R.color.finance_green_600, null)
+        } else {
+            resources.getColor(R.color.finance_red_600, null)
+        }
+
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(backgroundColor)
+            .setTextColor(resources.getColor(R.color.white, null))
+            .setAction("OK") { }
+            .show()
+    }
+
+    private fun showErrorNotification(message: String) {
+        Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
+            .setBackgroundTint(resources.getColor(R.color.finance_red_600, null))
+            .setTextColor(resources.getColor(R.color.white, null))
+            .setAction("OK") { }
+            .show()
+    }
     private fun setupListeners() {
         binding.apply {
             toggleType.addOnButtonCheckedListener { _, checkedId, isChecked ->
