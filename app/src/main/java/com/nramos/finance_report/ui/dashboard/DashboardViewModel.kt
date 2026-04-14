@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Locale
 import javax.inject.Inject
 
 @HiltViewModel
@@ -107,16 +108,12 @@ class DashboardViewModel @Inject constructor(
         reports: List<Report>,
         modalities: List<Modality>
     ): BalanceResult {
-        // Crear mapa de modalidad ID a nombre
-        val modalityNames = modalities.associate { it.modalityId to it.name }
+        val modalityNames = modalities.associate { it.modalityId to normalizeModalityName(it.name) }
 
-        // Calcular balance por modalidad
         val modalityBalances = mutableMapOf<String, Double>()
 
-        // También necesitamos un mapa para saber a qué grupo pertenece cada modalidad
-        // Por ahora, agrupamos manualmente las que deben ir juntas
         val yapeGroupIds = modalities
-            .filter { it.name.contains("YAPE", ignoreCase = true) || it.name.contains("BCP", ignoreCase = true) }
+            .filter { isYapeOrBcp(it.name) }
             .map { it.modalityId }
 
         var totalBalance = 0.0
@@ -125,7 +122,6 @@ class DashboardViewModel @Inject constructor(
             val amount = if (report.type == 'I') report.amount else -report.amount
             totalBalance += amount
 
-            // Determinar a qué grupo pertenece esta modalidad
             val groupKey = when {
                 yapeGroupIds.contains(report.modalityId) -> "YAPE / Tarjeta BCP"
                 else -> modalityNames[report.modalityId] ?: "Otras"
@@ -138,6 +134,20 @@ class DashboardViewModel @Inject constructor(
             totalBalance = totalBalance,
             modalityBalances = modalityBalances
         )
+    }
+
+    private fun normalizeModalityName(name: String): String {
+        return when {
+            name.equals("EFECTIVO", ignoreCase = true) -> "Efectivo"
+            name.equals("YAPE", ignoreCase = true) -> "Yape"
+            name.equals("TARJETA BCP", ignoreCase = true) -> "Tarjeta BCP"
+            else -> name.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.getDefault()) else it.toString() }
+        }
+    }
+
+    private fun isYapeOrBcp(name: String): Boolean {
+        return name.contains("YAPE", ignoreCase = true) ||
+                name.contains("BCP", ignoreCase = true)
     }
 
     private fun getRecentReports(reports: List<Report>, limit: Int = 5): List<Report> {
