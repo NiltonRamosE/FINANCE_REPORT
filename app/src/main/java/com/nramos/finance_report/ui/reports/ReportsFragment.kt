@@ -203,9 +203,7 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
         }
 
         binding.etCategory.setOnClickListener {
-            if (categoryAdapter?.count == 0) {
-                viewModel.onEvent(ReportsEvent.OnCreateCategory)
-            } else {
+            if (categoryAdapter?.count != 0) {
                 binding.etCategory.showDropDown()
             }
         }
