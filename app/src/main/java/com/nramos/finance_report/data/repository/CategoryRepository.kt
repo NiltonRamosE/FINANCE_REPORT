@@ -145,4 +145,75 @@ class CategoryRepository @Inject constructor(
             emit(NetworkResult.Error(e.message ?: "Error de conexión"))
         }
     }
+
+    suspend fun getCategoryNameById(categoryId: String): String {
+        return withContext(Dispatchers.IO) {
+            try {
+                val token = tokenManager.getToken()
+                if (token == null) return@withContext "Categoría"
+
+                val url = "${BuildConfig.SUPABASE_URL}/rest/v1/categories?select=name&id=eq.$categoryId"
+
+                val request = Request.Builder()
+                    .url(url)
+                    .get()
+                    .header("apikey", BuildConfig.SUPABASE_ANON_KEY)
+                    .header("Authorization", "Bearer $token")
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string() ?: "[]"
+
+                if (response.isSuccessful && responseBody != "[]") {
+                    val jsonArray = JSONArray(responseBody)
+                    if (jsonArray.length() > 0) {
+                        val jsonObject = jsonArray.getJSONObject(0)
+                        jsonObject.getString("name")
+                    } else {
+                        "Categoría"
+                    }
+                } else {
+                    "Categoría"
+                }
+            } catch (e: Exception) {
+                "Categoría"
+            }
+        }
+    }
+
+    suspend fun getCategoriesMap(ids: List<String>): Map<String, String> {
+        return withContext(Dispatchers.IO) {
+            try {
+                val token = tokenManager.getToken()
+                if (token == null) return@withContext emptyMap()
+
+                val idsFilter = ids.joinToString(",") { "\"$it\"" }
+                val url = "${BuildConfig.SUPABASE_URL}/rest/v1/categories?select=id,name&id=in.($idsFilter)"
+
+                val request = Request.Builder()
+                    .url(url)
+                    .get()
+                    .header("apikey", BuildConfig.SUPABASE_ANON_KEY)
+                    .header("Authorization", "Bearer $token")
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string() ?: "[]"
+
+                if (response.isSuccessful) {
+                    val jsonArray = JSONArray(responseBody)
+                    val map = mutableMapOf<String, String>()
+                    for (i in 0 until jsonArray.length()) {
+                        val jsonObject = jsonArray.getJSONObject(i)
+                        map[jsonObject.getString("id")] = jsonObject.getString("name")
+                    }
+                    map
+                } else {
+                    emptyMap()
+                }
+            } catch (e: Exception) {
+                emptyMap()
+            }
+        }
+    }
 }

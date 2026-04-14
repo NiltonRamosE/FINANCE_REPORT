@@ -109,6 +109,80 @@ class ReportRepository @Inject constructor(
         }
     }
 
+    suspend fun getReports(
+        type: Char? = null,
+        startDate: String? = null,
+        endDate: String? = null
+    ): Flow<NetworkResult<List<Report>>> = flow {
+        emit(NetworkResult.Loading())
+
+        try {
+            val result = withContext(Dispatchers.IO) {
+                val token = tokenManager.getToken()
+
+                if (token == null) {
+                    throw Exception("No hay sesión activa")
+                }
+
+                // Construir URL con filtros
+                var url = "${BuildConfig.SUPABASE_URL}/rest/v1/reports?select=*&order=date.desc"
+
+                type?.let {
+                    url += "&type=eq.$it"
+                }
+
+                startDate?.let {
+                    url += "&date=gte.$it"
+                }
+
+                endDate?.let {
+                    url += "&date=lte.$it"
+                }
+
+                val request = Request.Builder()
+                    .url(url)
+                    .get()
+                    .header("apikey", BuildConfig.SUPABASE_ANON_KEY)
+                    .header("Authorization", "Bearer $token")
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string() ?: ""
+
+                Pair(response.isSuccessful, responseBody)
+            }
+
+            val (isSuccessful, responseBody) = result
+
+            if (isSuccessful) {
+                val jsonArray = JSONArray(responseBody)
+                val reports = mutableListOf<Report>()
+
+                for (i in 0 until jsonArray.length()) {
+                    val jsonObject = jsonArray.getJSONObject(i)
+                    val report = Report(
+                        reportId = jsonObject.getString("id"),
+                        categoryId = jsonObject.getString("category_id"),
+                        subcategoryId = jsonObject.optString("subcategory_id").takeIf { it.isNotEmpty() },
+                        modalityId = jsonObject.getString("modality_id"),
+                        concept = jsonObject.optString("concept").takeIf { it.isNotEmpty() },
+                        date = jsonObject.getString("date"),
+                        amount = jsonObject.getDouble("amount"),
+                        type = jsonObject.getString("type").first()
+                    )
+                    reports.add(report)
+                }
+
+                emit(NetworkResult.Success(reports))
+            } else {
+                val errorMsg = "Error al cargar movimientos: $responseBody"
+                emit(NetworkResult.Error(errorMsg))
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "Error de conexión"))
+        }
+    }
+
     private fun formatDateForApi(date: String): String {
         return try {
             val parts = date.split("/")
