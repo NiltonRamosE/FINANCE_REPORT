@@ -2,6 +2,7 @@ package com.nramos.finance_report.ui.reports
 
 import com.nramos.finance_report.domain.model.Category
 import com.nramos.finance_report.domain.model.Modality
+import com.nramos.finance_report.domain.model.Report
 import com.nramos.finance_report.domain.model.Subcategory
 
 data class ReportsState(
@@ -22,5 +23,10 @@ data class ReportsState(
     val selectedModality: Modality? = null,
     val isLoadingModalities: Boolean = false,
     val selectedDate: String = "",
+    val concept: String = "",
+    val amount: Double = 0.0,
+    val amountText: String = "",
+    val isSavingReport: Boolean = false,
+    val reportSaved: Report? = null,
     val error: String? = null
 )

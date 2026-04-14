@@ -99,6 +99,21 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
                     showToast("Subcategoría '${subcategory.name}' creada exitosamente")
                     viewModel.clearSubcategoryCreated()
                 }
+
+                if (state.isSavingReport) {
+                    binding.progressBar.visibility = View.VISIBLE
+                    binding.btnSave.isEnabled = false
+                } else {
+                    binding.progressBar.visibility = View.GONE
+                    binding.btnSave.isEnabled = true
+                }
+
+                state.reportSaved?.let { report ->
+                    showToast("Movimiento guardado exitosamente")
+                    viewModel.clearReportSaved()
+                    // Limpiar formulario después de guardar
+                    clearForm()
+                }
             }
         }
     }
@@ -128,6 +143,11 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
             }
             etDate.setOnClickListener {
                 showDatePicker()
+            }
+            btnSave.setOnClickListener {
+                viewModel.updateConcept(binding.etConcept.text.toString())
+                viewModel.updateAmount(binding.etAmount.text.toString())
+                viewModel.onEvent(ReportsEvent.OnSaveReport)
             }
         }
     }
@@ -418,6 +438,20 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
             binding.etModality.setText("", false)
             binding.etModality.hint = "No hay modalidades disponibles"
         }
+    }
+
+    private fun clearForm() {
+        binding.etCategory.setText("", false)
+        binding.etSubcategory.setText("", false)
+        binding.etConcept.setText("")
+        binding.etAmount.setText("")
+        val currentDate = formatDate(
+            Calendar.getInstance().get(Calendar.DAY_OF_MONTH),
+            Calendar.getInstance().get(Calendar.MONTH) + 1,
+            Calendar.getInstance().get(Calendar.YEAR)
+        )
+        viewModel.onEvent(ReportsEvent.OnDateSelected(currentDate))
+        binding.etDate.setText(currentDate)
     }
 
     override fun onDestroyView() {

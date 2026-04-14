@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nramos.finance_report.data.repository.CategoryRepository
 import com.nramos.finance_report.data.repository.ModalityRepository
+import com.nramos.finance_report.data.repository.ReportRepository
 import com.nramos.finance_report.data.repository.SubcategoryRepository
 import com.nramos.finance_report.domain.model.Category
 import com.nramos.finance_report.utils.NetworkResult
@@ -19,7 +20,8 @@ import javax.inject.Inject
 class ReportsViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val subcategoryRepository: SubcategoryRepository,
-    private val modalityRepository: ModalityRepository
+    private val modalityRepository: ModalityRepository,
+    private val reportRepository: ReportRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(ReportsState())
@@ -30,7 +32,7 @@ class ReportsViewModel @Inject constructor(
     private var isLoadingSubcategories = false
     private var isCreatingSubcategory = false
     private var isLoadingModalities = false
-
+    private var isSavingReport = false
     init {
         // Cargar modalidades al iniciar
         loadModalities()
@@ -65,7 +67,6 @@ class ReportsViewModel @Inject constructor(
                 _state.update { it.copy(selectedCategory = event.category) }
                 loadCategories(_state.value.selectedType)
             }
-            // Subcategorías
             is ReportsEvent.OnCreateSubcategory -> {
                 if (!_state.value.showSubcategoryDialog) {
                     _state.update { it.copy(showSubcategoryDialog = true) }
@@ -85,6 +86,9 @@ class ReportsViewModel @Inject constructor(
             }
             is ReportsEvent.OnDateSelected -> {
                 _state.update { it.copy(selectedDate = event.date) }
+            }
+            is ReportsEvent.OnSaveReport -> {
+                saveReport()
             }
         }
     }
@@ -297,6 +301,91 @@ class ReportsViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun saveReport() {
+
+        val selectedCategory = _state.value.selectedCategory
+        val selectedModality = _state.value.selectedModality
+        val concept = _state.value.concept ?: ""
+        val amount = _state.value.amount
+        val selectedDate = _state.value.selectedDate
+        val selectedType = _state.value.selectedType
+        val selectedSubcategory = _state.value.selectedSubcategory
+
+        // Validaciones
+        if (selectedCategory == null) {
+            _state.update { it.copy(error = "Selecciona una categoría") }
+            return
+        }
+
+        if (selectedModality == null) {
+            _state.update { it.copy(error = "Selecciona una modalidad") }
+            return
+        }
+
+        if (amount <= 0.0) {
+            _state.update { it.copy(error = "Ingresa un monto válido") }
+            return
+        }
+
+        if (selectedDate.isEmpty()) {
+            _state.update { it.copy(error = "Selecciona una fecha") }
+            return
+        }
+        isSavingReport = true
+        viewModelScope.launch {
+            _state.update { it.copy(isSavingReport = true, error = null) }
+
+            reportRepository.createReport(
+                categoryId = selectedCategory.categoryId,
+                subcategoryId = selectedSubcategory?.subCategoryId,
+                modalityId = selectedModality.modalityId,
+                concept = concept.takeIf { it.isNotEmpty() },
+                date = selectedDate,
+                amount = amount,
+                type = selectedType
+            ).collect { result ->
+                when (result) {
+                    is NetworkResult.Loading -> {
+                        _state.update { it.copy(isSavingReport = true) }
+                    }
+                    is NetworkResult.Success -> {
+                        val report = result.data
+                        _state.update {
+                            it.copy(
+                                isSavingReport = false,
+                                reportSaved = report,
+                                error = null
+                            )
+                        }
+                        isSavingReport = false
+                    }
+                    is NetworkResult.Error -> {
+                        _state.update {
+                            it.copy(
+                                isSavingReport = false,
+                                error = result.message
+                            )
+                        }
+                        isSavingReport = false
+                    }
+                }
+            }
+        }
+    }
+
+    fun clearReportSaved() {
+        _state.update { it.copy(reportSaved = null) }
+    }
+
+    fun updateConcept(concept: String) {
+        _state.update { it.copy(concept = concept) }
+    }
+
+    fun updateAmount(amount: String) {
+        val amountValue = amount.toDoubleOrNull() ?: 0.0
+        _state.update { it.copy(amount = amountValue, amountText = amount) }
     }
     fun dismissDialog() {
         _state.update { it.copy(showDialog = false) }

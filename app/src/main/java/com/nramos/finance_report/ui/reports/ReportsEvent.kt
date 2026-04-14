@@ -14,4 +14,5 @@ sealed class ReportsEvent {
     data class OnSubcategoryCreated(val subcategory: Subcategory) : ReportsEvent()
     data class OnModalitySelected(val modality: Modality) : ReportsEvent()
     data class OnDateSelected(val date: String) : ReportsEvent()
+    object OnSaveReport : ReportsEvent()
 }

@@ -1,6 +1,5 @@
 package com.nramos.finance_report.data.repository
 
-import android.util.Log
 import com.nramos.finance_report.BuildConfig
 import com.nramos.finance_report.data.datasource.local.TokenManager
 import com.nramos.finance_report.domain.model.Modality
@@ -23,20 +22,17 @@ class ModalityRepository @Inject constructor(
     private val client = OkHttpClient()
 
     suspend fun getModalities(): Flow<NetworkResult<List<Modality>>> = flow {
-        Log.d("ModalityRepository", "getModalities - Inicio")
         emit(NetworkResult.Loading())
 
         try {
             val result = withContext(Dispatchers.IO) {
                 val token = tokenManager.getToken()
-                Log.d("ModalityRepository", " - Token: ${if (token != null) "OK" else "NULL"}")
 
                 if (token == null) {
                     throw Exception("No hay sesión activa")
                 }
 
                 val url = "${BuildConfig.SUPABASE_URL}/rest/v1/modalities?select=*"
-                Log.d("ModalityRepository", "📡 URL: $url")
 
                 val request = Request.Builder()
                     .url(url)
@@ -47,9 +43,6 @@ class ModalityRepository @Inject constructor(
 
                 val response = client.newCall(request).execute()
                 val responseBody = response.body?.string() ?: ""
-
-                Log.d("ModalityRepository", " - Response code: ${response.code}")
-                Log.d("ModalityRepository", " - Response body: $responseBody")
 
                 Pair(response.isSuccessful, responseBody)
             }
@@ -67,19 +60,15 @@ class ModalityRepository @Inject constructor(
                         name = jsonObject.getString("name")
                     )
                     modalities.add(modality)
-                    Log.d("ModalityRepository", " - Modalidad: ${modality.name} (${modality.modalityId})")
                 }
 
                 emit(NetworkResult.Success(modalities))
             } else {
                 val errorMsg = "Error al cargar modalidades: $responseBody"
-                Log.e("ModalityRepository", "❌ $errorMsg")
                 emit(NetworkResult.Error(errorMsg))
             }
         } catch (e: Exception) {
-            Log.e("ModalityRepository", "❌ Excepción: ${e.message}", e)
             emit(NetworkResult.Error(e.message ?: "Error de conexión"))
         }
-        Log.d("ModalityRepository", "getModalities - Fin")
     }
 }
