@@ -17,10 +17,10 @@
 
     <item android:title="Configuración">
         <menu>
-            <item
+            <!--<item
                 android:id="@+id/nav_categories"
                 android:icon="@drawable/ic_categories"
-                android:title="Categorías" />
+                android:title="Categorías" />-->
             <item
                 android:id="@+id/nav_logout"
                 android:icon="@drawable/ic_logout"
