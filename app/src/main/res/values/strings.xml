@@ -31,5 +31,50 @@
     <string name="error_generic">Ocurrió un error inesperado. Inténtalo más tarde.</string>
 
     <string name="avatar">Avatar de usuario</string>
+    <string name="default_name_user">Usuario</string>
+    <string name="default_email_user">usuario@email.com</string>
+    <string name="default_concept_name">Concepto</string>
+    <string name="default_date_name">dd/mm/aaaa</string>
+    <string name="default_amount_name">S/ 0.00</string>
+    <string name="default_input">Entrada</string>
+    <string name="default_category">Categoría</string>
+    <string name="default_subcategory">Subcategoría</string>
 
+    <string name="movement_register">Registrar Movimiento</string>
+    <string name="type">Tipo</string>
+    <string name="income">Ingreso</string>
+    <string name="expense">Egreso</string>
+    <string name="all">Todo</string>
+    <string name="select_category">Selecciona una categoría</string>
+    <string name="add_category">Agregar categoría</string>
+    <string name="add_category_dialog">Nombre de la categoría</string>
+    <string name="add_subcategory">Agregar subcategoría</string>
+    <string name="optional_subcategory">Subcategoría (Opcional)</string>
+    <string name="select_subcategory">Selecciona una subcategoría</string>
+    <string name="name_subcategory_input">Nombre de la subcategoría</string>
+    <string name="example_subcategory">Ej: Alimentos, Transporte, etc</string>
+    <string name="modality">Modalidad</string>
+    <string name="select_modality">Selecciona una modalidad</string>
+    <string name="example_concept">Ej: Compra de supermercado</string>
+    <string name="date">Fecha</string>
+    <string name="amount">Monto</string>
+    <string name="save_movement">Guardar Movimiento</string>
+
+    <string name="empty_movements">No hay movimientos registrados</string>
+    <string name="none_movements">No hay movimientos registrados</string>
+    <string name="aad_first_movement">Comienza agregando tu primer movimiento</string>
+    <string name="total_amount">Saldo Total</string>
+    <string name="resume_by_modality">Resumen por Modalidad</string>
+    <string name="money">Dinero Icon</string>
+    <string name="card">Tarjeta Icon</string>
+    <string name="cash">Efectivo</string>
+    <string name="yape">Yape / Tarjeta BCP</string>
+    <string name="dashboard">Dashboard</string>
+    <string name="new_movement">Nuevo Movimiento</string>
+    <string name="config">Configuración</string>
+    <string name="logout">Cerrar Sesión</string>
+    <string name="my_movements">Mis Movimientos</string>
+    <string name="last_movements">Últimos Movimientos</string>
+    <string name="filter">Filter</string>
+    <string name="export">Exportar</string>
 </resources>

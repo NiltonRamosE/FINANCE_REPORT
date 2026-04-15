@@ -9,7 +9,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Selecciona la categoría padre"
+        android:text="@string/select_category"
         android:textSize="14sp"
         android:textStyle="bold"
         android:layout_marginBottom="8dp"
@@ -26,7 +26,7 @@
             android:id="@+id/etParentCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Selecciona una categoría"
+            android:hint="@string/select_category"
             android:inputType="none" />
 
     </com.google.android.material.textfield.TextInputLayout>
@@ -34,7 +34,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Nombre de la subcategoría"
+        android:text="@string/name_subcategory_input"
         android:textSize="14sp"
         android:textStyle="bold"
         android:layout_marginBottom="8dp"
@@ -49,7 +49,7 @@
             android:id="@+id/etSubcategoryName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Ej: Alimentos, Transporte, etc" />
+            android:hint="@string/example_subcategory" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

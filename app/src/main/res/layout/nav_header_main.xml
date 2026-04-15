@@ -28,7 +28,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
-        android:text="Usuario"
+        android:text="@string/default_name_user"
         android:textSize="16sp"
         android:textStyle="bold"
         android:textColor="?attr/colorOnSurface" />
@@ -37,7 +37,7 @@
         android:id="@+id/tvUserEmail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="usuario@email.com"
+        android:text="@string/default_email_user"
         android:textSize="12sp"
         android:textColor="?attr/colorOutline" />
 

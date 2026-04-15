@@ -23,7 +23,7 @@
                 android:id="@+id/tvConcept"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Concepto"
+                android:text="@string/default_concept_name"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"/>
@@ -32,7 +32,7 @@
                 android:id="@+id/tvDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="dd/mm/aaaa"
+                android:text="@string/default_date_name"
                 android:textSize="11sp"
                 android:textColor="@color/gold_700"
                 android:layout_marginTop="4dp" />
@@ -43,7 +43,7 @@
             android:id="@+id/tvAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="S/ 0.00"
+            android:text="@string/default_amount_name"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_gravity="center_vertical" />

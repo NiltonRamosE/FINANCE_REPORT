@@ -19,6 +19,7 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:layout_gravity="center_vertical"
+            android:contentDescription="@string/default_input"
             android:src="@drawable/ic_income"
             android:padding="8dp"
             app:tint="?attr/colorPrimary" />
@@ -35,7 +36,7 @@
                 android:id="@+id/tvCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Categoría"
+                android:text="@string/default_category"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"/>
@@ -44,7 +45,7 @@
                 android:id="@+id/tvSubcategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Subcategoría"
+                android:text="@string/default_subcategory"
                 android:textSize="12sp"
                 android:textColor="?attr/colorOutline" />
 
@@ -52,7 +53,7 @@
                 android:id="@+id/tvConcept"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Concepto"
+                android:text="@string/default_concept_name"
                 android:textSize="12sp"
                 android:textColor="@color/navy_950"
                 android:layout_marginTop="4dp" />
@@ -61,7 +62,7 @@
                 android:id="@+id/tvDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="dd/mm/aaaa"
+                android:text="@string/default_date_name"
                 android:textSize="11sp"
                 android:textColor="@color/gold_700"
                 android:layout_marginTop="4dp" />
@@ -73,7 +74,7 @@
             android:id="@+id/tvAmount"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="S/ 0.00"
+            android:text="@string/default_amount_name"
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_gravity="center_vertical" />

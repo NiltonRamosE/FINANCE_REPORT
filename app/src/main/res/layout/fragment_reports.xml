@@ -14,21 +14,19 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- Título -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Registrar Movimiento"
+            android:text="@string/movement_register"
             android:textSize="24sp"
             android:textStyle="bold"
             android:layout_marginBottom="24dp"
             android:textColor="@color/black"/>
 
-        <!-- Tipo de transacción (Ingreso/Egreso) -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Tipo"
+            android:text="@string/type"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"
@@ -46,7 +44,7 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="Ingreso"
+                android:text="@string/income"
                 android:textAllCaps="false" />
 
             <com.google.android.material.button.MaterialButton
@@ -54,16 +52,15 @@
                 android:layout_width="0dp"
                 android:layout_height="48dp"
                 android:layout_weight="1"
-                android:text="Egreso"
+                android:text="@string/expense"
                 android:textAllCaps="false" />
 
         </com.google.android.material.button.MaterialButtonToggleGroup>
 
-        <!-- Categoría -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Categoría"
+            android:text="@string/default_category"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"
@@ -87,7 +84,7 @@
                     android:id="@+id/etCategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Selecciona una categoría"
+                    android:hint="@string/select_category"
                     android:inputType="none"
                     android:textColor="@color/navy_900"
                     android:dropDownSelector="@color/navy_400"/>
@@ -106,15 +103,14 @@
                 app:icon="@drawable/ic_add_circle"
                 app:iconGravity="textStart"
                 app:iconTint="?attr/colorPrimary"
-                android:contentDescription="Agregar categoría" />
+                android:contentDescription="@string/add_category" />
 
         </LinearLayout>
 
-        <!-- Subcategoría -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Subcategoría (Opcional)"
+            android:text="@string/optional_subcategory"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"
@@ -138,7 +134,7 @@
                     android:id="@+id/etSubcategory"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Selecciona una subcategoría"
+                    android:hint="@string/select_subcategory"
                     android:inputType="none"
                     android:textColor="@color/navy_900"
                     android:dropDownSelector="@color/navy_400"/>
@@ -156,15 +152,14 @@
                 app:icon="@drawable/ic_add_circle"
                 app:iconGravity="textStart"
                 app:iconTint="?attr/colorPrimary"
-                android:contentDescription="Agregar subcategoría" />
+                android:contentDescription="@string/add_subcategory" />
 
         </LinearLayout>
 
-        <!-- Modalidad -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Modalidad"
+            android:text="@string/modality"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"
@@ -181,17 +176,16 @@
                 android:id="@+id/etModality"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Selecciona una modalidad"
+                android:hint="@string/select_modality"
                 android:inputType="none"
                 android:textColor="@color/navy_900"
                 android:dropDownSelector="@color/navy_400"/>
 
         </com.google.android.material.textfield.TextInputLayout>
-        <!-- Concepto -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Concepto"
+            android:text="@string/default_concept_name"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"
@@ -207,16 +201,15 @@
                 android:id="@+id/etConcept"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ej: Compra de supermercado"
+                android:hint="@string/example_concept"
                 android:maxLines="2" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Fecha -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Fecha"
+            android:text="@string/date"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"
@@ -233,18 +226,17 @@
                 android:id="@+id/etDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="dd/mm/aaaa"
+                android:hint="@string/default_date_name"
                 android:focusable="false"
                 android:clickable="true"
                 android:inputType="none" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Monto -->
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Monto"
+            android:text="@string/amount"
             android:textSize="14sp"
             android:textStyle="bold"
             android:layout_marginBottom="8dp"
@@ -261,22 +253,20 @@
                 android:id="@+id/etAmount"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="0.00"
+                android:hint="@string/default_amount_name"
                 android:inputType="numberDecimal" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Botón Guardar -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnSave"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            android:text="Guardar Movimiento"
+            android:text="@string/save_movement"
             android:textAllCaps="false"
             app:icon="@drawable/ic_save"
             app:iconGravity="textStart" />
 
-        <!-- ProgressBar -->
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="36dp"

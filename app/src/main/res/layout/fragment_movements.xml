@@ -27,7 +27,7 @@
             style="@style/Widget.Material3.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Todos"
+            android:text="@string/all"
             android:checked="true" />
 
         <com.google.android.material.chip.Chip
@@ -35,14 +35,14 @@
             style="@style/Widget.Material3.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ingresos" />
+            android:text="@string/income" />
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipExpense"
             style="@style/Widget.Material3.Chip.Filter"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Egresos" />
+            android:text="@string/expense" />
 
     </LinearLayout>
 
@@ -67,6 +67,7 @@
         <ImageView
             android:layout_width="120dp"
             android:layout_height="120dp"
+            android:contentDescription="@string/empty_movements"
             android:src="@drawable/ic_empty_state"
             android:alpha="0.5" />
 
@@ -74,14 +75,14 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="No hay movimientos registrados"
+            android:text="@string/none_movements"
             android:textSize="16sp"
             android:textColor="@color/black" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Comienza agregando tu primer movimiento"
+            android:text="@string/aad_first_movement"
             android:textSize="14sp"
             android:textColor="@color/gold_700" />
 
