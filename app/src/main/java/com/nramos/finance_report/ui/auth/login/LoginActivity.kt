@@ -13,6 +13,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import com.nramos.finance_report.data.auth.GoogleSignInManager
+import com.nramos.finance_report.domain.usecase.auth.IsLoggedInUseCase
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -22,6 +23,9 @@ class LoginActivity : AppCompatActivity() {
     private val viewModel: LoginViewModel by viewModels()
     @Inject
     lateinit var googleSignInManager: GoogleSignInManager
+
+    @Inject
+    lateinit var isLoggedInUseCase: IsLoggedInUseCase
 
     private val googleSignInLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -46,6 +50,18 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        lifecycleScope.launch {
+            if (isLoggedInUseCase()) {
+                startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                finish()
+                return@launch
+            }
+            setupUI()
+        }
+    }
+
+    private fun setupUI() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
