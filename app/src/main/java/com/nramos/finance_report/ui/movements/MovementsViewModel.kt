@@ -1,6 +1,5 @@
 package com.nramos.finance_report.ui.movements
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nramos.finance_report.data.repository.CategoryRepository
@@ -116,28 +115,4 @@ class MovementsViewModel @Inject constructor(
             )
         }
     }
-}
-
-data class EnrichedReport(
-    val reportId: String,
-    val categoryId: String,
-    val categoryName: String,
-    val subcategoryId: String?,
-    val subcategoryName: String,
-    val modalityId: String,
-    val concept: String?,
-    val date: String,
-    val amount: Double,
-    val type: Char
-)
-
-data class MovementsState(
-    val reports: List<EnrichedReport> = emptyList(),
-    val selectedFilter: String = "all",
-    val isLoading: Boolean = false,
-    val error: String? = null
-)
-
-sealed class MovementsEvent {
-    data class OnFilterChanged(val filter: String) : MovementsEvent()
 }
