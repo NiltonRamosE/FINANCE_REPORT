@@ -19,7 +19,9 @@ import com.nramos.finance_report.domain.model.UserProfile
 import com.nramos.finance_report.domain.usecase.auth.GetCurrentUserUseCase
 import com.nramos.finance_report.domain.usecase.auth.LogoutUseCase
 import com.nramos.finance_report.ui.auth.login.LoginActivity
+import com.nramos.finance_report.ui.profile.ProfileActivity
 import com.nramos.finance_report.utils.NetworkResult
+import com.nramos.finance_report.utils.ProfileUpdateEvent
 import com.nramos.finance_report.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -38,6 +40,9 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var getCurrentUserUseCase: GetCurrentUserUseCase
 
+    @Inject
+    lateinit var profileUpdateEvent: ProfileUpdateEvent
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -49,6 +54,8 @@ class MainActivity : AppCompatActivity() {
         setupNavigation()
         setupUserInfo()
         setupLogout()
+        setupProfileClick()
+        observeProfileUpdates()
     }
 
     override fun onStart() {
@@ -57,6 +64,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
+        // También refrescar cuando se vuelve de ProfileActivity
+        refreshUserInfo()
     }
 
     private fun setupNavigation() {
@@ -76,6 +85,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupUserInfo() {
+        refreshUserInfo()
+    }
+
+    private fun refreshUserInfo() {
         lifecycleScope.launch {
             val user = getCurrentUserUseCase()
             user?.let {
@@ -91,7 +104,6 @@ class MainActivity : AppCompatActivity() {
         val tvUserName = headerView.findViewById<TextView>(R.id.tvUserName)
         val tvUserEmail = headerView.findViewById<TextView>(R.id.tvUserEmail)
 
-        // Mostrar nombre completo (nombre + apellido paterno + apellido materno)
         val fullName = buildString {
             append(user.name)
             user.paternalSurname?.takeIf { it.isNotEmpty() }?.let { append(" $it") }
@@ -100,6 +112,27 @@ class MainActivity : AppCompatActivity() {
 
         tvUserName.text = fullName.ifEmpty { user.name }
         tvUserEmail.text = user.email
+    }
+
+    private fun setupProfileClick() {
+        val navView = binding.navView
+        val headerView = navView.getHeaderView(0)
+        val btnViewProfile = headerView.findViewById<com.google.android.material.button.MaterialButton>(R.id.btnViewProfile)
+
+        btnViewProfile.setOnClickListener {
+            drawerLayout.closeDrawers()
+            val intent = Intent(this, ProfileActivity::class.java)
+            startActivity(intent)
+        }
+    }
+
+    private fun observeProfileUpdates() {
+        lifecycleScope.launch {
+            profileUpdateEvent.updateFlow.collect {
+                // Perfil actualizado, refrescar datos
+                refreshUserInfo()
+            }
+        }
     }
 
     private fun setupLogout() {

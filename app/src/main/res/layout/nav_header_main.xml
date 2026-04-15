@@ -41,4 +41,18 @@
         android:textSize="12sp"
         android:textColor="?attr/colorOutline" />
 
+    <!-- Botón Ver Perfil -->
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnViewProfile"
+        style="@style/Widget.Material3.Button.TextButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Ver Perfil"
+        android:textSize="12sp"
+        app:icon="@drawable/ic_edit"
+        app:iconGravity="textStart"
+        app:iconSize="16dp"
+        app:iconTint="?attr/colorPrimary" />
+
 </LinearLayout>
