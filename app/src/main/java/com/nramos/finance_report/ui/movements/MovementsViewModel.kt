@@ -1,5 +1,6 @@
 package com.nramos.finance_report.ui.movements
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nramos.finance_report.data.repository.CategoryRepository
@@ -90,22 +91,23 @@ class MovementsViewModel @Inject constructor(
     private suspend fun enrichReportsWithNames(reports: List<Report>): List<EnrichedReport> {
         if (reports.isEmpty()) return emptyList()
 
-        // Obtener IDs únicos de categorías y subcategorías
         val categoryIds = reports.map { it.categoryId }.distinct()
-        val subcategoryIds = reports.mapNotNull { it.subcategoryId }.distinct()
+        val subcategoryIds = reports
+            .mapNotNull { it.subcategoryId }
+            .filter { id ->
+                id.isNotEmpty() && id != "null"
+            }
+            .distinct()
 
-        // Cargar mapas de nombres
         val categoryNames = categoryRepository.getCategoriesMap(categoryIds)
         val subcategoryNames = subcategoryRepository.getSubcategoriesMap(subcategoryIds)
-
-        // Enriquecer reportes
         return reports.map { report ->
             EnrichedReport(
                 reportId = report.reportId,
                 categoryId = report.categoryId,
                 categoryName = categoryNames[report.categoryId] ?: "Categoría",
                 subcategoryId = report.subcategoryId,
-                subcategoryName = report.subcategoryId?.let { subcategoryNames[it] } ?: "Sin subcategoría",
+                subcategoryName = subcategoryNames[report.subcategoryId] ?: "Sin subcategoría",
                 modalityId = report.modalityId,
                 concept = report.concept,
                 date = report.date,
