@@ -6,6 +6,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
@@ -111,10 +112,20 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 else -> {
-                    // Para otros items, usar la navegación por defecto
                     val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
                     val navController = navHostFragment.navController
-                    val handled = androidx.navigation.ui.NavigationUI.onNavDestinationSelected(menuItem, navController)
+                    val handled = try {
+                        navController.navigate(
+                            menuItem.itemId,
+                            null,
+                            NavOptions.Builder()
+                                .setPopUpTo(navController.graph.startDestinationId, false)
+                                .build()
+                        )
+                        true
+                    } catch (e: Exception) {
+                        false
+                    }
                     if (handled) {
                         drawerLayout.closeDrawers()
                     }
