@@ -96,14 +96,14 @@
         </LinearLayout>
 
         <TextView
-            android:id="@+id/tvTagline"
+            android:id="@+id/tvVersion"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:gravity="center"
             android:lineSpacingMultiplier="1.4"
             android:paddingHorizontal="16dp"
-            android:text="@string/app_tagline"
+            android:text="@string/version"
             android:textColor="?attr/colorOnSurfaceVariant"
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -120,7 +120,7 @@
             android:spacing="12dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tvTagline">
+            app:layout_constraintTop_toBottomOf="@id/tvVersion">
 
             <LinearLayout
                 android:layout_width="wrap_content"

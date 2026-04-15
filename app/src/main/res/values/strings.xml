@@ -6,8 +6,6 @@
 
     <string name="app_category">Personal Finance Manager</string>
 
-    <string name="app_tagline">Tu camino hacia la libertad financiera comienza aquí</string>
-
     <string name="logo_content_description">Logo de Finance Report</string>
 
     <string name="login_section_label">Iniciar sesión con</string>
@@ -77,4 +75,5 @@
     <string name="last_movements">Últimos Movimientos</string>
     <string name="filter">Filter</string>
     <string name="export">Exportar</string>
+    <string name="version">v1.0.0</string>
 </resources>

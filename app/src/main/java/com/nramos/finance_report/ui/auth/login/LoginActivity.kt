@@ -1,11 +1,13 @@
 package com.nramos.finance_report.ui.auth.login
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.nramos.finance_report.BuildConfig
 import com.nramos.finance_report.databinding.ActivityLoginBinding
 import com.nramos.finance_report.ui.main.MainActivity
 import com.nramos.finance_report.utils.showToast
@@ -61,10 +63,11 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     private fun setupUI() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        binding.tvVersion.text = "Versión ${BuildConfig.VERSION_NAME}"
         setupObservers()
         setupListeners()
     }
