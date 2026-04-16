@@ -2,6 +2,7 @@ package com.nramos.finance_report.ui.main
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.drawerlayout.widget.DrawerLayout
@@ -116,14 +117,16 @@ class MainActivity : AppCompatActivity() {
         tvUserName.text = fullName.ifEmpty { user.name }
         tvUserEmail.text = user.email
 
-        // Cargar avatar
-        user.avatarUrl?.let { url ->
+        if (!user.avatarUrl.isNullOrEmpty()) {
             Glide.with(this)
-                .load(url)
+                .load(user.avatarUrl)
                 .circleCrop()
                 .placeholder(R.drawable.ic_user_avatar)
                 .error(R.drawable.ic_user_avatar)
+                .skipMemoryCache(true)
                 .into(ivAvatar)
+        } else {
+            ivAvatar.setImageResource(R.drawable.ic_user_avatar)
         }
     }
 
@@ -142,7 +145,6 @@ class MainActivity : AppCompatActivity() {
     private fun observeProfileUpdates() {
         lifecycleScope.launch {
             profileUpdateEvent.updateFlow.collect {
-                // Perfil actualizado, refrescar datos
                 refreshUserInfo()
             }
         }

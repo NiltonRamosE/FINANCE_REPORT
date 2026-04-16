@@ -9,8 +9,7 @@ interface IProfileRepository {
         name: String,
         paternalSurname: String?,
         maternalSurname: String?,
-        gender: Char?
+        gender: Char?,
+        avatarUrl: String? = null
     ): Flow<NetworkResult<UserProfile>>
-
-    suspend fun updateAvatar(avatarUrl: String): Flow<NetworkResult<UserProfile>>
 }

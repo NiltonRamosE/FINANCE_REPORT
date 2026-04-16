@@ -32,36 +32,49 @@ class AuthRepository @Inject constructor(
 
                 // 2. Obtener perfil del usuario desde Supabase
                 val userProfile = supabaseAuthManager.getUserProfile(supabaseToken)
-
                 if (userProfile.isSuccess) {
                     val supabaseUser = userProfile.getOrNull()!!
 
-                    // 3. Crear/actualizar perfil en tu tabla profiles con los datos de Google
-                    val createProfileResult = supabaseAuthManager.createOrUpdateProfile(
-                        supabaseToken,
-                        googleResult
-                    )
-
-                    if (createProfileResult.isFailure) {
-                        emit(NetworkResult.Error("Error al crear perfil de usuario"))
-                        return@flow
+                    // 3. Verificar si el perfil ya existe en Supabase (pasando el token)
+                    val existingProfile = supabaseAuthManager.getProfileById(supabaseUser.id, supabaseToken)
+                    // 4. Crear/actualizar perfil solo si es necesario
+                    if (existingProfile == null) {
+                        supabaseAuthManager.createProfile(supabaseToken, googleResult)
                     }
 
-                    // 4. Guardar token y datos del usuario
-                    tokenManager.saveAuthData(
-                        token = supabaseToken,
-                        tokenType = "Bearer",
-                        profileId = supabaseUser.id,
-                        userName = googleResult.name,
-                        userEmail = googleResult.email
-                    )
+                    // 5. Obtener el perfil actualizado desde Supabase (con todos los datos)
+                    val fullProfile = supabaseAuthManager.getProfileById(supabaseUser.id, supabaseToken)
+                    // 6. Guardar en TokenManager SIN sobrescribir datos existentes
+                    val isFirstLogin = !tokenManager.isLoggedIn()
+                    if (isFirstLogin || existingProfile == null) {
+                        tokenManager.saveAuthData(
+                            token = supabaseToken,
+                            tokenType = "Bearer",
+                            profileId = supabaseUser.id,
+                            userName = fullProfile?.name ?: googleResult.name,
+                            userEmail = googleResult.email,
+                            paternalSurname = fullProfile?.paternalSurname,
+                            maternalSurname = fullProfile?.maternalSurname,
+                            gender = fullProfile?.gender,
+                            avatarUrl = fullProfile?.avatarUrl
+                        )
+                    } else {
+                        tokenManager.updateAuthData(
+                            token = supabaseToken,
+                            userEmail = googleResult.email
+                        )
+                    }
 
                     val user = UserProfile(
                         profileId = supabaseUser.id,
-                        name = googleResult.name,
-                        email = googleResult.email
+                        name = fullProfile?.name ?: googleResult.name,
+                        email = googleResult.email,
+                        paternalSurname = fullProfile?.paternalSurname,
+                        maternalSurname = fullProfile?.maternalSurname,
+                        gender = fullProfile?.gender,
+                        avatarUrl = fullProfile?.avatarUrl
                     )
-
+                    Log.d("AuthRepository", "Emitiendo perfil de usuario: $user")
                     emit(NetworkResult.Success(user))
                 } else {
                     emit(NetworkResult.Error("Error al obtener perfil de usuario"))
@@ -81,7 +94,6 @@ class AuthRepository @Inject constructor(
         try {
             tokenManager.clearAuthData()
 
-            // Cerrar sesión en Google
             val googleSignOutResult = supabaseAuthManager.signOutFromGoogle()
             if (googleSignOutResult.isFailure) {
                 Log.e("AuthRepository", "Error al cerrar sesión en Google: ${googleSignOutResult.exceptionOrNull()?.message}")
@@ -95,17 +107,14 @@ class AuthRepository @Inject constructor(
 
     override suspend fun getCurrentUserProfile(): UserProfile? {
         return if (tokenManager.isLoggedIn()) {
-            val profileId = tokenManager.getUserProfileId()
-            val userName = tokenManager.getUserName()
-            val userEmail = tokenManager.getUserEmail()
-
             UserProfile(
-                profileId = profileId,
-                name = userName,
-                email = userEmail,
+                profileId = tokenManager.getUserProfileId(),
+                name = tokenManager.getUserName(),
+                email = tokenManager.getUserEmail(),
                 paternalSurname = tokenManager.getUserPaternalSurname(),
                 maternalSurname = tokenManager.getUserMaternalSurname(),
-                gender = tokenManager.getUserGender()
+                gender = tokenManager.getUserGender(),
+                avatarUrl = tokenManager.getAvatarUrl()
             )
         } else {
             null
@@ -114,17 +123,5 @@ class AuthRepository @Inject constructor(
 
     override suspend fun isLoggedIn(): Boolean {
         return tokenManager.isLoggedIn()
-    }
-
-    override suspend fun getCurrentUser(): UserProfile? {
-        return if (tokenManager.isLoggedIn()) {
-            UserProfile(
-                profileId = tokenManager.getUserProfileId(),
-                name = tokenManager.getUserName(),
-                email = tokenManager.getUserEmail()
-            )
-        } else {
-            null
-        }
     }
 }

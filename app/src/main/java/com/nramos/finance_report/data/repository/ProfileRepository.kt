@@ -30,7 +30,8 @@ class ProfileRepository @Inject constructor(
         name: String,
         paternalSurname: String?,
         maternalSurname: String?,
-        gender: Char?
+        gender: Char?,
+        avatarUrl: String?
     ): Flow<NetworkResult<UserProfile>> = flow {
         emit(NetworkResult.Loading())
 
@@ -42,7 +43,6 @@ class ProfileRepository @Inject constructor(
                 }
 
                 val profileId = tokenManager.getUserProfileId()
-
                 val jsonBody = JSONObject().apply {
                     put("name", name)
                     if (!paternalSurname.isNullOrEmpty()) {
@@ -54,8 +54,10 @@ class ProfileRepository @Inject constructor(
                     if (gender != null) {
                         put("gender", gender.toString())
                     }
+                    if (!avatarUrl.isNullOrEmpty()) {
+                        put("avatar_url", avatarUrl)
+                    }
                 }
-
                 val requestBody = jsonBody.toString().toRequestBody(jsonMediaType)
                 val url = "${BuildConfig.SUPABASE_URL}/rest/v1/profiles?id=eq.$profileId"
 
@@ -70,14 +72,12 @@ class ProfileRepository @Inject constructor(
 
                 val response = client.newCall(request).execute()
                 val responseBody = response.body?.string() ?: ""
-
                 Triple(response.isSuccessful, response.code, responseBody)
             }
 
             val (isSuccessful, code, responseBody) = result
 
             if (isSuccessful) {
-                // Actualizar TokenManager con los nuevos datos
                 tokenManager.saveAuthData(
                     token = tokenManager.getToken()!!,
                     tokenType = "Bearer",
@@ -86,7 +86,8 @@ class ProfileRepository @Inject constructor(
                     userEmail = tokenManager.getUserEmail(),
                     paternalSurname = paternalSurname,
                     maternalSurname = maternalSurname,
-                    gender = gender
+                    gender = gender,
+                    avatarUrl = avatarUrl
                 )
 
                 val updatedUser = UserProfile(
@@ -95,74 +96,12 @@ class ProfileRepository @Inject constructor(
                     email = tokenManager.getUserEmail(),
                     paternalSurname = paternalSurname,
                     maternalSurname = maternalSurname,
-                    gender = gender
+                    gender = gender,
+                    avatarUrl = avatarUrl
                 )
-
                 emit(NetworkResult.Success(updatedUser))
             } else {
                 val errorMsg = "Error al actualizar perfil: código $code - $responseBody"
-                Log.e("ProfileRepository", errorMsg)
-                emit(NetworkResult.Error(errorMsg))
-            }
-        } catch (e: Exception) {
-            Log.e("ProfileRepository", "Error: ${e.message}", e)
-            emit(NetworkResult.Error(e.message ?: "Error de conexión"))
-        }
-    }
-
-    override suspend fun updateAvatar(avatarUrl: String): Flow<NetworkResult<UserProfile>> = flow {
-        emit(NetworkResult.Loading())
-
-        try {
-            val result = withContext(Dispatchers.IO) {
-                val token = tokenManager.getToken()
-                if (token == null) {
-                    throw Exception("No hay sesión activa")
-                }
-
-                val profileId = tokenManager.getUserProfileId()
-
-                val jsonBody = JSONObject().apply {
-                    put("avatar_url", avatarUrl)
-                }
-
-                val requestBody = jsonBody.toString().toRequestBody(jsonMediaType)
-                val url = "${BuildConfig.SUPABASE_URL}/rest/v1/profiles?id=eq.$profileId"
-
-                val request = Request.Builder()
-                    .url(url)
-                    .patch(requestBody)
-                    .header("apikey", BuildConfig.SUPABASE_ANON_KEY)
-                    .header("Authorization", "Bearer $token")
-                    .header("Content-Type", "application/json")
-                    .header("Prefer", "return=representation")
-                    .build()
-
-                val response = client.newCall(request).execute()
-                val responseBody = response.body?.string() ?: ""
-
-                Triple(response.isSuccessful, response.code, responseBody)
-            }
-
-            val (isSuccessful, code, responseBody) = result
-
-            if (isSuccessful) {
-                // Actualizar TokenManager
-                tokenManager.saveAvatarUrl(avatarUrl)
-
-                val updatedUser = UserProfile(
-                    profileId = tokenManager.getUserProfileId(),
-                    name = tokenManager.getUserName(),
-                    email = tokenManager.getUserEmail(),
-                    paternalSurname = tokenManager.getUserPaternalSurname(),
-                    maternalSurname = tokenManager.getUserMaternalSurname(),
-                    gender = tokenManager.getUserGender(),
-                    avatarUrl = avatarUrl
-                )
-
-                emit(NetworkResult.Success(updatedUser))
-            } else {
-                val errorMsg = "Error al actualizar avatar: código $code"
                 emit(NetworkResult.Error(errorMsg))
             }
         } catch (e: Exception) {

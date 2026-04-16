@@ -42,24 +42,42 @@ class TokenManager @Inject constructor(
         userEmail: String,
         paternalSurname: String? = null,
         maternalSurname: String? = null,
-        gender: Char? = null
+        gender: Char? = null,
+        avatarUrl: String? = null
     ) {
         context.dataStore.edit { preferences ->
             preferences[TOKEN_KEY] = token
             preferences[TOKEN_TYPE_KEY] = tokenType
             preferences[USER_PROFILE_ID_KEY] = profileId
-            preferences[USER_NAME_KEY] = userName
             preferences[USER_EMAIL_KEY] = userEmail
-            preferences[USER_PATERNAL_SURNAME_KEY] = paternalSurname ?: ""
-            preferences[USER_MATERNAL_SURNAME_KEY] = maternalSurname ?: ""
-            preferences[USER_GENDER_KEY] = gender?.toString() ?: ""
             preferences[IS_LOGGED_IN_KEY] = true
+
+            if (userName.isNotBlank()) {
+                preferences[USER_NAME_KEY] = userName
+            }
+            if (paternalSurname != null) {
+                preferences[USER_PATERNAL_SURNAME_KEY] = paternalSurname
+            }
+            if (maternalSurname != null) {
+                preferences[USER_MATERNAL_SURNAME_KEY] = maternalSurname
+            }
+            if (gender != null) {
+                preferences[USER_GENDER_KEY] = gender.toString()
+            }
+            if (avatarUrl != null) {
+                preferences[USER_AVATAR_URL_KEY] = avatarUrl
+            }
         }
     }
 
-    suspend fun saveAvatarUrl(avatarUrl: String) {
+    suspend fun updateAuthData(
+        token: String,
+        userEmail: String
+    ) {
         context.dataStore.edit { preferences ->
-            preferences[USER_AVATAR_URL_KEY] = avatarUrl
+            preferences[TOKEN_KEY] = token
+            preferences[USER_EMAIL_KEY] = userEmail
+            preferences[IS_LOGGED_IN_KEY] = true
         }
     }
 
@@ -75,16 +93,6 @@ class TokenManager @Inject constructor(
                 preferences[TOKEN_KEY]
             }.first()
         }
-    }
-
-    fun getAuthHeader(): String? {
-        val token = getToken() ?: return null
-        val tokenType = runBlocking {
-            context.dataStore.data.map { preferences ->
-                preferences[TOKEN_TYPE_KEY] ?: "Bearer"
-            }.first()
-        }
-        return "$tokenType $token"
     }
 
     suspend fun isLoggedIn(): Boolean {
@@ -114,12 +122,6 @@ class TokenManager @Inject constructor(
     suspend fun clearAuthData() {
         context.dataStore.edit { preferences ->
             preferences.clear()
-        }
-    }
-
-    fun getAuthTokenFlow(): Flow<String?> {
-        return context.dataStore.data.map { preferences ->
-            preferences[TOKEN_KEY]
         }
     }
 

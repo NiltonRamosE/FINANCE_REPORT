@@ -1,12 +1,15 @@
 package com.nramos.finance_report.data.auth
 
+import android.util.Log
 import com.nramos.finance_report.BuildConfig
+import com.nramos.finance_report.domain.model.UserProfile
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONArray
 import org.json.JSONObject
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -83,10 +86,41 @@ class SupabaseAuthManager @Inject constructor() {
         }
     }
 
-    suspend fun createOrUpdateProfile(
-        accessToken: String,
-        googleUser: GoogleSignInResult
-    ): Result<Unit> = withContext(Dispatchers.IO) {
+    suspend fun getProfileById(profileId: String, accessToken: String): UserProfile? = withContext(Dispatchers.IO) {
+        try {
+            val request = Request.Builder()
+                .url("${BuildConfig.SUPABASE_URL}/rest/v1/profiles?id=eq.$profileId")
+                .get()
+                .header("apikey", BuildConfig.SUPABASE_ANON_KEY)
+                .header("Authorization", "Bearer $accessToken")
+                .build()
+            val response = client.newCall(request).execute()
+            val responseBody = response.body?.string() ?: "[]"
+            if (response.isSuccessful && responseBody != "[]") {
+                val jsonArray = JSONArray(responseBody)
+                if (jsonArray.length() > 0) {
+                    val json = jsonArray.getJSONObject(0)
+                    UserProfile(
+                        profileId = json.getString("id"),
+                        name = json.getString("name"),
+                        paternalSurname = json.optString("paternal_surname").takeIf { it.isNotEmpty() },
+                        maternalSurname = json.optString("maternal_surname").takeIf { it.isNotEmpty() },
+                        gender = json.optString("gender").takeIf { it.isNotEmpty() }?.first(),
+                        avatarUrl = json.optString("avatar_url").takeIf { it.isNotEmpty() }
+                    )
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+        } catch (e: Exception) {
+            Log.e("SupabaseAuth", "Error getting profile: ${e.message}")
+            null
+        }
+    }
+
+    suspend fun createProfile(accessToken: String, googleUser: GoogleSignInResult): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             val userResult = getUserProfile(accessToken)
             if (userResult.isFailure) {
@@ -95,48 +129,32 @@ class SupabaseAuthManager @Inject constructor() {
 
             val supabaseUser = userResult.getOrNull()!!
 
-            val checkRequest = Request.Builder()
-                .url("${BuildConfig.SUPABASE_URL}/rest/v1/profiles?id=eq.${supabaseUser.id}&select=id")
-                .get()
-                .header("apikey", BuildConfig.SUPABASE_ANON_KEY)
-                .header("Authorization", "Bearer $accessToken")
-                .build()
-
-            val checkResponse = client.newCall(checkRequest).execute()
-            val checkBody = checkResponse.body?.string() ?: "[]"
-
-            val exists = checkResponse.isSuccessful && checkBody != "[]" && checkBody != "null"
-
-            if (!exists) {
-
-                val profileJson = JSONObject().apply {
-                    put("id", supabaseUser.id)
-                    put("name", googleUser.name)
-                }
-
-                val insertRequest = Request.Builder()
-                    .url("${BuildConfig.SUPABASE_URL}/rest/v1/profiles")
-                    .post(profileJson.toString().toRequestBody(jsonMediaType))
-                    .header("apikey", BuildConfig.SUPABASE_ANON_KEY)
-                    .header("Authorization", "Bearer $accessToken")
-                    .header("Content-Type", "application/json")
-                    .header("Prefer", "return=representation")
-                    .build()
-
-                val insertResponse = client.newCall(insertRequest).execute()
-                val insertBody = insertResponse.body?.string() ?: ""
-
-                if (!insertResponse.isSuccessful) {
-                    return@withContext Result.failure(Exception("Error al crear perfil: $insertBody"))
-                }
+            val profileJson = JSONObject().apply {
+                put("id", supabaseUser.id)
+                put("name", googleUser.name)
+                put("email", googleUser.email)
             }
 
-            Result.success(Unit)
+            val insertRequest = Request.Builder()
+                .url("${BuildConfig.SUPABASE_URL}/rest/v1/profiles")
+                .post(profileJson.toString().toRequestBody(jsonMediaType))
+                .header("apikey", BuildConfig.SUPABASE_ANON_KEY)
+                .header("Authorization", "Bearer $accessToken")
+                .header("Content-Type", "application/json")
+                .header("Prefer", "return=representation")
+                .build()
+
+            val insertResponse = client.newCall(insertRequest).execute()
+
+            if (insertResponse.isSuccessful) {
+                Result.success(Unit)
+            } else {
+                Result.failure(Exception("Error al crear perfil"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
-
     suspend fun signOutFromGoogle(): Result<Unit> = withContext(Dispatchers.IO) {
         try {
             Result.success(Unit)

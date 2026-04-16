@@ -3,6 +3,7 @@ package com.nramos.finance_report.ui.profile
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
@@ -14,13 +15,13 @@ import com.nramos.finance_report.R
 import com.nramos.finance_report.data.repository.CloudinaryRepository
 import com.nramos.finance_report.databinding.ActivityProfileBinding
 import com.nramos.finance_report.domain.usecase.auth.GetCurrentUserUseCase
-import com.nramos.finance_report.domain.usecase.profile.UpdateAvatarUseCase
 import com.nramos.finance_report.domain.usecase.profile.UpdateProfileUseCase
 import com.nramos.finance_report.utils.NetworkResult
 import com.nramos.finance_report.utils.ProfileUpdateEvent
 import com.nramos.finance_report.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -41,9 +42,6 @@ class ProfileActivity : AppCompatActivity() {
     @Inject
     lateinit var cloudinaryRepository: CloudinaryRepository
 
-    @Inject
-    lateinit var updateAvatarUseCase: UpdateAvatarUseCase
-
     private var selectedImageUri: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +49,12 @@ class ProfileActivity : AppCompatActivity() {
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        cloudinaryRepository.initCloudinary(this, BuildConfig.CLOUDINARY_CLOUD_NAME)
+        cloudinaryRepository.initCloudinary(
+            this,
+            BuildConfig.CLOUDINARY_CLOUD_NAME,
+            BuildConfig.CLOUDINARY_API_KEY,
+            BuildConfig.CLOUDINARY_API_SECRET
+        )
 
         setupToolbar()
         setupGenderSpinner()
@@ -95,26 +98,74 @@ class ProfileActivity : AppCompatActivity() {
     private fun uploadImageToCloudinary(uri: Uri) {
         lifecycleScope.launch {
             showToast("Subiendo imagen...")
+            binding.progressBar.visibility = View.VISIBLE
 
             try {
                 cloudinaryRepository.uploadImage(uri, BuildConfig.CLOUDINARY_UPLOAD_PRESET).collect { url ->
-                    // Procesar URL
-                    updateAvatarUseCase(url).collect { result ->
+                    Log.d("ProfileActivity", "Upload URL: $url")
+
+                    // Obtener los datos actuales del perfil
+                    val currentUser = getCurrentUserUseCase()
+
+                    // Actualizar perfil incluyendo el avatar
+                    updateProfileUseCase(
+                        name = currentUser?.name ?: "",
+                        paternalSurname = currentUser?.paternalSurname,
+                        maternalSurname = currentUser?.maternalSurname,
+                        gender = currentUser?.gender,
+                        avatarUrl = url
+                    ).collect { result ->
                         when (result) {
+                            is NetworkResult.Loading -> {
+                                // Loading
+                            }
                             is NetworkResult.Success -> {
-                                showToast("Foto actualizada")
-                                loadUserData()
+                                showToast("Foto de perfil actualizada")
+                                refreshUserData()
                                 profileUpdateEvent.emitUpdate()
+                                binding.progressBar.visibility = View.GONE
                             }
                             is NetworkResult.Error -> {
-                                showToast(result.message ?: "Error")
+                                showToast(result.message ?: "Error al actualizar")
+                                binding.progressBar.visibility = View.GONE
                             }
                             else -> {}
                         }
                     }
                 }
             } catch (e: Exception) {
-                showToast("Error al subir imagen: ${e.message}")
+                Log.e("ProfileActivity", "Error: ${e.message}")
+                showToast("Error: ${e.message}")
+                binding.progressBar.visibility = View.GONE
+            }
+        }
+    }
+
+    private fun refreshUserData() {
+        lifecycleScope.launch {
+            val user = getCurrentUserUseCase()
+            user?.let {
+                binding.etName.setText(it.name)
+                binding.etEmail.setText(it.email)
+                binding.etPaternalSurname.setText(it.paternalSurname ?: "")
+                binding.etMaternalSurname.setText(it.maternalSurname ?: "")
+
+                val genderText = when (it.gender) {
+                    'M' -> "Masculino"
+                    'F' -> "Femenino"
+                    else -> ""
+                }
+                binding.etGender.setText(genderText, false)
+
+                // Cargar avatar con Glide
+                it.avatarUrl?.let { url ->
+                    Glide.with(this@ProfileActivity)
+                        .load(url)
+                        .circleCrop()
+                        .placeholder(R.drawable.ic_user_avatar)
+                        .error(R.drawable.ic_user_avatar)
+                        .into(binding.ivAvatar)
+                }
             }
         }
     }
@@ -188,6 +239,10 @@ class ProfileActivity : AppCompatActivity() {
         val maternalSurname = binding.etMaternalSurname.text.toString().trim()
         val genderText = binding.etGender.text.toString().trim()
 
+        // Obtener el avatar actual si existe
+        val currentUser = runBlocking { getCurrentUserUseCase() }
+        val currentAvatar = currentUser?.avatarUrl
+
         val gender = when (genderText) {
             "Masculino" -> 'M'
             "Femenino" -> 'F'
@@ -204,7 +259,8 @@ class ProfileActivity : AppCompatActivity() {
                 name = name,
                 paternalSurname = paternalSurname.takeIf { it.isNotEmpty() },
                 maternalSurname = maternalSurname.takeIf { it.isNotEmpty() },
-                gender = gender
+                gender = gender,
+                avatarUrl = currentAvatar  // Preservar el avatar actual
             ).collect { result ->
                 when (result) {
                     is NetworkResult.Loading -> {
@@ -213,9 +269,8 @@ class ProfileActivity : AppCompatActivity() {
                     is NetworkResult.Success -> {
                         showToast("Perfil actualizado correctamente")
                         toggleEditMode(false)
-
+                        refreshUserData()
                         profileUpdateEvent.emitUpdate()
-
                         finish()
                     }
                     is NetworkResult.Error -> {

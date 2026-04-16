@@ -13,8 +13,9 @@ class UpdateProfileUseCase @Inject constructor(
         name: String,
         paternalSurname: String?,
         maternalSurname: String?,
-        gender: Char?
+        gender: Char?,
+        avatarUrl: String? = null
     ): Flow<NetworkResult<UserProfile>> {
-        return profileRepository.updateProfile(name, paternalSurname, maternalSurname, gender)
+        return profileRepository.updateProfile(name, paternalSurname, maternalSurname, gender, avatarUrl)
     }
 }
