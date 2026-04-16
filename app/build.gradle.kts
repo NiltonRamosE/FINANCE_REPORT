@@ -186,6 +186,7 @@ dependencies {
 
     implementation("de.hdodenhof:circleimageview:3.1.0")
 
+    implementation("com.github.PhilJay:MPAndroidChart:v3.1.0")
     // Testing
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

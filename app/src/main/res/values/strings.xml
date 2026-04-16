@@ -73,6 +73,7 @@
     <string name="logout">Cerrar Sesión</string>
     <string name="my_movements">Mis Movimientos</string>
     <string name="last_movements">Últimos Movimientos</string>
+    <string name="statistics">Estadísticas</string>
     <string name="filter">Filter</string>
     <string name="export">Exportar</string>
     <string name="version">v1.0.0</string>
