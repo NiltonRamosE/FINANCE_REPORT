@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="center_vertical"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:paddingTop="13dp"
+    android:paddingBottom="13dp">
+
+    <!-- Icon container -->
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="34dp"
+        android:layout_height="34dp"
+        app:cardCornerRadius="9dp"
+        app:cardBackgroundColor="@color/surface_light_200"
+        app:cardElevation="0dp"
+        app:strokeWidth="0dp">
+
+        <ImageView
+            android:id="@+id/ivFieldIcon"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center"
+            android:src="@drawable/ic_user_avatar"
+            android:contentDescription="@string/avatar"
+            app:tint="@color/navy_500" />
+
+    </com.google.android.material.card.MaterialCardView>
+
+    <!-- Label + Value -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginStart="12dp"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvFieldLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_input"
+            android:textSize="11sp"
+            android:textColor="@color/text_on_light_secondary"
+            android:layout_marginBottom="1dp" />
+
+        <TextView
+            android:id="@+id/tvFieldValue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/default_concept_name"
+            android:textSize="15sp"
+            android:textColor="@color/text_on_light_primary"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+    </LinearLayout>
+
+</LinearLayout>

@@ -14,6 +14,7 @@ import com.nramos.finance_report.BuildConfig
 import com.nramos.finance_report.R
 import com.nramos.finance_report.data.repository.CloudinaryRepository
 import com.nramos.finance_report.databinding.ActivityProfileBinding
+import com.nramos.finance_report.domain.model.UserProfile
 import com.nramos.finance_report.domain.usecase.auth.GetCurrentUserUseCase
 import com.nramos.finance_report.domain.usecase.profile.UpdateProfileUseCase
 import com.nramos.finance_report.utils.NetworkResult
@@ -28,7 +29,6 @@ import javax.inject.Inject
 class ProfileActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityProfileBinding
-    private var isEditMode = false
 
     @Inject
     lateinit var getCurrentUserUseCase: GetCurrentUserUseCase
@@ -43,6 +43,7 @@ class ProfileActivity : AppCompatActivity() {
     lateinit var cloudinaryRepository: CloudinaryRepository
 
     private var selectedImageUri: Uri? = null
+    private var currentUserData: UserProfile? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,17 +58,29 @@ class ProfileActivity : AppCompatActivity() {
         )
 
         setupToolbar()
-        setupGenderSpinner()
         loadUserData()
         setupListeners()
         setupAvatarClick()
+        setupFieldIcons()
+    }
+
+    private fun setupFieldIcons() {
+        binding.fieldNombre.ivFieldIcon.setImageResource(R.drawable.ic_user_avatar)
+        binding.fieldApellidoPaterno.ivFieldIcon.setImageResource(R.drawable.ic_user_avatar)
+        binding.fieldApellidoMaterno.ivFieldIcon.setImageResource(R.drawable.ic_user_avatar)
+        binding.fieldGenero.ivFieldIcon.setImageResource(R.drawable.ic_gender)
+        binding.fieldEmail.ivFieldIcon.setImageResource(R.drawable.ic_email)
+
+        binding.fieldNombre.tvFieldLabel.text = "Nombre"
+        binding.fieldApellidoPaterno.tvFieldLabel.text = "Apellido Paterno"
+        binding.fieldApellidoMaterno.tvFieldLabel.text = "Apellido Materno"
+        binding.fieldGenero.tvFieldLabel.text = "Género"
+        binding.fieldEmail.tvFieldLabel.text = "Correo Electrónico"
     }
 
     private fun setupAvatarClick() {
-        binding.cvAvatar.setOnClickListener {
-            if (isEditMode) {
-                selectImage()
-            }
+        binding.flAvatarContainer.setOnClickListener {
+            selectImage()
         }
     }
 
@@ -104,10 +117,8 @@ class ProfileActivity : AppCompatActivity() {
                 cloudinaryRepository.uploadImage(uri, BuildConfig.CLOUDINARY_UPLOAD_PRESET).collect { url ->
                     Log.d("ProfileActivity", "Upload URL: $url")
 
-                    // Obtener los datos actuales del perfil
                     val currentUser = getCurrentUserUseCase()
 
-                    // Actualizar perfil incluyendo el avatar
                     updateProfileUseCase(
                         name = currentUser?.name ?: "",
                         paternalSurname = currentUser?.paternalSurname,
@@ -144,75 +155,62 @@ class ProfileActivity : AppCompatActivity() {
     private fun refreshUserData() {
         lifecycleScope.launch {
             val user = getCurrentUserUseCase()
-            user?.let {
-                binding.etName.setText(it.name)
-                binding.etEmail.setText(it.email)
-                binding.etPaternalSurname.setText(it.paternalSurname ?: "")
-                binding.etMaternalSurname.setText(it.maternalSurname ?: "")
+            user?.let { updateUI(it) }
+        }
+    }
 
-                val genderText = when (it.gender) {
-                    'M' -> "Masculino"
-                    'F' -> "Femenino"
-                    else -> ""
-                }
-                binding.etGender.setText(genderText, false)
+    private fun updateUI(user: UserProfile) {
+        currentUserData = user
 
-                // Cargar avatar con Glide
-                it.avatarUrl?.let { url ->
-                    Glide.with(this@ProfileActivity)
-                        .load(url)
-                        .circleCrop()
-                        .placeholder(R.drawable.ic_user_avatar)
-                        .error(R.drawable.ic_user_avatar)
-                        .into(binding.ivAvatar)
-                }
-            }
+        binding.tvFullName.text = "${user.name} ${user.paternalSurname ?: ""} ${user.maternalSurname ?: ""}".trim()
+        binding.tvEmailSub.text = user.email
+
+        binding.fieldNombre.tvFieldValue.text = user.name
+        binding.fieldApellidoPaterno.tvFieldValue.text = user.paternalSurname ?: "—"
+        binding.fieldApellidoMaterno.tvFieldValue.text = user.maternalSurname ?: "—"
+        binding.fieldEmail.tvFieldValue.text = user.email
+
+        val genderText = when (user.gender) {
+            'M' -> "Masculino"
+            'F' -> "Femenino"
+            else -> "—"
+        }
+        binding.fieldGenero.tvFieldValue.text = genderText
+
+        val initials = "${user.name.firstOrNull() ?: ""}${user.paternalSurname?.firstOrNull() ?: ""}"
+        binding.tvInitials.text = initials.ifEmpty { "U" }
+
+        user.avatarUrl?.let { url ->
+            Glide.with(this@ProfileActivity)
+                .load(url)
+                .circleCrop()
+                .placeholder(R.drawable.ic_user_avatar)
+                .error(R.drawable.ic_user_avatar)
+                .into(binding.ivAvatar)
+            binding.ivAvatar.visibility = View.VISIBLE
+            binding.tvInitials.visibility = View.GONE
+        } ?: run {
+            binding.ivAvatar.visibility = View.GONE
+            binding.tvInitials.visibility = View.VISIBLE
         }
     }
 
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-        supportActionBar?.title = "Mi Perfil"
-    }
-
-    private fun setupGenderSpinner() {
-        val genders = listOf("Masculino", "Femenino", "Prefiero no decir")
-        val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, genders)
-        binding.etGender.setAdapter(adapter)
+        supportActionBar?.title = null
     }
 
     private fun loadUserData() {
         lifecycleScope.launch {
             val user = getCurrentUserUseCase()
-            user?.let {
-                binding.etName.setText(it.name)
-                binding.etEmail.setText(it.email)
-                binding.etPaternalSurname.setText(it.paternalSurname ?: "")
-                binding.etMaternalSurname.setText(it.maternalSurname ?: "")
-
-                val genderText = when (it.gender) {
-                    'M' -> "Masculino"
-                    'F' -> "Femenino"
-                    else -> ""
-                }
-                binding.etGender.setText(genderText, false)
-
-                it.avatarUrl?.let { url ->
-                    Glide.with(this@ProfileActivity)
-                        .load(url)
-                        .circleCrop()
-                        .placeholder(R.drawable.ic_user_avatar)
-                        .error(R.drawable.ic_user_avatar)
-                        .into(binding.ivAvatar)
-                }
-            }
+            user?.let { updateUI(it) }
         }
     }
 
     private fun setupListeners() {
         binding.btnEditProfile.setOnClickListener {
-            toggleEditMode(true)
+            showEditDialog()
         }
 
         binding.btnSaveProfile.setOnClickListener {
@@ -220,47 +218,62 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
-    private fun toggleEditMode(edit: Boolean) {
-        isEditMode = edit
-        binding.apply {
-            etName.isEnabled = edit
-            etPaternalSurname.isEnabled = edit
-            etMaternalSurname.isEnabled = edit
-            etGender.isEnabled = edit
+    private fun showEditDialog() {
+        val dialogView = layoutInflater.inflate(R.layout.dialog_edit_profile, null)
+        val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
+            .setTitle("Editar Perfil")
+            .setView(dialogView)
+            .setPositiveButton("Guardar") { _, _ ->
+                val name = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etEditName)?.text.toString()
+                val paternalSurname = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etEditPaternalSurname)?.text.toString()
+                val maternalSurname = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etEditMaternalSurname)?.text.toString()
+                val genderSpinner = dialogView.findViewById<com.google.android.material.textfield.MaterialAutoCompleteTextView>(R.id.etEditGender)
+                val genderText = genderSpinner?.text.toString()
 
-            btnEditProfile.visibility = if (edit) View.GONE else View.VISIBLE
-            btnSaveProfile.visibility = if (edit) View.VISIBLE else View.GONE
+                val gender = when (genderText) {
+                    "Masculino" -> 'M'
+                    "Femenino" -> 'F'
+                    else -> null
+                }
+
+                if (name.isNotEmpty()) {
+                    saveProfileChanges(name, paternalSurname, maternalSurname, gender)
+                } else {
+                    showToast("El nombre es requerido")
+                }
+            }
+            .setNegativeButton("Cancelar", null)
+            .create()
+
+        currentUserData?.let { user ->
+            dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etEditName)?.setText(user.name)
+            dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etEditPaternalSurname)?.setText(user.paternalSurname ?: "")
+            dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etEditMaternalSurname)?.setText(user.maternalSurname ?: "")
+
+            val genderSpinner = dialogView.findViewById<com.google.android.material.textfield.MaterialAutoCompleteTextView>(R.id.etEditGender)
+            val genders = listOf("Masculino", "Femenino", "Prefiero no decir")
+            val adapter = ArrayAdapter(this, android.R.layout.simple_dropdown_item_1line, genders)
+            genderSpinner?.setAdapter(adapter)
+
+            val genderText = when (user.gender) {
+                'M' -> "Masculino"
+                'F' -> "Femenino"
+                else -> ""
+            }
+            genderSpinner?.setText(genderText, false)
         }
+
+        dialog.show()
     }
 
-    private fun saveProfile() {
-        val name = binding.etName.text.toString().trim()
-        val paternalSurname = binding.etPaternalSurname.text.toString().trim()
-        val maternalSurname = binding.etMaternalSurname.text.toString().trim()
-        val genderText = binding.etGender.text.toString().trim()
-
-        // Obtener el avatar actual si existe
-        val currentUser = runBlocking { getCurrentUserUseCase() }
-        val currentAvatar = currentUser?.avatarUrl
-
-        val gender = when (genderText) {
-            "Masculino" -> 'M'
-            "Femenino" -> 'F'
-            else -> null
-        }
-
-        if (name.isEmpty()) {
-            showToast("El nombre es requerido")
-            return
-        }
-
+    private fun saveProfileChanges(name: String, paternalSurname: String, maternalSurname: String, gender: Char?) {
         lifecycleScope.launch {
             updateProfileUseCase(
                 name = name,
                 paternalSurname = paternalSurname.takeIf { it.isNotEmpty() },
                 maternalSurname = maternalSurname.takeIf { it.isNotEmpty() },
                 gender = gender,
-                avatarUrl = currentAvatar  // Preservar el avatar actual
+                avatarUrl = currentUserData?.avatarUrl
             ).collect { result ->
                 when (result) {
                     is NetworkResult.Loading -> {
@@ -268,10 +281,8 @@ class ProfileActivity : AppCompatActivity() {
                     }
                     is NetworkResult.Success -> {
                         showToast("Perfil actualizado correctamente")
-                        toggleEditMode(false)
                         refreshUserData()
                         profileUpdateEvent.emitUpdate()
-                        finish()
                     }
                     is NetworkResult.Error -> {
                         showToast(result.message ?: "Error al actualizar perfil")
@@ -281,12 +292,12 @@ class ProfileActivity : AppCompatActivity() {
         }
     }
 
+    private fun saveProfile() {
+        showEditDialog()
+    }
+
     override fun onSupportNavigateUp(): Boolean {
-        if (isEditMode) {
-            showToast("Cancela la edición o guarda los cambios")
-        } else {
-            onBackPressedDispatcher.onBackPressed()
-        }
+        onBackPressedDispatcher.onBackPressed()
         return true
     }
 }

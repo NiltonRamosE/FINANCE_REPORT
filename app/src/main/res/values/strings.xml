@@ -1,66 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--APP-->
     <string name="app_name">Finance Report</string>
-
     <string name="app_name_display">Finance Report</string>
+    <string name="version">v1.0.0</string>
 
+    <!--LOGIN-->
     <string name="app_category">Personal Finance Manager</string>
-
     <string name="logo_content_description">Logo de Finance Report</string>
-
     <string name="login_section_label">Iniciar sesión con</string>
-
     <string name="btn_continue_google">Continuar con Google</string>
-
     <string name="coming_soon_label">Próximamente</string>
-
     <string name="btn_placeholder_github">Github</string>
     <string name="btn_placeholder_facebook">Facebook</string>
     <string name="btn_placeholder_discord">Discord</string>
-
     <string name="badge_secure_data">Datos seguros</string>
     <string name="badge_ssl">Encriptado SSL</string>
-
     <string name="legal_notice">Al continuar, aceptas nuestros Términos de uso y Política de privacidad</string>
-
     <string name="loading_message">Iniciando sesión…</string>
     <string name="error_google_signin">No se pudo iniciar sesión con Google. Inténtalo de nuevo.</string>
     <string name="error_network">Sin conexión a internet. Verifica tu red.</string>
     <string name="error_generic">Ocurrió un error inesperado. Inténtalo más tarde.</string>
 
+    <!--PERFIL DE USUARIO-->
     <string name="avatar">Avatar de usuario</string>
     <string name="default_name_user">Usuario</string>
     <string name="default_email_user">usuario@email.com</string>
-    <string name="default_concept_name">Concepto</string>
-    <string name="default_date_name">dd/mm/aaaa</string>
-    <string name="default_amount_name">S/ 0.00</string>
-    <string name="default_input">Entrada</string>
-    <string name="default_category">Categoría</string>
-    <string name="default_subcategory">Subcategoría</string>
+    <string name="initials">NR</string>
+    <string name="default_name">Nilton Ramos</string>
+    <string name="save_changes">Guardar Cambios</string>
+    <string name="edit">Editar</string>
+    <string name="photo_edit">Editar Foto</string>
+    <string name="personal_information">INFORMACIÓN PERSONAL</string>
+    <string name="profile_name">Nombre</string>
+    <string name="profile_paternal_surname">Apellido Paterno</string>
+    <string name="profile_maternal_surname">Apellido Materno</string>
+    <string name="profile_gender">Género</string>
 
-    <string name="movement_register">Registrar Movimiento</string>
-    <string name="type">Tipo</string>
-    <string name="income">Ingreso</string>
-    <string name="expense">Egreso</string>
-    <string name="all">Todo</string>
+    <!--CATEGORÍA-->
+    <string name="default_category">Categoría</string>
     <string name="select_category">Selecciona una categoría</string>
     <string name="add_category">Agregar categoría</string>
     <string name="add_category_dialog">Nombre de la categoría</string>
+
+    <!--SUBCATEGORÍA-->
+    <string name="default_subcategory">Subcategoría</string>
     <string name="add_subcategory">Agregar subcategoría</string>
     <string name="optional_subcategory">Subcategoría (Opcional)</string>
     <string name="select_subcategory">Selecciona una subcategoría</string>
     <string name="name_subcategory_input">Nombre de la subcategoría</string>
     <string name="example_subcategory">Ej: Alimentos, Transporte, etc</string>
+
+    <!--MODALIDAD-->
     <string name="modality">Modalidad</string>
     <string name="select_modality">Selecciona una modalidad</string>
+
+    <!--REPORTES-->
+    <string name="movement_register">Registrar Movimiento</string>
+    <string name="all">Todo</string>
     <string name="example_concept">Ej: Compra de supermercado</string>
     <string name="date">Fecha</string>
     <string name="amount">Monto</string>
     <string name="save_movement">Guardar Movimiento</string>
-
     <string name="empty_movements">No hay movimientos registrados</string>
-    <string name="none_movements">No hay movimientos registrados</string>
     <string name="aad_first_movement">Comienza agregando tu primer movimiento</string>
+
+    <!--MOVIMIENTO-->
+    <string name="type">Tipo</string>
+    <string name="income">Ingreso</string>
+    <string name="expense">Egreso</string>
+
+    <!--DASHBOARD-->
     <string name="total_amount">Saldo Total</string>
     <string name="resume_by_modality">Resumen por Modalidad</string>
     <string name="money">Dinero Icon</string>
@@ -68,13 +78,18 @@
     <string name="cash">Efectivo</string>
     <string name="yape">Yape / Tarjeta BCP</string>
     <string name="dashboard">Dashboard</string>
+    <string name="last_movements">Últimos Movimientos</string>
+
+    <!--SIDEBAR-->
     <string name="new_movement">Nuevo Movimiento</string>
     <string name="config">Configuración</string>
     <string name="logout">Cerrar Sesión</string>
     <string name="my_movements">Mis Movimientos</string>
-    <string name="last_movements">Últimos Movimientos</string>
     <string name="statistics">Estadísticas</string>
-    <string name="filter">Filter</string>
-    <string name="export">Exportar</string>
-    <string name="version">v1.0.0</string>
+
+    <!--ITEM MOVEMENT-->
+    <string name="default_concept_name">Concepto</string>
+    <string name="default_date_name">dd/mm/aaaa</string>
+    <string name="default_amount_name">S/ 0.00</string>
+    <string name="default_input">Entrada</string>
 </resources>

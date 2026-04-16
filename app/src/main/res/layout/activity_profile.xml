@@ -6,252 +6,270 @@
     android:orientation="vertical"
     android:background="@color/blue_50">
 
+    <!-- ── Top Bar ── -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorSurface"
+        android:background="@color/surface_light_300"
+        android:elevation="0dp"
         app:navigationIcon="@drawable/ic_arrow_back"
-        app:title="Mi Perfil"
-        app:titleTextColor="?attr/colorOnSurface" />
+        app:navigationIconTint="@color/navy_500"
+        app:title="Mi perfil"
+        app:titleTextColor="@color/text_on_light_primary"
+        app:titleTextAppearance="@style/TextAppearance.FINANCE_REPORT.Headline" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/border_light_subtle" />
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:fillViewport="true">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="24dp">
+            android:paddingHorizontal="16dp"
+            android:paddingTop="28dp"
+            android:paddingBottom="32dp">
 
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cvAvatar"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_gravity="center"
-                app:cardCornerRadius="50dp"
-                app:cardBackgroundColor="@color/gold_100"
-                app:cardElevation="4dp">
-
-                <ImageView
-                    android:id="@+id/ivAvatar"
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity="center"
-                    android:scaleType="centerCrop"
-                    android:src="@drawable/ic_user_avatar"
-                    android:contentDescription="@string/avatar" />
-
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center"
-                    android:visibility="gone" />
-
-            </androidx.cardview.widget.CardView>
-
-            <TextView
-                android:layout_width="wrap_content"
+            <!-- ── Avatar Section ── -->
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginTop="4dp"
-                android:text="Toca para cambiar foto"
-                android:textSize="10sp"
-                android:textColor="?attr/colorPrimary"
-                android:visibility="gone"
-                android:id="@+id/tvEditPhotoHint" />
+                android:orientation="vertical"
+                android:gravity="center"
+                android:layout_marginBottom="24dp">
 
-            <!-- Información del Usuario -->
+                <FrameLayout
+                    android:id="@+id/flAvatarContainer"
+                    android:layout_width="96dp"
+                    android:layout_height="96dp"
+                    android:layout_gravity="center">
+
+                    <!-- Avatar ring / initials -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cvAvatar"
+                        android:layout_width="96dp"
+                        android:layout_height="96dp"
+                        app:cardCornerRadius="48dp"
+                        app:cardBackgroundColor="@color/gold_100"
+                        app:cardElevation="0dp"
+                        app:strokeColor="@color/gold_500"
+                        app:strokeWidth="2.5dp">
+
+                        <ImageView
+                            android:id="@+id/ivAvatar"
+                            android:layout_width="96dp"
+                            android:layout_height="96dp"
+                            android:layout_gravity="center"
+                            android:scaleType="centerCrop"
+                            android:visibility="gone"
+                            android:contentDescription="@string/avatar" />
+
+                        <TextView
+                            android:id="@+id/tvInitials"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center"
+                            android:text="@string/initials"
+                            android:textSize="32sp"
+                            android:textStyle="normal"
+                            android:textColor="@color/gold_700"
+                            android:fontFamily="sans-serif-medium" />
+
+                        <ProgressBar
+                            android:id="@+id/progressBar"
+                            android:layout_width="36dp"
+                            android:layout_height="36dp"
+                            android:layout_gravity="center"
+                            android:visibility="gone" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                    <!-- Edit badge (bottom-right) -->
+                    <com.google.android.material.card.MaterialCardView
+                        android:id="@+id/cvEditBadge"
+                        android:layout_width="26dp"
+                        android:layout_height="26dp"
+                        android:layout_gravity="bottom|end"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginEnd="2dp"
+                        app:cardCornerRadius="13dp"
+                        app:cardBackgroundColor="@color/navy_500"
+                        app:cardElevation="2dp"
+                        app:strokeColor="@color/blue_50"
+                        app:strokeWidth="2dp">
+
+                        <ImageView
+                            android:layout_width="14dp"
+                            android:layout_height="14dp"
+                            android:layout_gravity="center"
+                            android:src="@drawable/ic_edit"
+                            android:contentDescription="@string/photo_edit"
+                            app:tint="@color/white" />
+
+                    </com.google.android.material.card.MaterialCardView>
+
+                </FrameLayout>
+
+                <!-- Name below avatar -->
+                <TextView
+                    android:id="@+id/tvFullName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:text="@string/default_name"
+                    android:textSize="18sp"
+                    android:textStyle="normal"
+                    android:fontFamily="sans-serif-medium"
+                    android:textColor="@color/text_on_light_primary" />
+
+                <!-- Email below name -->
+                <TextView
+                    android:id="@+id/tvEmailSub"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="@string/default_email_user"
+                    android:textSize="13sp"
+                    android:textColor="@color/text_on_light_secondary" />
+
+            </LinearLayout>
+
+            <!-- ── Información Personal Card ── -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
+                android:layout_marginBottom="16dp"
                 app:cardCornerRadius="16dp"
-                app:cardElevation="2dp">
+                app:cardBackgroundColor="@color/surface_light_300"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/border_light_subtle"
+                app:strokeWidth="0.5dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+                    android:orientation="vertical">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Información Personal"
-                        android:textSize="18sp"
-                        android:textStyle="bold"
-                        android:textColor="?attr/colorOnSurface"
-                        android:layout_marginBottom="16dp" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Nombre"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp"
-                        android:textColor="@color/black"/>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tilName"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    <!-- Card header -->
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:hint="Nombre completo"
-                        app:endIconMode="clear_text">
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:paddingStart="20dp"
+                        android:paddingEnd="16dp"
+                        android:paddingTop="14dp"
+                        android:paddingBottom="12dp">
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etName"
-                            android:layout_width="match_parent"
+                        <TextView
+                            android:layout_width="0dp"
                             android:layout_height="wrap_content"
-                            android:enabled="false" />
+                            android:layout_weight="1"
+                            android:text="@string/personal_information"
+                            android:textSize="11sp"
+                            android:letterSpacing="0.08"
+                            android:fontFamily="sans-serif-medium"
+                            android:textColor="@color/navy_500" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                        <!-- Edit pill button -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnEditProfile"
+                            style="@style/Widget.Material3.Button.TonalButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="36dp"
+                            android:text="@string/edit"
+                            android:textSize="13sp"
+                            android:textAllCaps="false"
+                            android:paddingStart="12dp"
+                            android:paddingEnd="12dp"
+                            app:backgroundTint="@color/blue_50"
+                            android:textColor="@color/navy_500"
+                            app:cornerRadius="20dp"
+                            app:icon="@drawable/ic_edit"
+                            app:iconSize="13dp"
+                            app:iconGravity="textStart"
+                            app:iconTint="@color/navy_500"
+                            app:iconPadding="4dp"
+                            app:elevation="0dp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Correo electrónico"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp"
-                        android:textColor="@color/black"/>
+                    </LinearLayout>
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tilEmail"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:hint="Correo electrónico"
-                        app:endIconMode="clear_text">
+                        android:layout_height="0.5dp"
+                        android:background="@color/surface_light_200" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etEmail"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:enabled="false" />
+                    <!-- Field: Nombre -->
+                    <include layout="@layout/item_profile_field"
+                        android:id="@+id/fieldNombre" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Apellido Paterno"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp"
-                        android:textColor="@color/black"/>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tilPaternalSurname"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:hint="Apellido paterno"
-                        app:endIconMode="clear_text">
+                        android:layout_height="0.5dp"
+                        android:layout_marginStart="64dp"
+                        android:background="@color/surface_light_200" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etPaternalSurname"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:enabled="false" />
+                    <!-- Field: Apellido Paterno -->
+                    <include layout="@layout/item_profile_field"
+                        android:id="@+id/fieldApellidoPaterno" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Apellido Materno"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp"
-                        android:textColor="@color/black"/>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tilMaternalSurname"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:hint="Apellido materno"
-                        app:endIconMode="clear_text">
+                        android:layout_height="0.5dp"
+                        android:layout_marginStart="64dp"
+                        android:background="@color/surface_light_200" />
 
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etMaternalSurname"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:enabled="false" />
+                    <!-- Field: Apellido Materno -->
+                    <include layout="@layout/item_profile_field"
+                        android:id="@+id/fieldApellidoMaterno" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Género"
-                        android:textSize="14sp"
-                        android:textStyle="bold"
-                        android:layout_marginBottom="8dp"
-                        android:textColor="@color/black"/>
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/tilGender"
-                        style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+                    <View
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="12dp"
-                        android:hint="Género"
-                        app:endIconMode="dropdown_menu">
+                        android:layout_height="0.5dp"
+                        android:layout_marginStart="64dp"
+                        android:background="@color/surface_light_200" />
 
-                        <AutoCompleteTextView
-                            android:id="@+id/etGender"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="none"
-                            android:enabled="false" />
+                    <!-- Field: Género -->
+                    <include layout="@layout/item_profile_field"
+                        android:id="@+id/fieldGenero" />
 
-                    </com.google.android.material.textfield.TextInputLayout>
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginStart="64dp"
+                        android:background="@color/surface_light_200" />
+
+                    <!-- Field: Correo -->
+                    <include layout="@layout/item_profile_field"
+                        android:id="@+id/fieldEmail" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Botones -->
-            <LinearLayout
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnSaveProfile"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="24dp">
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnEditProfile"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:layout_marginEnd="8dp"
-                    android:text="Editar"
-                    android:textAllCaps="false"
-                    app:icon="@drawable/ic_edit"
-                    app:iconGravity="textStart" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnSaveProfile"
-                    android:layout_width="0dp"
-                    android:layout_height="56dp"
-                    android:layout_weight="1"
-                    android:layout_marginStart="8dp"
-                    android:text="Guardar"
-                    android:textAllCaps="false"
-                    android:visibility="gone"
-                    app:icon="@drawable/ic_save"
-                    app:iconGravity="textStart" />
-
-            </LinearLayout>
+                android:layout_height="52dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/save_changes"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:fontFamily="sans-serif-medium"
+                android:visibility="gone"
+                app:backgroundTint="@color/navy_500"
+                app:cornerRadius="14dp"
+                app:icon="@drawable/ic_save"
+                app:iconGravity="textStart"
+                app:iconTint="@color/white"
+                app:elevation="0dp" />
 
         </LinearLayout>
 
