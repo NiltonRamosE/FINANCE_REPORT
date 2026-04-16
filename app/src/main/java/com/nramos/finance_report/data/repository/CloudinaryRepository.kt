@@ -18,16 +18,17 @@ class CloudinaryRepository @Inject constructor() {
 
     private var isInitialized = false
 
-    fun initCloudinary(context: Context, cloudName: String) {
+    fun initCloudinary(context: Context, cloudName: String, apiKey: String, apiSecret: String) {
         if (!isInitialized) {
             try {
-                val config = HashMap<String, String>()
-                config["cloud_name"] = cloudName
+                val config = HashMap<String, String>().apply {
+                    put("cloud_name", cloudName)
+                    put("api_key", apiKey)
+                    put("api_secret", apiSecret)
+                }
                 MediaManager.init(context, config)
                 isInitialized = true
-                Log.d("Cloudinary", "Cloudinary initialized successfully")
             } catch (e: Exception) {
-                Log.e("Cloudinary", "Error initializing: ${e.message}")
             }
         }
     }
@@ -43,16 +44,13 @@ class CloudinaryRepository @Inject constructor() {
                 .option("upload_preset", uploadPreset)
                 .callback(object : UploadCallback {
                     override fun onStart(requestId: String) {
-                        Log.d("Cloudinary", "Upload started: $requestId")
                     }
 
                     override fun onProgress(requestId: String, bytes: Long, totalBytes: Long) {
                         val progress = if (totalBytes > 0) (bytes * 100 / totalBytes).toInt() else 0
-                        Log.d("Cloudinary", "Upload progress: $progress%")
                     }
 
                     override fun onSuccess(requestId: String, resultData: Map<*, *>) {
-                        Log.d("Cloudinary", "Upload success")
                         val url = resultData["secure_url"] as? String
                         if (url != null) {
                             trySend(url)
@@ -63,21 +61,17 @@ class CloudinaryRepository @Inject constructor() {
                     }
 
                     override fun onError(requestId: String, error: ErrorInfo) {
-                        Log.e("Cloudinary", "Upload error: ${error.description}")
                         close(Exception(error.description))
                     }
 
                     override fun onReschedule(requestId: String, error: ErrorInfo) {
-                        Log.d("Cloudinary", "Upload rescheduled: ${error.description}")
                     }
                 })
                 .dispatch()
 
             awaitClose {
-                Log.d("Cloudinary", "Upload flow closed")
             }
         } catch (e: Exception) {
-            Log.e("Cloudinary", "Upload exception: ${e.message}")
             close(e)
         }
     }
