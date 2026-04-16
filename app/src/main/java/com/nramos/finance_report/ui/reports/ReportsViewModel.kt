@@ -1,5 +1,6 @@
 package com.nramos.finance_report.ui.reports
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nramos.finance_report.data.repository.CategoryRepository
@@ -33,9 +34,11 @@ class ReportsViewModel @Inject constructor(
     private var isCreatingSubcategory = false
     private var isLoadingModalities = false
     private var isSavingReport = false
+    private val _concepts = MutableStateFlow<List<String>>(emptyList())
+    val concepts: StateFlow<List<String>> = _concepts.asStateFlow()
     init {
-        // Cargar modalidades al iniciar
         loadModalities()
+        loadConcepts()
     }
     fun onEvent(event: ReportsEvent) {
         when (event) {
@@ -89,6 +92,19 @@ class ReportsViewModel @Inject constructor(
             }
             is ReportsEvent.OnSaveReport -> {
                 saveReport()
+            }
+        }
+    }
+
+    private fun loadConcepts() {
+        viewModelScope.launch {
+            reportRepository.getDistinctConcepts().collect { result ->
+                when (result) {
+                    is NetworkResult.Success -> {
+                        _concepts.value = result.data ?: emptyList()
+                    }
+                    else -> {}
+                }
             }
         }
     }

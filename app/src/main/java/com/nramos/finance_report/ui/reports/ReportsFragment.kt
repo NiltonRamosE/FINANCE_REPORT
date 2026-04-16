@@ -35,11 +35,10 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
     private var _binding: FragmentReportsBinding? = null
     private val binding get() = _binding!!
     private val viewModel: ReportsViewModel by viewModels()
-
     private var categoryAdapter: ArrayAdapter<Category>? = null
     private var subcategoryAdapter: ArrayAdapter<Subcategory>? = null
-
     private var modalityAdapter: ArrayAdapter<Modality>? = null
+    private lateinit var conceptAdapter: ArrayAdapter<String>
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -187,9 +186,31 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
                 viewModel.updateAmount(binding.etAmount.text.toString())
                 viewModel.onEvent(ReportsEvent.OnSaveReport)
             }
+
+            setupConceptAutoComplete()
         }
     }
 
+    private fun setupConceptAutoComplete() {
+        conceptAdapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_dropdown_item_1line,
+            mutableListOf()
+        )
+
+        binding.etConcept.apply {
+            setAdapter(conceptAdapter)
+            threshold = 1
+        }
+
+        lifecycleScope.launch {
+            viewModel.concepts.collect { concepts ->
+                conceptAdapter.clear()
+                conceptAdapter.addAll(concepts)
+                conceptAdapter.notifyDataSetChanged()
+            }
+        }
+    }
     private fun showDatePicker() {
         val datePicker = MaterialDatePicker.Builder.datePicker()
             .setTitleText("Selecciona la fecha")

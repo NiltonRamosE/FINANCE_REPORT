@@ -195,4 +195,51 @@ class ReportRepository @Inject constructor(
             date
         }
     }
+
+    suspend fun getDistinctConcepts(): Flow<NetworkResult<List<String>>> = flow {
+        emit(NetworkResult.Loading())
+
+        try {
+            val result = withContext(Dispatchers.IO) {
+                val token = tokenManager.getToken()
+                if (token == null) {
+                    throw Exception("No hay sesión activa")
+                }
+
+                val url = "${BuildConfig.SUPABASE_URL}/rest/v1/reports?select=concept&concept=not.is.null&order=created_at.desc"
+
+                val request = Request.Builder()
+                    .url(url)
+                    .get()
+                    .header("apikey", BuildConfig.SUPABASE_ANON_KEY)
+                    .header("Authorization", "Bearer $token")
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string() ?: "[]"
+
+                Pair(response.isSuccessful, responseBody)
+            }
+
+            val (isSuccessful, responseBody) = result
+
+            if (isSuccessful) {
+                val jsonArray = JSONArray(responseBody)
+                val concepts = mutableSetOf<String>()
+
+                for (i in 0 until jsonArray.length()) {
+                    val concept = jsonArray.getJSONObject(i).optString("concept")
+                    if (concept.isNotEmpty()) {
+                        concepts.add(concept)
+                    }
+                }
+
+                emit(NetworkResult.Success(concepts.toList()))
+            } else {
+                emit(NetworkResult.Error("Error al cargar conceptos"))
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "Error de conexión"))
+        }
+    }
 }
