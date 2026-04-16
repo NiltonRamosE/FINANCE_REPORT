@@ -10,5 +10,6 @@ data class UserProfile(
     val email: String,
     val paternalSurname: String? = null,
     val maternalSurname: String? = null,
-    val gender: Char? = null
+    val gender: Char? = null,
+    val avatarUrl: String? = null
 ) : Parcelable

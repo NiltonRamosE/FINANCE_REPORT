@@ -11,4 +11,6 @@ interface IProfileRepository {
         maternalSurname: String?,
         gender: Char?
     ): Flow<NetworkResult<UserProfile>>
+
+    suspend fun updateAvatar(avatarUrl: String): Flow<NetworkResult<UserProfile>>
 }

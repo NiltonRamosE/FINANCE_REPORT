@@ -25,8 +25,8 @@
             android:orientation="vertical"
             android:padding="24dp">
 
-            <!-- Avatar -->
             <androidx.cardview.widget.CardView
+                android:id="@+id/cvAvatar"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:layout_gravity="center"
@@ -35,13 +35,26 @@
                 app:cardElevation="4dp">
 
                 <ImageView
-                    android:layout_width="56dp"
-                    android:layout_height="56dp"
+                    android:id="@+id/ivAvatar"
+                    android:layout_width="100dp"
+                    android:layout_height="100dp"
                     android:layout_gravity="center"
+                    android:scaleType="centerCrop"
                     android:src="@drawable/ic_user_avatar"
                     android:contentDescription="@string/avatar" />
 
             </androidx.cardview.widget.CardView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginTop="4dp"
+                android:text="Toca para cambiar foto"
+                android:textSize="10sp"
+                android:textColor="?attr/colorPrimary"
+                android:visibility="gone"
+                android:id="@+id/tvEditPhotoHint" />
 
             <!-- Información del Usuario -->
             <com.google.android.material.card.MaterialCardView

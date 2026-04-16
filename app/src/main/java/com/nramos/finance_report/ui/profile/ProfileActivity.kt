@@ -1,12 +1,20 @@
 package com.nramos.finance_report.ui.profile
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
+import com.bumptech.glide.Glide
+import com.github.dhaval2404.imagepicker.ImagePicker
+import com.nramos.finance_report.BuildConfig
+import com.nramos.finance_report.R
+import com.nramos.finance_report.data.repository.CloudinaryRepository
 import com.nramos.finance_report.databinding.ActivityProfileBinding
 import com.nramos.finance_report.domain.usecase.auth.GetCurrentUserUseCase
+import com.nramos.finance_report.domain.usecase.profile.UpdateAvatarUseCase
 import com.nramos.finance_report.domain.usecase.profile.UpdateProfileUseCase
 import com.nramos.finance_report.utils.NetworkResult
 import com.nramos.finance_report.utils.ProfileUpdateEvent
@@ -30,15 +38,85 @@ class ProfileActivity : AppCompatActivity() {
     @Inject
     lateinit var profileUpdateEvent: ProfileUpdateEvent
 
+    @Inject
+    lateinit var cloudinaryRepository: CloudinaryRepository
+
+    @Inject
+    lateinit var updateAvatarUseCase: UpdateAvatarUseCase
+
+    private var selectedImageUri: Uri? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityProfileBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        cloudinaryRepository.initCloudinary(this, BuildConfig.CLOUDINARY_CLOUD_NAME)
+
         setupToolbar()
         setupGenderSpinner()
         loadUserData()
         setupListeners()
+        setupAvatarClick()
+    }
+
+    private fun setupAvatarClick() {
+        binding.cvAvatar.setOnClickListener {
+            if (isEditMode) {
+                selectImage()
+            }
+        }
+    }
+
+    private fun selectImage() {
+        ImagePicker.with(this)
+            .cropSquare()
+            .compress(512)
+            .maxResultSize(512, 512)
+            .start()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (resultCode) {
+            RESULT_OK -> {
+                val uri = data?.data
+                if (uri != null) {
+                    selectedImageUri = uri
+                    uploadImageToCloudinary(uri)
+                }
+            }
+            ImagePicker.RESULT_ERROR -> {
+                showToast(ImagePicker.getError(data))
+            }
+        }
+    }
+
+    private fun uploadImageToCloudinary(uri: Uri) {
+        lifecycleScope.launch {
+            showToast("Subiendo imagen...")
+
+            try {
+                cloudinaryRepository.uploadImage(uri, BuildConfig.CLOUDINARY_UPLOAD_PRESET).collect { url ->
+                    // Procesar URL
+                    updateAvatarUseCase(url).collect { result ->
+                        when (result) {
+                            is NetworkResult.Success -> {
+                                showToast("Foto actualizada")
+                                loadUserData()
+                                profileUpdateEvent.emitUpdate()
+                            }
+                            is NetworkResult.Error -> {
+                                showToast(result.message ?: "Error")
+                            }
+                            else -> {}
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                showToast("Error al subir imagen: ${e.message}")
+            }
+        }
     }
 
     private fun setupToolbar() {
@@ -68,6 +146,15 @@ class ProfileActivity : AppCompatActivity() {
                     else -> ""
                 }
                 binding.etGender.setText(genderText, false)
+
+                it.avatarUrl?.let { url ->
+                    Glide.with(this@ProfileActivity)
+                        .load(url)
+                        .circleCrop()
+                        .placeholder(R.drawable.ic_user_avatar)
+                        .error(R.drawable.ic_user_avatar)
+                        .into(binding.ivAvatar)
+                }
             }
         }
     }

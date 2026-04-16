@@ -12,6 +12,8 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
+import de.hdodenhof.circleimageview.CircleImageView
 import com.google.android.material.navigation.NavigationView
 import com.nramos.finance_report.R
 import com.nramos.finance_report.databinding.ActivityMainBinding
@@ -103,6 +105,7 @@ class MainActivity : AppCompatActivity() {
 
         val tvUserName = headerView.findViewById<TextView>(R.id.tvUserName)
         val tvUserEmail = headerView.findViewById<TextView>(R.id.tvUserEmail)
+        val ivAvatar = headerView.findViewById<CircleImageView>(R.id.ivAvatar)
 
         val fullName = buildString {
             append(user.name)
@@ -112,6 +115,16 @@ class MainActivity : AppCompatActivity() {
 
         tvUserName.text = fullName.ifEmpty { user.name }
         tvUserEmail.text = user.email
+
+        // Cargar avatar
+        user.avatarUrl?.let { url ->
+            Glide.with(this)
+                .load(url)
+                .circleCrop()
+                .placeholder(R.drawable.ic_user_avatar)
+                .error(R.drawable.ic_user_avatar)
+                .into(ivAvatar)
+        }
     }
 
     private fun setupProfileClick() {

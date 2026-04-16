@@ -29,6 +29,9 @@ class TokenManager @Inject constructor(
         private val USER_MATERNAL_SURNAME_KEY = stringPreferencesKey("user_maternal_surname")
         private val USER_GENDER_KEY = stringPreferencesKey("user_gender")
         private val IS_LOGGED_IN_KEY = booleanPreferencesKey("is_logged_in")
+
+        private val USER_AVATAR_URL_KEY = stringPreferencesKey("user_avatar_url")
+
     }
 
     suspend fun saveAuthData(
@@ -52,6 +55,18 @@ class TokenManager @Inject constructor(
             preferences[USER_GENDER_KEY] = gender?.toString() ?: ""
             preferences[IS_LOGGED_IN_KEY] = true
         }
+    }
+
+    suspend fun saveAvatarUrl(avatarUrl: String) {
+        context.dataStore.edit { preferences ->
+            preferences[USER_AVATAR_URL_KEY] = avatarUrl
+        }
+    }
+
+    suspend fun getAvatarUrl(): String {
+        return context.dataStore.data.map { preferences ->
+            preferences[USER_AVATAR_URL_KEY] ?: ""
+        }.first()
     }
 
     fun getToken(): String? {

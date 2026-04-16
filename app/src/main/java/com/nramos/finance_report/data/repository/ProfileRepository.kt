@@ -109,4 +109,64 @@ class ProfileRepository @Inject constructor(
             emit(NetworkResult.Error(e.message ?: "Error de conexión"))
         }
     }
+
+    override suspend fun updateAvatar(avatarUrl: String): Flow<NetworkResult<UserProfile>> = flow {
+        emit(NetworkResult.Loading())
+
+        try {
+            val result = withContext(Dispatchers.IO) {
+                val token = tokenManager.getToken()
+                if (token == null) {
+                    throw Exception("No hay sesión activa")
+                }
+
+                val profileId = tokenManager.getUserProfileId()
+
+                val jsonBody = JSONObject().apply {
+                    put("avatar_url", avatarUrl)
+                }
+
+                val requestBody = jsonBody.toString().toRequestBody(jsonMediaType)
+                val url = "${BuildConfig.SUPABASE_URL}/rest/v1/profiles?id=eq.$profileId"
+
+                val request = Request.Builder()
+                    .url(url)
+                    .patch(requestBody)
+                    .header("apikey", BuildConfig.SUPABASE_ANON_KEY)
+                    .header("Authorization", "Bearer $token")
+                    .header("Content-Type", "application/json")
+                    .header("Prefer", "return=representation")
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string() ?: ""
+
+                Triple(response.isSuccessful, response.code, responseBody)
+            }
+
+            val (isSuccessful, code, responseBody) = result
+
+            if (isSuccessful) {
+                // Actualizar TokenManager
+                tokenManager.saveAvatarUrl(avatarUrl)
+
+                val updatedUser = UserProfile(
+                    profileId = tokenManager.getUserProfileId(),
+                    name = tokenManager.getUserName(),
+                    email = tokenManager.getUserEmail(),
+                    paternalSurname = tokenManager.getUserPaternalSurname(),
+                    maternalSurname = tokenManager.getUserMaternalSurname(),
+                    gender = tokenManager.getUserGender(),
+                    avatarUrl = avatarUrl
+                )
+
+                emit(NetworkResult.Success(updatedUser))
+            } else {
+                val errorMsg = "Error al actualizar avatar: código $code"
+                emit(NetworkResult.Error(errorMsg))
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "Error de conexión"))
+        }
+    }
 }

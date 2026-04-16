@@ -32,6 +32,18 @@ val keyAliasVal: String = localProperties.getProperty("KEY_ALIAS")
 val keyPasswordVal: String = localProperties.getProperty("KEY_PASSWORD")
     ?: "key_password"
 
+val cloudinaryCloudName: String = localProperties.getProperty("CLOUDINARY_CLOUD_NAME")
+    ?: "cloudinaryCloudName"
+
+val cloudinaryUploadPreset: String = localProperties.getProperty("CLOUDINARY_UPLOAD_PRESET")
+    ?: "cloudinaryUploadPreset"
+
+val cloudinaryApiKey: String = localProperties.getProperty("CLOUDINARY_API_KEY")
+    ?: "cloudinaryCloudName"
+
+val cloudinaryApiSecret: String = localProperties.getProperty("CLOUDINARY_API_SECRET")
+    ?: "cloudinaryUploadPreset"
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -58,6 +70,10 @@ android {
         buildConfigField("String", "GOOGLE_WEB_CLIENT_ID", "\"$googleWebClientId\"")
         buildConfigField("String", "GOOGLE_ANDROID_CLIENT_ID", "\"$googleAndroidClientId\"")
         buildConfigField("String", "VERSION_NAME", "\"${versionName}\"")
+        buildConfigField("String", "CLOUDINARY_CLOUD_NAME", "\"${cloudinaryCloudName}\"")
+        buildConfigField("String", "CLOUDINARY_UPLOAD_PRESET", "\"${cloudinaryUploadPreset}\"")
+        buildConfigField("String", "CLOUDINARY_API_KEY", "\"${cloudinaryApiKey}\"")
+        buildConfigField("String", "CLOUDINARY_API_SECRET", "\"${cloudinaryApiSecret}\"")
     }
 
     buildFeatures {
@@ -155,6 +171,20 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.12.5")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.5")
     runtimeOnly("io.jsonwebtoken:jjwt-orgjson:0.12.5")
+
+    // Image Picker
+    implementation("com.github.dhaval2404:imagepicker:2.1")
+
+    // Glide para cargar imágenes
+    implementation("com.github.bumptech.glide:glide:4.16.0")
+
+    // Cloudinary (para subir imágenes)
+    implementation("com.cloudinary:cloudinary-android:2.3.1")
+
+    // Permissions (si necesitas cámara)
+    implementation("com.karumi:dexter:6.2.3")
+
+    implementation("de.hdodenhof:circleimageview:3.1.0")
 
     // Testing
     testImplementation(libs.junit)
