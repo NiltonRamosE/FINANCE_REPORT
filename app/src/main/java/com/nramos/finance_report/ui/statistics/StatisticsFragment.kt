@@ -2,6 +2,7 @@ package com.nramos.finance_report.ui.statistics
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -62,12 +63,15 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
     private fun setupListeners() {
         binding.apply {
             btnWeek.setOnClickListener {
+                Log.d("StatisticsFragment", "Click en Semana")
                 viewModel.onEvent(StatisticsEvent.OnFilterTypeChanged(FilterType.WEEK))
             }
             btnMonth.setOnClickListener {
+                Log.d("StatisticsFragment", "Click en Mes")
                 viewModel.onEvent(StatisticsEvent.OnFilterTypeChanged(FilterType.MONTH))
             }
             btnYear.setOnClickListener {
+                Log.d("StatisticsFragment", "Click en Año")
                 viewModel.onEvent(StatisticsEvent.OnFilterTypeChanged(FilterType.YEAR))
             }
         }
@@ -142,50 +146,80 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
     }
 
     private fun updateLineChart(monthlyStats: List<MonthlyStat>) {
-        if (monthlyStats.isEmpty()) return
-
-        val entries = monthlyStats.mapIndexed { index, stat ->
-            listOf(
-                Entry(index.toFloat(), stat.income.toFloat()),
-                Entry(index.toFloat(), stat.expense.toFloat())
-            )
+        if (monthlyStats.isEmpty()) {
+            binding.lineChart.clear()
+            binding.lineChart.invalidate()
+            return
         }
 
-        val incomeEntries = monthlyStats.mapIndexed { index, stat ->
-            Entry(index.toFloat(), stat.income.toFloat())
-        }
-        val expenseEntries = monthlyStats.mapIndexed { index, stat ->
-            Entry(index.toFloat(), stat.expense.toFloat())
-        }
+        if (monthlyStats.size == 1) {
+            val singleEntry = listOf(Entry(0f, monthlyStats[0].income.toFloat()))
+            val singleExpenseEntry = listOf(Entry(0f, monthlyStats[0].expense.toFloat()))
 
-        val incomeDataSet = LineDataSet(incomeEntries, "Ingresos").apply {
-            color = ContextCompat.getColor(requireContext(), R.color.finance_green_600)
-            setCircleColor(ContextCompat.getColor(requireContext(), R.color.finance_green_600))
-            lineWidth = 2f
-            circleRadius = 4f
-            setDrawCircleHole(false)
-            valueTextSize = 9f
-        }
-
-        val expenseDataSet = LineDataSet(expenseEntries, "Egresos").apply {
-            color = ContextCompat.getColor(requireContext(), R.color.finance_red_600)
-            setCircleColor(ContextCompat.getColor(requireContext(), R.color.finance_red_600))
-            lineWidth = 2f
-            circleRadius = 4f
-            setDrawCircleHole(false)
-            valueTextSize = 9f
-        }
-
-        val lineData = LineData(incomeDataSet, expenseDataSet)
-
-        binding.lineChart.xAxis.valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
-            override fun getFormattedValue(value: Float): String {
-                val index = value.toInt()
-                return if (index < monthlyStats.size) monthlyStats[index].month else ""
+            val incomeDataSet = LineDataSet(singleEntry, "Ingresos").apply {
+                color = ContextCompat.getColor(requireContext(), R.color.finance_green_600)
+                setCircleColor(ContextCompat.getColor(requireContext(), R.color.finance_green_600))
+                lineWidth = 2f
+                circleRadius = 4f
+                setDrawCircleHole(false)
+                valueTextSize = 9f
             }
+
+            val expenseDataSet = LineDataSet(singleExpenseEntry, "Egresos").apply {
+                color = ContextCompat.getColor(requireContext(), R.color.finance_red_600)
+                setCircleColor(ContextCompat.getColor(requireContext(), R.color.finance_red_600))
+                lineWidth = 2f
+                circleRadius = 4f
+                setDrawCircleHole(false)
+                valueTextSize = 9f
+            }
+
+            val lineData = LineData(incomeDataSet, expenseDataSet)
+            binding.lineChart.data = lineData
+
+            binding.lineChart.xAxis.valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    return if (value.toInt() == 0) monthlyStats[0].month else ""
+                }
+            }
+        } else {
+            val incomeEntries = monthlyStats.mapIndexed { index, stat ->
+                Entry(index.toFloat(), stat.income.toFloat())
+            }
+            val expenseEntries = monthlyStats.mapIndexed { index, stat ->
+                Entry(index.toFloat(), stat.expense.toFloat())
+            }
+
+            val incomeDataSet = LineDataSet(incomeEntries, "Ingresos").apply {
+                color = ContextCompat.getColor(requireContext(), R.color.finance_green_600)
+                setCircleColor(ContextCompat.getColor(requireContext(), R.color.finance_green_600))
+                lineWidth = 2f
+                circleRadius = 4f
+                setDrawCircleHole(false)
+                valueTextSize = 9f
+            }
+
+            val expenseDataSet = LineDataSet(expenseEntries, "Egresos").apply {
+                color = ContextCompat.getColor(requireContext(), R.color.finance_red_600)
+                setCircleColor(ContextCompat.getColor(requireContext(), R.color.finance_red_600))
+                lineWidth = 2f
+                circleRadius = 4f
+                setDrawCircleHole(false)
+                valueTextSize = 9f
+            }
+
+            val lineData = LineData(incomeDataSet, expenseDataSet)
+
+            binding.lineChart.xAxis.valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
+                override fun getFormattedValue(value: Float): String {
+                    val index = value.toInt()
+                    return if (index in monthlyStats.indices) monthlyStats[index].month else ""
+                }
+            }
+
+            binding.lineChart.data = lineData
         }
 
-        binding.lineChart.data = lineData
         binding.lineChart.invalidate()
     }
 

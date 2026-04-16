@@ -1,5 +1,6 @@
 package com.nramos.finance_report.ui.statistics
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nramos.finance_report.data.repository.ReportRepository
@@ -20,6 +21,8 @@ import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 import androidx.core.graphics.toColorInt
+import kotlinx.datetime.DayOfWeek
+import java.time.LocalDate
 
 @HiltViewModel
 class StatisticsViewModel @Inject constructor(
@@ -60,6 +63,11 @@ class StatisticsViewModel @Inject constructor(
     }
 
     private fun loadReports(startDate: String, endDate: String, filterType: FilterType) {
+        Log.d("StatisticsViewModel", "=== loadReports ===")
+        Log.d("StatisticsViewModel", "filterType: $filterType")
+        Log.d("StatisticsViewModel", "startDate: $startDate")
+        Log.d("StatisticsViewModel", "endDate: $endDate")
+
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, filterType = filterType) }
 
@@ -68,10 +76,12 @@ class StatisticsViewModel @Inject constructor(
                     is NetworkResult.Loading -> {}
                     is NetworkResult.Success -> {
                         val reports = result.data ?: emptyList()
+                        Log.d("StatisticsViewModel", "Reports recibidos: ${reports.size}")
                         processStatistics(reports)
                         _state.update { it.copy(isLoading = false) }
                     }
                     is NetworkResult.Error -> {
+                        Log.e("StatisticsViewModel", "Error: ${result.message}")
                         _state.update {
                             it.copy(
                                 isLoading = false,
@@ -223,29 +233,26 @@ class StatisticsViewModel @Inject constructor(
     }
 
     private fun getDateRange(filterType: FilterType): Pair<String, String> {
-        val endDate = dateFormat.format(calendar.time)
+        val today = LocalDate.now()
 
         return when (filterType) {
             FilterType.WEEK -> {
-                calendar.add(Calendar.DAY_OF_YEAR, -7)
-                val startDate = dateFormat.format(calendar.time)
-                calendar.add(Calendar.DAY_OF_YEAR, 7)
-                startDate to endDate
+                val startDate = today.with(DayOfWeek.MONDAY)
+                val endDate = today.with(DayOfWeek.SUNDAY)
+                startDate.toString() to endDate.toString()
             }
             FilterType.MONTH -> {
-                calendar.add(Calendar.MONTH, -1)
-                val startDate = dateFormat.format(calendar.time)
-                calendar.add(Calendar.MONTH, 1)
-                startDate to endDate
+                val startDate = today.withDayOfMonth(1)
+                val endDate = today.withDayOfMonth(today.lengthOfMonth())
+                startDate.toString() to endDate.toString()
             }
             FilterType.YEAR -> {
-                calendar.add(Calendar.YEAR, -1)
-                val startDate = dateFormat.format(calendar.time)
-                calendar.add(Calendar.YEAR, 1)
-                startDate to endDate
+                val startDate = today.withDayOfYear(1)
+                val endDate = today.withDayOfYear(today.lengthOfYear())
+                startDate.toString() to endDate.toString()
             }
             else -> {
-                "1970-01-01" to endDate
+                "1970-01-01" to today.toString()
             }
         }
     }
