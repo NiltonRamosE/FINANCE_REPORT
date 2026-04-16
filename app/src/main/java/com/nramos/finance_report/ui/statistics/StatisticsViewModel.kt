@@ -19,6 +19,7 @@ import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import androidx.core.graphics.toColorInt
 
 @HiltViewModel
 class StatisticsViewModel @Inject constructor(
@@ -83,8 +84,6 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
-    // ui/statistics/StatisticsViewModel.kt - agrega estos métodos
-
     private suspend fun enrichTopCategories(categories: List<CategoryStat>): List<CategoryStat> {
         if (categories.isEmpty()) return emptyList()
 
@@ -113,7 +112,6 @@ class StatisticsViewModel @Inject constructor(
         }
     }
 
-    // Modifica processStatistics para usar los métodos de enriquecimiento
     private fun processStatistics(reports: List<Report>) {
         viewModelScope.launch {
             // Separar ingresos y egresos
@@ -153,7 +151,7 @@ class StatisticsViewModel @Inject constructor(
         val monthlyMap = mutableMapOf<String, Pair<Double, Double>>()
 
         reports.forEach { report ->
-            val month = report.date.substring(0, 7) // YYYY-MM
+            val month = report.date.substring(0, 7)
             val monthName = formatMonth(month)
             val current = monthlyMap[monthName] ?: (0.0 to 0.0)
 
@@ -178,11 +176,11 @@ class StatisticsViewModel @Inject constructor(
 
         val totalExpense = categoryMap.values.sum()
         val colors = listOf(
-            android.graphics.Color.parseColor("#FF6B6B"),
-            android.graphics.Color.parseColor("#4ECDC4"),
-            android.graphics.Color.parseColor("#45B7D1"),
-            android.graphics.Color.parseColor("#96CEB4"),
-            android.graphics.Color.parseColor("#FFEAA7")
+            "#FF6B6B".toColorInt(),
+            "#4ECDC4".toColorInt(),
+            "#45B7D1".toColorInt(),
+            "#96CEB4".toColorInt(),
+            "#FFEAA7".toColorInt()
         )
 
         return categoryMap.entries
@@ -191,7 +189,7 @@ class StatisticsViewModel @Inject constructor(
             .mapIndexed { index, entry ->
                 CategoryStat(
                     categoryId = entry.key,
-                    categoryName = entry.key, // Temporal, luego se enriquece
+                    categoryName = entry.key,
                     totalAmount = entry.value,
                     percentage = ((entry.value / totalExpense) * 100).toFloat(),
                     color = colors[index % colors.size]
@@ -216,7 +214,7 @@ class StatisticsViewModel @Inject constructor(
             .map { (id, data) ->
                 SubcategoryStat(
                     subcategoryId = id,
-                    subcategoryName = id, // Temporal, luego se enriquece
+                    subcategoryName = id,
                     categoryName = data.first,
                     totalAmount = data.second,
                     percentage = ((data.second / totalExpense) * 100).toFloat()
@@ -263,25 +261,4 @@ class StatisticsViewModel @Inject constructor(
     }
 
 
-}
-
-data class StatisticsState(
-    val totalIncome: Double = 0.0,
-    val totalExpense: Double = 0.0,
-    val balance: Double = 0.0,
-    val monthlyStats: List<MonthlyStat> = emptyList(),
-    val topCategories: List<CategoryStat> = emptyList(),
-    val topSubcategories: List<SubcategoryStat> = emptyList(),
-    val filterType: FilterType = FilterType.MONTH,
-    val isLoading: Boolean = false,
-    val error: String? = null
-)
-
-enum class FilterType {
-    WEEK, MONTH, YEAR, CUSTOM
-}
-
-sealed class StatisticsEvent {
-    data class OnFilterTypeChanged(val filterType: FilterType) : StatisticsEvent()
-    data class OnCustomDateRange(val startDate: String, val endDate: String) : StatisticsEvent()
 }

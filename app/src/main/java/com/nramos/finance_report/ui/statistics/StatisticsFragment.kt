@@ -87,7 +87,6 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
                     showToast(error)
                 }
 
-                // Actualizar estilo de botones
                 updateFilterButtons(state.filterType)
             }
         }
@@ -134,7 +133,6 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
         binding.tvTotalExpense.text = formatter.format(state.totalExpense)
         binding.tvBalance.text = formatter.format(state.balance)
 
-        // Cambiar color del balance según sea positivo o negativo
         val balanceColor = if (state.balance >= 0) {
             ContextCompat.getColor(requireContext(), R.color.finance_green_600)
         } else {
@@ -180,7 +178,6 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
 
         val lineData = LineData(incomeDataSet, expenseDataSet)
 
-        // Configurar etiquetas del eje X
         binding.lineChart.xAxis.valueFormatter = object : com.github.mikephil.charting.formatter.ValueFormatter() {
             override fun getFormattedValue(value: Float): String {
                 val index = value.toInt()
