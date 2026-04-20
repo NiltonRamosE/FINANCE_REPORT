@@ -2,6 +2,7 @@ package com.nramos.finance_report.ui.auth.login
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
@@ -99,6 +100,22 @@ class LoginActivity : AppCompatActivity() {
                 val signInIntent = googleSignInManager.getSignInIntent()
                 googleSignInLauncher.launch(signInIntent)
             }
+            btnInstagram.setOnClickListener {
+                openUrl("https://www.instagram.com/ramos._.xd")
+            }
+
+            btnGithub.setOnClickListener {
+                openUrl("https://github.com/NiltonRamosE")
+            }
+
+            btnLinkedin.setOnClickListener {
+                openUrl("https://www.linkedin.com/in/niltonramosencarnacion/")
+            }
         }
+    }
+
+    private fun openUrl(url: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        startActivity(intent)
     }
 }

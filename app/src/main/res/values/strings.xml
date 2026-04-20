@@ -11,9 +11,9 @@
     <string name="login_section_label">Iniciar sesión con</string>
     <string name="btn_continue_google">Continuar con Google</string>
     <string name="coming_soon_label">Próximamente</string>
-    <string name="btn_placeholder_github">Github</string>
-    <string name="btn_placeholder_facebook">Facebook</string>
-    <string name="btn_placeholder_discord">Discord</string>
+    <string name="btn_instagram">Instagram</string>
+    <string name="btn_github">GitHub</string>
+    <string name="btn_linkedin">LinkedIn</string>
     <string name="badge_secure_data">Datos seguros</string>
     <string name="badge_ssl">Encriptado SSL</string>
     <string name="legal_notice">Al continuar, aceptas nuestros Términos de uso y Política de privacidad</string>
