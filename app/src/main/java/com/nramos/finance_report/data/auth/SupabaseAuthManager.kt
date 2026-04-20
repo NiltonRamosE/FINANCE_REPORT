@@ -132,7 +132,6 @@ class SupabaseAuthManager @Inject constructor() {
             val profileJson = JSONObject().apply {
                 put("id", supabaseUser.id)
                 put("name", googleUser.name)
-                put("email", googleUser.email)
             }
 
             val insertRequest = Request.Builder()
