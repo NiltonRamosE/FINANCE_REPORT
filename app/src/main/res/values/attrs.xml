@@ -1,0 +1,24 @@
+<!-- res/values/attrs.xml -->
+<resources>
+    <!-- Fondos -->
+    <attr name="backgroundPrimary" format="color" />
+    <attr name="backgroundSecondary" format="color" />
+    <attr name="cardBackground" format="color" />
+
+    <!-- Textos -->
+    <attr name="textPrimary" format="color" />
+    <attr name="textSecondary" format="color" />
+    <attr name="textTertiary" format="color" />
+
+    <!-- Inputs -->
+    <attr name="inputBackground" format="color" />
+    <attr name="inputStroke" format="color" />
+
+    <!-- Badges -->
+    <attr name="badgePrimaryBg" format="color" />
+    <attr name="badgeSecondaryBg" format="color" />
+
+    <!-- Colores de acento -->
+    <attr name="accentColor" format="color" />
+    <attr name="accentColorSecondary" format="color" />
+</resources>
