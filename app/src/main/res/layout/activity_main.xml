@@ -6,23 +6,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
+    android:background="?attr/backgroundPrimary"
     tools:context=".ui.main.MainActivity">
 
     <!-- Contenido principal -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:background="?attr/backgroundPrimary">
 
         <!-- Toolbar -->
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorSurface"
+            android:background="?attr/cardBackground"
             app:navigationIcon="@drawable/ic_menu"
+            app:navigationIconTint="?attr/textPrimary"
             app:title="@string/app_name"
-            app:titleTextColor="?attr/colorOnSurface" />
+            app:titleTextColor="?attr/textPrimary" />
 
         <!-- Contenedor de fragmentos -->
         <androidx.fragment.app.FragmentContainerView
@@ -43,7 +46,10 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        android:background="?attr/cardBackground"
         app:headerLayout="@layout/nav_header_main"
-        app:menu="@menu/navigation_menu" />
+        app:menu="@menu/navigation_menu"
+        app:itemTextColor="?attr/textPrimary"
+        app:itemIconTint="?attr/textPrimary" />
 
 </androidx.drawerlayout.widget.DrawerLayout>

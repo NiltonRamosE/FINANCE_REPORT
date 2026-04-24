@@ -50,9 +50,9 @@ class RecentMovementsAdapter(
 
                 tvAmount.setTextColor(
                     if (report.type == 'I') {
-                        itemView.context.getColor(R.color.finance_green_600)
+                        itemView.context.getColor(R.color.green_light)
                     } else {
-                        itemView.context.getColor(R.color.finance_red_600)
+                        itemView.context.getColor(R.color.red_light)
                     }
                 )
 

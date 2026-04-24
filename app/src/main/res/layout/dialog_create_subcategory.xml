@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="?attr/cardBackground">
 
     <TextView
         android:layout_width="wrap_content"
@@ -13,21 +14,24 @@
         android:textSize="14sp"
         android:textStyle="bold"
         android:layout_marginBottom="8dp"
-        android:textColor="@color/black"/>
+        android:textColor="?attr/textPrimary"/>
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        app:endIconMode="dropdown_menu">
+        app:endIconMode="dropdown_menu"
+        app:boxBackgroundColor="?attr/inputBackground"
+        app:boxStrokeColor="?attr/inputStroke">
 
         <AutoCompleteTextView
             android:id="@+id/etParentCategory"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/select_category"
-            android:inputType="none" />
+            android:inputType="none"
+            android:textColor="?attr/textPrimary" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -38,18 +42,21 @@
         android:textSize="14sp"
         android:textStyle="bold"
         android:layout_marginBottom="8dp"
-        android:textColor="@color/black"/>
+        android:textColor="?attr/textPrimary"/>
 
     <com.google.android.material.textfield.TextInputLayout
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:boxBackgroundColor="?attr/inputBackground"
+        app:boxStrokeColor="?attr/inputStroke">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etSubcategoryName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/example_subcategory" />
+            android:hint="@string/example_subcategory"
+            android:textColor="?attr/textPrimary" />
 
     </com.google.android.material.textfield.TextInputLayout>
 

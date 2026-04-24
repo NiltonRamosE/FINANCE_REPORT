@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="1dp">
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="?attr/cardBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -26,7 +27,7 @@
                 android:text="@string/default_concept_name"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"/>
+                android:textColor="?attr/textPrimary"/>
 
             <TextView
                 android:id="@+id/tvDate"
@@ -34,7 +35,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/default_date_name"
                 android:textSize="11sp"
-                android:textColor="@color/gold_700"
+                android:textColor="?attr/textTertiary"
                 android:layout_marginTop="4dp" />
 
         </LinearLayout>

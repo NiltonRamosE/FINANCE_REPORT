@@ -15,7 +15,7 @@
         android:layout_width="34dp"
         android:layout_height="34dp"
         app:cardCornerRadius="9dp"
-        app:cardBackgroundColor="@color/surface_light_200"
+        app:cardBackgroundColor="?attr/backgroundSecondary"
         app:cardElevation="0dp"
         app:strokeWidth="0dp">
 
@@ -26,7 +26,7 @@
             android:layout_gravity="center"
             android:src="@drawable/ic_user_avatar"
             android:contentDescription="@string/avatar"
-            app:tint="@color/navy_500" />
+            app:tint="?attr/colorPrimary" />
 
     </com.google.android.material.card.MaterialCardView>
 
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:text="@string/default_input"
             android:textSize="11sp"
-            android:textColor="@color/text_on_light_secondary"
+            android:textColor="?attr/textSecondary"
             android:layout_marginBottom="1dp" />
 
         <TextView
@@ -53,7 +53,7 @@
             android:layout_height="wrap_content"
             android:text="@string/default_concept_name"
             android:textSize="15sp"
-            android:textColor="@color/text_on_light_primary"
+            android:textColor="?attr/textPrimary"
             android:maxLines="1"
             android:ellipsize="end" />
 

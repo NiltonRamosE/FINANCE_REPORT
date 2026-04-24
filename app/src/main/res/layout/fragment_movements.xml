@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="?attr/colorPrimaryContainer">
+    android:background="?attr/backgroundPrimary">
 
     <!-- Filtros -->
     <LinearLayout
@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="12dp"
-        android:background="?attr/colorSurfaceVariant">
+        android:background="?attr/backgroundSecondary">
 
         <com.google.android.material.chip.Chip
             android:id="@+id/chipAll"
@@ -69,14 +69,14 @@
             android:layout_marginTop="16dp"
             android:text="@string/empty_movements"
             android:textSize="16sp"
-            android:textColor="@color/black" />
+            android:textColor="?attr/textSecondary" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/aad_first_movement"
             android:textSize="14sp"
-            android:textColor="@color/gold_700" />
+            android:textColor="?attr/colorPrimary" />
 
     </LinearLayout>
 
@@ -86,6 +86,7 @@
         android:layout_width="36dp"
         android:layout_height="36dp"
         android:layout_gravity="center"
+        android:indeterminateTint="?attr/colorPrimary"
         android:visibility="gone" />
 
 </LinearLayout>

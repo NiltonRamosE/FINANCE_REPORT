@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp"
     app:cardCornerRadius="12dp"
-    app:cardElevation="1dp">
+    app:cardElevation="1dp"
+    app:cardBackgroundColor="?attr/cardBackground">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -39,7 +40,7 @@
                 android:text="@string/default_category"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"/>
+                android:textColor="?attr/textPrimary"/>
 
             <TextView
                 android:id="@+id/tvSubcategory"
@@ -47,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/default_subcategory"
                 android:textSize="12sp"
-                android:textColor="?attr/colorOutline" />
+                android:textColor="?attr/textSecondary" />
 
             <TextView
                 android:id="@+id/tvConcept"
@@ -55,7 +56,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/default_concept_name"
                 android:textSize="12sp"
-                android:textColor="@color/navy_950"
+                android:textColor="?attr/textSecondary"
                 android:layout_marginTop="4dp" />
 
             <TextView
@@ -64,7 +65,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/default_date_name"
                 android:textSize="11sp"
-                android:textColor="@color/gold_700"
+                android:textColor="?attr/textTertiary"
                 android:layout_marginTop="4dp" />
 
         </LinearLayout>

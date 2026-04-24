@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="?attr/colorSurface"
+    android:background="?attr/backgroundPrimary"
     tools:context=".ui.reports.ReportsFragment">
 
     <LinearLayout
@@ -21,7 +21,7 @@
             app:cardCornerRadius="20dp"
             app:cardElevation="4dp"
             app:strokeWidth="0dp"
-            app:cardBackgroundColor="?attr/colorSurface">
+            app:cardBackgroundColor="?attr/cardBackground">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -100,6 +100,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         app:endIconMode="dropdown_menu"
+                        app:boxBackgroundColor="?attr/inputBackground"
+                        app:boxStrokeColor="?attr/inputStroke"
                         app:boxCornerRadiusTopStart="12dp"
                         app:boxCornerRadiusTopEnd="12dp"
                         app:boxCornerRadiusBottomStart="12dp"
@@ -111,8 +113,9 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/select_category"
                             android:inputType="none"
-                            android:textColor="@color/navy_900"
-                            android:dropDownSelector="@color/navy_400"/>
+                            android:textColor="?attr/textPrimary"
+                            android:popupBackground="?attr/backgroundPrimary"
+                            android:dropDownSelector="?attr/colorPrimary"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -126,6 +129,7 @@
                         android:insetBottom="0dp"
                         app:icon="@drawable/ic_add_circle"
                         app:iconGravity="textStart"
+                        app:iconTint="?attr/colorPrimary"
                         android:contentDescription="@string/add_category" />
 
                 </LinearLayout>
@@ -155,6 +159,8 @@
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
                         app:endIconMode="dropdown_menu"
+                        app:boxBackgroundColor="?attr/inputBackground"
+                        app:boxStrokeColor="?attr/inputStroke"
                         app:boxCornerRadiusTopStart="12dp"
                         app:boxCornerRadiusTopEnd="12dp"
                         app:boxCornerRadiusBottomStart="12dp"
@@ -166,8 +172,9 @@
                             android:layout_height="wrap_content"
                             android:hint="@string/select_subcategory"
                             android:inputType="none"
-                            android:textColor="@color/navy_900"
-                            android:dropDownSelector="@color/navy_400"/>
+                            android:textColor="?attr/textPrimary"
+                            android:popupBackground="?attr/backgroundPrimary"
+                            android:dropDownSelector="?attr/colorPrimary"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
 
@@ -181,6 +188,7 @@
                         android:insetBottom="0dp"
                         app:icon="@drawable/ic_add_circle"
                         app:iconGravity="textStart"
+                        app:iconTint="?attr/colorPrimary"
                         android:contentDescription="@string/add_subcategory" />
 
                 </LinearLayout>
@@ -210,6 +218,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     app:endIconMode="dropdown_menu"
+                    app:boxBackgroundColor="?attr/inputBackground"
+                    app:boxStrokeColor="?attr/inputStroke"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
                     app:boxCornerRadiusBottomStart="12dp"
@@ -221,8 +231,9 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/select_modality"
                         android:inputType="none"
-                        android:textColor="@color/navy_900"
-                        android:dropDownSelector="@color/navy_400"/>
+                        android:textColor="?attr/textPrimary"
+                        android:popupBackground="?attr/backgroundPrimary"
+                        android:dropDownSelector="?attr/colorPrimary"/>
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -244,6 +255,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="20dp"
                     app:endIconMode="clear_text"
+                    app:boxBackgroundColor="?attr/inputBackground"
+                    app:boxStrokeColor="?attr/inputStroke"
                     app:boxCornerRadiusTopStart="12dp"
                     app:boxCornerRadiusTopEnd="12dp"
                     app:boxCornerRadiusBottomStart="12dp"
@@ -255,7 +268,8 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/example_concept"
                         android:maxLines="2"
-                        android:inputType="textMultiLine" />
+                        android:inputType="textMultiLine"
+                        android:textColor="?attr/textPrimary" />
 
                 </com.google.android.material.textfield.TextInputLayout>
 
@@ -296,6 +310,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:endIconMode="custom"
+                            app:boxBackgroundColor="?attr/inputBackground"
+                            app:boxStrokeColor="?attr/inputStroke"
                             app:boxCornerRadiusTopStart="12dp"
                             app:boxCornerRadiusTopEnd="12dp"
                             app:boxCornerRadiusBottomStart="12dp"
@@ -308,7 +324,8 @@
                                 android:hint="@string/default_date_name"
                                 android:focusable="false"
                                 android:clickable="true"
-                                android:inputType="none" />
+                                android:inputType="none"
+                                android:textColor="?attr/textPrimary" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -337,6 +354,8 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             app:prefixText="S/ "
+                            app:boxBackgroundColor="?attr/inputBackground"
+                            app:boxStrokeColor="?attr/inputStroke"
                             app:boxCornerRadiusTopStart="12dp"
                             app:boxCornerRadiusTopEnd="12dp"
                             app:boxCornerRadiusBottomStart="12dp"
@@ -347,7 +366,8 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:hint="@string/default_amount_name"
-                                android:inputType="numberDecimal" />
+                                android:inputType="numberDecimal"
+                                android:textColor="?attr/textPrimary" />
 
                         </com.google.android.material.textfield.TextInputLayout>
 
@@ -366,6 +386,8 @@
                     android:textStyle="bold"
                     app:icon="@drawable/ic_save"
                     app:iconGravity="textStart"
+                    app:iconTint="?attr/colorOnPrimary"
+                    app:backgroundTint="?attr/colorPrimary"
                     app:cornerRadius="16dp"
                     style="@style/Widget.Material3.Button" />
 
@@ -375,6 +397,7 @@
                     android:layout_height="36dp"
                     android:layout_gravity="center"
                     android:layout_marginTop="16dp"
+                    android:indeterminateTint="?attr/colorPrimary"
                     android:visibility="gone" />
 
             </LinearLayout>

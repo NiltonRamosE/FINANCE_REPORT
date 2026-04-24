@@ -1,5 +1,48 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.FINANCE_REPORT.Dark" parent="Theme.FINANCE_REPORT">
+<!-- res/values-night/themes.xml -->
+<resources>
+    <style name="Theme.FINANCE_REPORT" parent="Theme.Material3.DayNight.NoActionBar">
 
+        <!-- Colores de acento -->
+        <item name="colorPrimary">@color/gold</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorSecondary">@color/white</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <item name="colorTertiary">@color/green_light</item>
+        <item name="colorOnTertiary">@color/black</item>
+
+        <!-- Errores -->
+        <item name="colorError">@color/red_light</item>
+        <item name="colorOnError">@color/black</item>
+
+        <!-- Atributos personalizados - Oscuro -->
+        <item name="backgroundPrimary">@color/dark_bg</item>
+        <item name="backgroundSecondary">@color/dark_surface</item>
+        <item name="cardBackground">@color/dark_card</item>
+
+        <item name="textPrimary">@color/text_dark_primary</item>
+        <item name="textSecondary">@color/text_dark_secondary</item>
+        <item name="textTertiary">@color/text_dark_tertiary</item>
+
+        <item name="inputBackground">@color/dark_surface</item>
+        <item name="inputStroke">@color/dark_border</item>
+
+        <item name="badgePrimaryBg">@color/gold</item>
+        <item name="badgeSecondaryBg">@color/dark_surface</item>
+
+        <item name="accentColor">@color/gold</item>
+        <item name="accentColorSecondary">@color/green_light</item>
+
+        <!-- Material compatibilidad -->
+        <item name="colorSurface">@color/dark_bg</item>
+        <item name="colorOnSurface">@color/text_dark_primary</item>
+        <item name="colorOutline">@color/dark_border</item>
+        <item name="colorOutlineVariant">@color/dark_surface</item>
+        <item name="android:colorBackground">@color/dark_bg</item>
+
+        <!-- Tipografía -->
+        <item name="textAppearanceDisplayLarge">@style/TextAppearance.FINANCE_REPORT.Display</item>
+        <item name="textAppearanceHeadlineMedium">@style/TextAppearance.FINANCE_REPORT.Headline</item>
+        <item name="textAppearanceBodyMedium">@style/TextAppearance.FINANCE_REPORT.Body</item>
+        <item name="textAppearanceLabelSmall">@style/TextAppearance.FINANCE_REPORT.Label</item>
     </style>
 </resources>

@@ -136,9 +136,9 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
 
     private fun showSuccessNotification(message: String, isIncome: Boolean = true) {
         val backgroundColor = if (isIncome) {
-            resources.getColor(R.color.finance_green_600, null)
+            resources.getColor(R.color.green, null)
         } else {
-            resources.getColor(R.color.finance_red_600, null)
+            resources.getColor(R.color.red, null)
         }
 
         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
@@ -150,7 +150,7 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
 
     private fun showErrorNotification(message: String) {
         Snackbar.make(binding.root, message, Snackbar.LENGTH_LONG)
-            .setBackgroundTint(resources.getColor(R.color.finance_red_600, null))
+            .setBackgroundTint(resources.getColor(R.color.red, null))
             .setTextColor(resources.getColor(R.color.white, null))
             .setAction("OK") { }
             .show()
@@ -255,11 +255,11 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
 
     private fun updateTypeButtonStyle(button: MaterialButton, isSelected: Boolean) {
         if (isSelected) {
-            button.setBackgroundColor(resources.getColor(R.color.navy_500, null))
+            button.setBackgroundColor(resources.getColor(R.color.gold, null))
             button.setTextColor(resources.getColor(R.color.white, null))
         } else {
-            button.setBackgroundColor(resources.getColor(R.color.surface_light_200, null))
-            button.setTextColor(resources.getColor(R.color.text_on_light_secondary, null))
+            button.setBackgroundColor(resources.getColor(R.color.primary, null))
+            button.setTextColor(resources.getColor(R.color.text_light_secondary, null))
         }
     }
 
@@ -322,10 +322,10 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
 
         val dialogBinding = DialogCreateCategoryBinding.inflate(layoutInflater)
 
-        dialogBinding.btnIncomeType.setBackgroundColor(resources.getColor(R.color.navy_500, null))
+        dialogBinding.btnIncomeType.setBackgroundColor(resources.getColor(R.color.gold, null))
         dialogBinding.btnIncomeType.setTextColor(resources.getColor(R.color.white, null))
-        dialogBinding.btnExpenseType.setBackgroundColor(resources.getColor(R.color.surface_light_200, null))
-        dialogBinding.btnExpenseType.setTextColor(resources.getColor(R.color.text_on_light_secondary, null))
+        dialogBinding.btnExpenseType.setBackgroundColor(resources.getColor(R.color.primary, null))
+        dialogBinding.btnExpenseType.setTextColor(resources.getColor(R.color.text_light_secondary, null))
 
         var selectedType = 'I'
 
@@ -370,11 +370,11 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
 
     private fun updateTypeButtonStyleDialog(button: MaterialButton, isSelected: Boolean) {
         if (isSelected) {
-            button.setBackgroundColor(resources.getColor(R.color.navy_500, null))
+            button.setBackgroundColor(resources.getColor(R.color.gold, null))
             button.setTextColor(resources.getColor(R.color.white, null))
         } else {
-            button.setBackgroundColor(resources.getColor(R.color.surface_light_200, null))
-            button.setTextColor(resources.getColor(R.color.text_on_light_secondary, null))
+            button.setBackgroundColor(resources.getColor(R.color.primary, null))
+            button.setTextColor(resources.getColor(R.color.text_light_secondary, null))
         }
     }
 

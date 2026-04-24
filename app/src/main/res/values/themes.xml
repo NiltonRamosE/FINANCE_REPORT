@@ -1,55 +1,52 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- res/values/themes.xml -->
 <resources>
     <style name="Theme.FINANCE_REPORT" parent="Theme.Material3.DayNight.NoActionBar">
 
-        <!-- ── Colores primarios ── -->
-        <item name="colorPrimary">@color/navy_500</item>
-        <item name="colorOnPrimary">@color/white</item>
-        <item name="colorPrimaryContainer">@color/blue_50</item>
-        <item name="colorOnPrimaryContainer">@color/navy_900</item>
-
-        <!-- ── Colores secundarios (dorado) ── -->
-        <item name="colorSecondary">@color/gold_600</item>
+        <!-- Colores de acento -->
+        <item name="colorPrimary">@color/gold</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <item name="colorSecondary">@color/black</item>
         <item name="colorOnSecondary">@color/white</item>
-        <item name="colorSecondaryContainer">@color/gold_100</item>
-        <item name="colorOnSecondaryContainer">@color/gold_700</item>
-
-        <!-- ── Terciarios (verde financiero) ── -->
-        <item name="colorTertiary">@color/finance_green_400</item>
+        <item name="colorTertiary">@color/green</item>
         <item name="colorOnTertiary">@color/white</item>
-        <item name="colorTertiaryContainer">@color/finance_green_50</item>
-        <item name="colorOnTertiaryContainer">@color/finance_green_800</item>
 
-        <!-- ── Errores ── -->
-        <item name="colorError">@color/finance_red_400</item>
+        <!-- Errores -->
+        <item name="colorError">@color/red</item>
         <item name="colorOnError">@color/white</item>
-        <item name="colorErrorContainer">@color/finance_red_50</item>
-        <item name="colorOnErrorContainer">@color/finance_red_600</item>
 
-        <!-- ── Superficies ── -->
-        <item name="colorSurface">@color/surface_light_300</item>
-        <item name="colorOnSurface">@color/text_on_light_primary</item>
-        <item name="colorSurfaceVariant">@color/surface_light_200</item>
-        <item name="colorOnSurfaceVariant">@color/text_on_light_secondary</item>
-        <item name="colorSurfaceContainer">@color/surface_light_100</item>
-        <item name="colorSurfaceContainerHigh">@color/surface_light_200</item>
+        <!-- Atributos personalizados - Claro -->
+        <item name="backgroundPrimary">@color/white</item>
+        <item name="backgroundSecondary">@color/gray_light</item>
+        <item name="cardBackground">@color/white</item>
 
-        <!-- ── Bordes ── -->
-        <item name="colorOutline">@color/border_dark_medium</item>
-        <item name="colorOutlineVariant">@color/border_light_subtle</item>
+        <item name="textPrimary">@color/text_light_primary</item>
+        <item name="textSecondary">@color/text_light_secondary</item>
+        <item name="textTertiary">@color/text_light_tertiary</item>
 
-        <!-- ── Fondo ── -->
-        <item name="android:colorBackground">@color/surface_light_100</item>
-        <item name="colorOnBackground">@color/text_on_light_primary</item>
+        <item name="inputBackground">@color/white</item>
+        <item name="inputStroke">@color/gray_medium</item>
 
-        <!-- ── Tipografía ── -->
+        <item name="badgePrimaryBg">@color/gold</item>
+        <item name="badgeSecondaryBg">@color/gray_light</item>
+
+        <item name="accentColor">@color/gold</item>
+        <item name="accentColorSecondary">@color/green</item>
+
+        <!-- Material compatibilidad -->
+        <item name="colorSurface">@color/white</item>
+        <item name="colorOnSurface">@color/text_light_primary</item>
+        <item name="colorOutline">@color/gray_medium</item>
+        <item name="colorOutlineVariant">@color/gray_light</item>
+        <item name="android:colorBackground">@color/white</item>
+
+        <!-- Tipografía -->
         <item name="textAppearanceDisplayLarge">@style/TextAppearance.FINANCE_REPORT.Display</item>
         <item name="textAppearanceHeadlineMedium">@style/TextAppearance.FINANCE_REPORT.Headline</item>
         <item name="textAppearanceBodyMedium">@style/TextAppearance.FINANCE_REPORT.Body</item>
         <item name="textAppearanceLabelSmall">@style/TextAppearance.FINANCE_REPORT.Label</item>
-
     </style>
 
+    <!-- Estilos de texto -->
     <style name="TextAppearance.FINANCE_REPORT.Display" parent="TextAppearance.Material3.DisplayLarge">
         <item name="fontFamily">@font/playfair_display_bold</item>
         <item name="android:textSize">32sp</item>
@@ -70,31 +67,20 @@
         <item name="android:letterSpacing">0.08</item>
     </style>
 
+    <!-- Estilos de botones -->
     <style name="Widget.FINANCE_REPORT.Button.Google" parent="Widget.Material3.Button.ElevatedButton">
-        <item name="android:backgroundTint">@color/text_on_dark_primary</item>
-        <item name="android:textColor">@color/text_on_light_primary</item>
-        <item name="iconTint">@null</item>
+        <item name="android:backgroundTint">@color/white</item>
+        <item name="android:textColor">@color/text_light_primary</item>
         <item name="cornerRadius">12dp</item>
         <item name="elevation">2dp</item>
-        <item name="android:stateListAnimator">@null</item>
-        <item name="rippleColor">@color/blue_50</item>
-        <item name="android:fontFamily">sans-serif-medium</item>
-    </style>
-
-    <style name="Widget.FINANCE_REPORT.Button.Placeholder" parent="Widget.Material3.Button.OutlinedButton">
-        <item name="cornerRadius">10dp</item>
-        <item name="strokeColor">?attr/colorOutlineVariant</item>
-        <item name="android:textColor">?attr/colorOutline</item>
-        <item name="android:alpha">0.5</item>
+        <item name="rippleColor">@color/gray_light</item>
     </style>
 
     <style name="Widget.FINANCE_REPORT.Button.Social" parent="Widget.Material3.Button.OutlinedButton">
         <item name="cornerRadius">12dp</item>
         <item name="strokeColor">?attr/colorOutlineVariant</item>
-        <item name="android:textColor">?attr/colorOnSurface</item>
-        <item name="iconTint">?attr/colorPrimary</item>
+        <item name="android:textColor">?attr/textSecondary</item>
+        <item name="iconTint">?attr/accentColor</item>
         <item name="android:gravity">center</item>
-        <item name="android:paddingStart">16dp</item>
-        <item name="android:paddingEnd">16dp</item>
     </style>
 </resources>

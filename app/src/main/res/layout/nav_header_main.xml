@@ -5,13 +5,13 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="20dp"
-    android:background="?attr/colorSurface">
+    android:background="?attr/cardBackground">
 
     <androidx.cardview.widget.CardView
         android:layout_width="64dp"
         android:layout_height="64dp"
         app:cardCornerRadius="32dp"
-        app:cardBackgroundColor="@color/gold_100"
+        app:cardBackgroundColor="?attr/badgeSecondaryBg"
         app:cardElevation="2dp">
 
         <de.hdodenhof.circleimageview.CircleImageView
@@ -31,7 +31,7 @@
         android:text="@string/default_name_user"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:textColor="?attr/colorOnSurface" />
+        android:textColor="?attr/textPrimary" />
 
     <TextView
         android:id="@+id/tvUserEmail"
@@ -39,7 +39,7 @@
         android:layout_height="wrap_content"
         android:text="@string/default_email_user"
         android:textSize="12sp"
-        android:textColor="?attr/colorOutline" />
+        android:textColor="?attr/textSecondary" />
 
     <!-- Botón Ver Perfil -->
     <com.google.android.material.button.MaterialButton
@@ -53,6 +53,7 @@
         app:icon="@drawable/ic_edit"
         app:iconGravity="textStart"
         app:iconSize="16dp"
-        app:iconTint="?attr/colorPrimary" />
+        app:iconTint="?attr/colorPrimary"
+        android:textColor="?attr/textPrimary" />
 
 </LinearLayout>

@@ -35,7 +35,7 @@
                 android:text="Subcategoría"
                 android:textSize="14sp"
                 android:textStyle="bold"
-                android:textColor="?attr/colorOnSurface" />
+                android:textColor="?attr/textPrimary" />
 
             <TextView
                 android:id="@+id/tvCategoryName"
@@ -43,7 +43,7 @@
                 android:layout_height="wrap_content"
                 android:text="Categoría"
                 android:textSize="12sp"
-                android:textColor="?attr/colorOutline" />
+                android:textColor="?attr/textSecondary" />
 
         </LinearLayout>
 
@@ -54,7 +54,7 @@
             android:text="S/ 0.00"
             android:textSize="14sp"
             android:textStyle="bold"
-            android:textColor="?attr/colorOnSurface" />
+            android:textColor="?attr/textPrimary" />
 
     </LinearLayout>
 

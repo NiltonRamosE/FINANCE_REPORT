@@ -1,48 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="navy_950">#070F1E</color>
-    <color name="navy_900">#0A1628</color>
-    <color name="navy_800">#0F2040</color>
-    <color name="navy_700">#132850</color>
-    <color name="navy_600">#1A3A6B</color>
-    <color name="navy_500">#1E4D8C</color>
-    <color name="navy_400">#2563AE</color>
-    <color name="blue_400">#3B82C8</color>
-    <color name="blue_300">#4FA3E0</color>
-    <color name="blue_200">#7EC0ED</color>
-    <color name="blue_100">#B5D8F5</color>
-    <color name="blue_50">#E6F2FB</color>
-    <color name="gold_700">#8A6A1A</color>
-    <color name="gold_600">#A8801E</color>
-    <color name="gold_500">#C4A35A</color>
-    <color name="gold_400">#D4B87A</color>
-    <color name="gold_300">#E2CE9C</color>
-    <color name="gold_100">#F5EEDB</color>
-    <color name="finance_green_800">#0A3D20</color>
-    <color name="finance_green_600">#14653A</color>
-    <color name="finance_green_400">#1E9E5C</color>
-    <color name="finance_green_200">#6DD4A2</color>
-    <color name="finance_green_50">#E0F5EC</color>
-    <color name="finance_red_600">#C0392B</color>
-    <color name="finance_red_400">#E74C3C</color>
-    <color name="finance_red_50">#FDEDEC</color>
-    <color name="surface_dark_100">#0E1C35</color>
-    <color name="surface_dark_200">#121F3A</color>
-    <color name="surface_dark_300">#162540</color>
-    <color name="surface_light_100">#F4F7FC</color>
-    <color name="surface_light_200">#EAF0F9</color>
-    <color name="surface_light_300">#FFFFFF</color>
-    <color name="text_on_dark_primary">#EAF0FB</color>
-    <color name="text_on_dark_secondary">#8BA3C7</color>
-    <color name="text_on_dark_tertiary">#4A6A94</color>
-    <color name="text_on_light_primary">#0A1628</color>
-    <color name="text_on_light_secondary">#3A5A80</color>
-    <color name="border_dark_subtle">#1A2D4A</color>
-    <color name="border_dark_medium">#243D60</color>
-    <color name="border_gold_subtle">#3A3020</color>
-    <color name="border_light_subtle">#D8E4F0</color>
-    <color name="md_theme_seed">#1E4D8C</color>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Colores base - Modo Claro -->
+    <color name="white">#FFFFFF</color>
+    <color name="black">#000000</color>
+    <color name="gray_light">#F5F5F5</color>
+    <color name="gray_medium">#E0E0E0</color>
+    <color name="gray_dark">#9E9E9E</color>
 
+    <!-- Colores base - Modo Oscuro -->
+    <color name="dark_bg">#121212</color>
+    <color name="dark_surface">#1E1E1E</color>
+    <color name="dark_card">#2D2D2D</color>
+    <color name="dark_border">#3D3D3D</color>
+
+    <!-- Textos - Modo Claro -->
+    <color name="text_light_primary">#000000</color>
+    <color name="text_light_secondary">#666666</color>
+    <color name="text_light_tertiary">#999999</color>
+
+    <!-- Textos - Modo Oscuro -->
+    <color name="text_dark_primary">#FFFFFF</color>
+    <color name="text_dark_secondary">#B3B3B3</color>
+    <color name="text_dark_tertiary">#808080</color>
+
+    <!-- Colores de acento (se mantienen) -->
+    <color name="gold">#C4A35A</color>
+    <color name="gold_dark">#8A6A1A</color>
+    <color name="green">#14653A</color>
+    <color name="green_light">#1E9E5C</color>
+    <color name="red">#C0392B</color>
+    <color name="red_light">#E74C3C</color>
+
+    <!-- Colores específicos por tema -->
+    <color name="primary">#C4A35A</color>      <!-- Dorado como primario -->
+    <color name="primary_dark">#8A6A1A</color>
 </resources>

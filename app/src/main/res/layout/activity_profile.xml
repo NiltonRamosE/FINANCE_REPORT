@@ -4,25 +4,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@color/blue_50">
+    android:background="?attr/backgroundPrimary">
 
     <!-- ── Top Bar ── -->
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@color/surface_light_300"
+        android:background="?attr/cardBackground"
         android:elevation="0dp"
         app:navigationIcon="@drawable/ic_arrow_back"
-        app:navigationIconTint="@color/navy_500"
+        app:navigationIconTint="?attr/colorPrimary"
         app:title="Mi perfil"
-        app:titleTextColor="@color/text_on_light_primary"
+        app:titleTextColor="?attr/textPrimary"
         app:titleTextAppearance="@style/TextAppearance.FINANCE_REPORT.Headline" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:background="@color/border_light_subtle" />
+        android:background="?attr/colorOutlineVariant" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -57,9 +57,9 @@
                         android:layout_width="96dp"
                         android:layout_height="96dp"
                         app:cardCornerRadius="48dp"
-                        app:cardBackgroundColor="@color/gold_100"
+                        app:cardBackgroundColor="?attr/badgeSecondaryBg"
                         app:cardElevation="0dp"
-                        app:strokeColor="@color/gold_500"
+                        app:strokeColor="?attr/colorSecondary"
                         app:strokeWidth="2.5dp">
 
                         <ImageView
@@ -79,7 +79,7 @@
                             android:text="@string/initials"
                             android:textSize="32sp"
                             android:textStyle="normal"
-                            android:textColor="@color/gold_700"
+                            android:textColor="?attr/colorPrimary"
                             android:fontFamily="sans-serif-medium" />
 
                         <ProgressBar
@@ -100,9 +100,9 @@
                         android:layout_marginBottom="2dp"
                         android:layout_marginEnd="2dp"
                         app:cardCornerRadius="13dp"
-                        app:cardBackgroundColor="@color/navy_500"
+                        app:cardBackgroundColor="?attr/colorPrimary"
                         app:cardElevation="2dp"
-                        app:strokeColor="@color/blue_50"
+                        app:strokeColor="?attr/backgroundPrimary"
                         app:strokeWidth="2dp">
 
                         <ImageView
@@ -111,7 +111,7 @@
                             android:layout_gravity="center"
                             android:src="@drawable/ic_edit"
                             android:contentDescription="@string/photo_edit"
-                            app:tint="@color/white" />
+                            app:tint="?attr/colorOnPrimary" />
 
                     </com.google.android.material.card.MaterialCardView>
 
@@ -127,7 +127,7 @@
                     android:textSize="18sp"
                     android:textStyle="normal"
                     android:fontFamily="sans-serif-medium"
-                    android:textColor="@color/text_on_light_primary" />
+                    android:textColor="?attr/textPrimary" />
 
                 <!-- Email below name -->
                 <TextView
@@ -137,7 +137,7 @@
                     android:layout_marginTop="2dp"
                     android:text="@string/default_email_user"
                     android:textSize="13sp"
-                    android:textColor="@color/text_on_light_secondary" />
+                    android:textColor="?attr/textSecondary" />
 
             </LinearLayout>
 
@@ -147,9 +147,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 app:cardCornerRadius="16dp"
-                app:cardBackgroundColor="@color/surface_light_300"
+                app:cardBackgroundColor="?attr/cardBackground"
                 app:cardElevation="0dp"
-                app:strokeColor="@color/border_light_subtle"
+                app:strokeColor="?attr/colorOutlineVariant"
                 app:strokeWidth="0.5dp">
 
                 <LinearLayout
@@ -176,7 +176,7 @@
                             android:textSize="11sp"
                             android:letterSpacing="0.08"
                             android:fontFamily="sans-serif-medium"
-                            android:textColor="@color/navy_500" />
+                            android:textColor="?attr/colorPrimary" />
 
                         <!-- Edit pill button -->
                         <com.google.android.material.button.MaterialButton
@@ -189,13 +189,13 @@
                             android:textAllCaps="false"
                             android:paddingStart="12dp"
                             android:paddingEnd="12dp"
-                            app:backgroundTint="@color/blue_50"
-                            android:textColor="@color/navy_500"
+                            app:backgroundTint="?attr/badgePrimaryBg"
+                            android:textColor="?attr/textPrimary"
                             app:cornerRadius="20dp"
                             app:icon="@drawable/ic_edit"
                             app:iconSize="13dp"
                             app:iconGravity="textStart"
-                            app:iconTint="@color/navy_500"
+                            app:iconTint="?attr/textPrimary"
                             app:iconPadding="4dp"
                             app:elevation="0dp" />
 
@@ -204,7 +204,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
-                        android:background="@color/surface_light_200" />
+                        android:background="?attr/colorOutlineVariant" />
 
                     <!-- Field: Nombre -->
                     <include layout="@layout/item_profile_field"
@@ -214,7 +214,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
                         android:layout_marginStart="64dp"
-                        android:background="@color/surface_light_200" />
+                        android:background="?attr/colorOutlineVariant" />
 
                     <!-- Field: Apellido Paterno -->
                     <include layout="@layout/item_profile_field"
@@ -224,7 +224,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
                         android:layout_marginStart="64dp"
-                        android:background="@color/surface_light_200" />
+                        android:background="?attr/colorOutlineVariant" />
 
                     <!-- Field: Apellido Materno -->
                     <include layout="@layout/item_profile_field"
@@ -234,7 +234,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
                         android:layout_marginStart="64dp"
-                        android:background="@color/surface_light_200" />
+                        android:background="?attr/colorOutlineVariant" />
 
                     <!-- Field: Género -->
                     <include layout="@layout/item_profile_field"
@@ -244,7 +244,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="0.5dp"
                         android:layout_marginStart="64dp"
-                        android:background="@color/surface_light_200" />
+                        android:background="?attr/colorOutlineVariant" />
 
                     <!-- Field: Correo -->
                     <include layout="@layout/item_profile_field"
@@ -264,11 +264,11 @@
                 android:textSize="16sp"
                 android:fontFamily="sans-serif-medium"
                 android:visibility="gone"
-                app:backgroundTint="@color/navy_500"
+                app:backgroundTint="?attr/colorPrimary"
                 app:cornerRadius="14dp"
                 app:icon="@drawable/ic_save"
                 app:iconGravity="textStart"
-                app:iconTint="@color/white"
+                app:iconTint="?attr/colorOnPrimary"
                 app:elevation="0dp" />
 
         </LinearLayout>

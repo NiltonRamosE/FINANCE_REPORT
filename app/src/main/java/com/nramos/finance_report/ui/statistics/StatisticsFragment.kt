@@ -138,9 +138,9 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
         binding.tvBalance.text = formatter.format(state.balance)
 
         val balanceColor = if (state.balance >= 0) {
-            ContextCompat.getColor(requireContext(), R.color.finance_green_600)
+            ContextCompat.getColor(requireContext(), R.color.green)
         } else {
-            ContextCompat.getColor(requireContext(), R.color.finance_red_600)
+            ContextCompat.getColor(requireContext(), R.color.red)
         }
         binding.tvBalance.setTextColor(balanceColor)
     }
@@ -157,8 +157,8 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
             val singleExpenseEntry = listOf(Entry(0f, monthlyStats[0].expense.toFloat()))
 
             val incomeDataSet = LineDataSet(singleEntry, "Ingresos").apply {
-                color = ContextCompat.getColor(requireContext(), R.color.finance_green_600)
-                setCircleColor(ContextCompat.getColor(requireContext(), R.color.finance_green_600))
+                color = ContextCompat.getColor(requireContext(), R.color.green)
+                setCircleColor(ContextCompat.getColor(requireContext(), R.color.red))
                 lineWidth = 2f
                 circleRadius = 4f
                 setDrawCircleHole(false)
@@ -166,8 +166,8 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
             }
 
             val expenseDataSet = LineDataSet(singleExpenseEntry, "Egresos").apply {
-                color = ContextCompat.getColor(requireContext(), R.color.finance_red_600)
-                setCircleColor(ContextCompat.getColor(requireContext(), R.color.finance_red_600))
+                color = ContextCompat.getColor(requireContext(), R.color.red)
+                setCircleColor(ContextCompat.getColor(requireContext(), R.color.red))
                 lineWidth = 2f
                 circleRadius = 4f
                 setDrawCircleHole(false)
@@ -191,8 +191,8 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
             }
 
             val incomeDataSet = LineDataSet(incomeEntries, "Ingresos").apply {
-                color = ContextCompat.getColor(requireContext(), R.color.finance_green_600)
-                setCircleColor(ContextCompat.getColor(requireContext(), R.color.finance_green_600))
+                color = ContextCompat.getColor(requireContext(), R.color.green)
+                setCircleColor(ContextCompat.getColor(requireContext(), R.color.green))
                 lineWidth = 2f
                 circleRadius = 4f
                 setDrawCircleHole(false)
@@ -200,8 +200,8 @@ class StatisticsFragment : Fragment(R.layout.fragment_statistics) {
             }
 
             val expenseDataSet = LineDataSet(expenseEntries, "Egresos").apply {
-                color = ContextCompat.getColor(requireContext(), R.color.finance_red_600)
-                setCircleColor(ContextCompat.getColor(requireContext(), R.color.finance_red_600))
+                color = ContextCompat.getColor(requireContext(), R.color.red)
+                setCircleColor(ContextCompat.getColor(requireContext(), R.color.red))
                 lineWidth = 2f
                 circleRadius = 4f
                 setDrawCircleHole(false)

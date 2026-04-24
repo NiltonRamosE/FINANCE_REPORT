@@ -48,14 +48,14 @@ class MovementsAdapter(
                     'I' -> {
                         ivTypeIcon.setImageResource(R.drawable.ic_income)
                         tvAmount.setTextColor(
-                            itemView.context.getColor(R.color.finance_green_600)
+                            itemView.context.getColor(R.color.green)
                         )
                         tvAmount.text = formatAmount(report.amount, true)
                     }
                     'E' -> {
                         ivTypeIcon.setImageResource(R.drawable.ic_expense)
                         tvAmount.setTextColor(
-                            itemView.context.getColor(R.color.finance_red_600)
+                            itemView.context.getColor(R.color.red)
                         )
                         tvAmount.text = formatAmount(report.amount, false)
                     }

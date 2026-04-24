@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="?attr/colorPrimaryContainer">
+    android:background="?attr/backgroundPrimary">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -17,21 +17,22 @@
             android:layout_height="wrap_content"
             app:cardCornerRadius="20dp"
             app:cardElevation="2dp"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="20dp"
+            app:cardBackgroundColor="?attr/cardBackground">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="20dp"
-                android:background="?attr/colorPrimaryContainer">
+                android:background="?attr/cardBackground">
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/total_amount"
                     android:textSize="14sp"
-                    android:textColor="@color/navy_950"
+                    android:textColor="?attr/textSecondary"
                     android:textAllCaps="true" />
 
                 <TextView
@@ -41,7 +42,7 @@
                     android:text="@string/default_amount_name"
                     android:textSize="32sp"
                     android:textStyle="bold"
-                    android:textColor="?attr/colorOnPrimaryContainer"
+                    android:textColor="?attr/textPrimary"
                     android:layout_marginTop="8dp" />
 
             </LinearLayout>
@@ -56,14 +57,15 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginBottom="12dp"
-            android:textColor="@color/black"/>
+            android:textColor="?attr/textPrimary"/>
 
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardCornerRadius="16dp"
             app:cardElevation="1dp"
-            android:layout_marginBottom="20dp">
+            android:layout_marginBottom="20dp"
+            app:cardBackgroundColor="?attr/cardBackground">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -92,7 +94,7 @@
                         android:layout_marginStart="12dp"
                         android:text="@string/cash"
                         android:textSize="14sp"
-                        android:textColor="@color/black"/>
+                        android:textColor="?attr/textPrimary"/>
 
                     <TextView
                         android:id="@+id/tvCashBalance"
@@ -101,7 +103,7 @@
                         android:text="@string/default_amount_name"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:textColor="@color/black"/>
+                        android:textColor="?attr/textPrimary"/>
 
                 </LinearLayout>
 
@@ -125,7 +127,7 @@
                         android:layout_marginStart="12dp"
                         android:text="@string/yape"
                         android:textSize="14sp"
-                        android:textColor="@color/black"/>
+                        android:textColor="?attr/textPrimary"/>
 
                     <TextView
                         android:id="@+id/tvYapeBalance"
@@ -134,7 +136,7 @@
                         android:text="@string/default_amount_name"
                         android:textSize="14sp"
                         android:textStyle="bold"
-                        android:textColor="@color/black"/>
+                        android:textColor="?attr/textPrimary"/>
 
                 </LinearLayout>
 
@@ -150,7 +152,7 @@
             android:textSize="16sp"
             android:textStyle="bold"
             android:layout_marginBottom="12dp"
-            android:textColor="@color/black"/>
+            android:textColor="?attr/textPrimary"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvRecentMovements"

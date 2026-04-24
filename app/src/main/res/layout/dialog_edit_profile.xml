@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="?attr/cardBackground">
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
@@ -12,13 +13,17 @@
         android:layout_marginBottom="12dp"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         app:hintEnabled="true"
-        android:hint="@string/profile_name">
+        android:hint="@string/profile_name"
+        app:boxBackgroundColor="?attr/inputBackground"
+        app:boxStrokeColor="?attr/inputStroke">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etEditName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:textColor="?attr/textPrimary"
+            android:textColorHint="?attr/textSecondary" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -28,13 +33,17 @@
         android:layout_marginBottom="12dp"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         app:hintEnabled="true"
-        android:hint="@string/profile_paternal_surname">
+        android:hint="@string/profile_paternal_surname"
+        app:boxBackgroundColor="?attr/inputBackground"
+        app:boxStrokeColor="?attr/inputStroke">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etEditPaternalSurname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:textColor="?attr/textPrimary"
+            android:textColorHint="?attr/textSecondary" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -44,13 +53,17 @@
         android:layout_marginBottom="12dp"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
         app:hintEnabled="true"
-        android:hint="@string/profile_maternal_surname">
+        android:hint="@string/profile_maternal_surname"
+        app:boxBackgroundColor="?attr/inputBackground"
+        app:boxStrokeColor="?attr/inputStroke">
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etEditMaternalSurname"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="textPersonName" />
+            android:inputType="textPersonName"
+            android:textColor="?attr/textPrimary"
+            android:textColorHint="?attr/textSecondary" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -59,13 +72,16 @@
         android:layout_height="wrap_content"
         style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         app:hintEnabled="true"
-        android:hint="@string/profile_gender">
+        android:hint="@string/profile_gender"
+        app:boxBackgroundColor="?attr/inputBackground"
+        app:boxStrokeColor="?attr/inputStroke">
 
         <com.google.android.material.textfield.MaterialAutoCompleteTextView
             android:id="@+id/etEditGender"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none" />
+            android:inputType="none"
+            android:textColor="?attr/textPrimary" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
