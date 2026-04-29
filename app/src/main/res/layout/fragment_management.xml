@@ -6,15 +6,6 @@
     android:orientation="vertical"
     android:background="?attr/backgroundPrimary">
 
-    <!-- Toolbar -->
-    <com.google.android.material.appbar.MaterialToolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/cardBackground"
-        app:title="Gestión"
-        app:titleTextColor="?attr/textPrimary" />
-
     <!-- Tabs para alternar entre Categorías y Subcategorías -->
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
