@@ -69,7 +69,7 @@
     <string name="type">Tipo</string>
     <string name="income">Ingreso</string>
     <string name="expense">Egreso</string>
-
+    <string name="search_concept">Buscar por concepto...</string>
     <!--DASHBOARD-->
     <string name="total_amount">Saldo Total</string>
     <string name="resume_by_modality">Resumen por Modalidad</string>

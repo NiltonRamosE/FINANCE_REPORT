@@ -1,6 +1,8 @@
 package com.nramos.finance_report.ui.movements
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
 import android.widget.ArrayAdapter
 import androidx.core.content.ContextCompat
@@ -39,6 +41,7 @@ class MovementsFragment : Fragment(R.layout.fragment_movements) {
         setupRecyclerView()
         setupObservers()
         setupListeners()
+        setupSearchListener()
         setupEditDialogObserver()
     }
 
@@ -81,6 +84,19 @@ class MovementsFragment : Fragment(R.layout.fragment_movements) {
                 }
             }
         }
+    }
+
+    private fun setupSearchListener() {
+        binding.etSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val query = s?.toString() ?: ""
+                viewModel.updateSearchQuery(query)
+            }
+
+            override fun afterTextChanged(s: Editable?) {}
+        })
     }
 
     private fun setupListeners() {
