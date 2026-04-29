@@ -216,4 +216,99 @@ class CategoryRepository @Inject constructor(
             }
         }
     }
+
+    suspend fun updateCategory(categoryId: String, name: String, inputType: Char): Flow<NetworkResult<Category>> = flow {
+        emit(NetworkResult.Loading())
+
+        try {
+            val result = withContext(Dispatchers.IO) {
+                val token = tokenManager.getToken()
+                if (token == null) {
+                    throw Exception("No hay sesión activa")
+                }
+
+                val jsonBody = JSONObject().apply {
+                    put("name", name)
+                    put("input_type", inputType.toString())
+                }
+
+                val requestBody = jsonBody.toString().toRequestBody(jsonMediaType)
+                val url = "${BuildConfig.SUPABASE_URL}/rest/v1/categories?id=eq.$categoryId"
+
+                val request = Request.Builder()
+                    .url(url)
+                    .patch(requestBody)
+                    .header("apikey", BuildConfig.SUPABASE_ANON_KEY)
+                    .header("Authorization", "Bearer $token")
+                    .header("Content-Type", "application/json")
+                    .header("Prefer", "return=representation")
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string() ?: ""
+
+                Triple(response.isSuccessful, response.code, responseBody)
+            }
+
+            val (isSuccessful, code, responseBody) = result
+
+            if (isSuccessful) {
+                val trimmedResponse = responseBody.trim()
+                val categoryData = if (trimmedResponse.startsWith("[")) {
+                    JSONArray(trimmedResponse).getJSONObject(0)
+                } else {
+                    JSONObject(trimmedResponse)
+                }
+
+                val category = Category(
+                    categoryId = categoryData.getString("id"),
+                    userId = categoryData.getString("user_id"),
+                    name = categoryData.getString("name"),
+                    inputType = categoryData.getString("input_type").first(),
+                    subcategories = emptyList()
+                )
+
+                emit(NetworkResult.Success(category))
+            } else {
+                emit(NetworkResult.Error("Error al actualizar categoría: código $code"))
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "Error de conexión"))
+        }
+    }
+
+    suspend fun deleteCategory(categoryId: String): Flow<NetworkResult<Unit>> = flow {
+        emit(NetworkResult.Loading())
+
+        try {
+            val result = withContext(Dispatchers.IO) {
+                val token = tokenManager.getToken()
+                if (token == null) {
+                    throw Exception("No hay sesión activa")
+                }
+
+                val url = "${BuildConfig.SUPABASE_URL}/rest/v1/categories?id=eq.$categoryId"
+
+                val request = Request.Builder()
+                    .url(url)
+                    .delete()
+                    .header("apikey", BuildConfig.SUPABASE_ANON_KEY)
+                    .header("Authorization", "Bearer $token")
+                    .build()
+
+                val response = client.newCall(request).execute()
+                Pair(response.isSuccessful, response.code)
+            }
+
+            val (isSuccessful, code) = result
+
+            if (isSuccessful) {
+                emit(NetworkResult.Success(Unit))
+            } else {
+                emit(NetworkResult.Error("Error al eliminar categoría: código $code"))
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "Error de conexión"))
+        }
+    }
 }
