@@ -3,8 +3,10 @@ package com.nramos.finance_report.ui.movements
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nramos.finance_report.data.repository.CategoryRepository
+import com.nramos.finance_report.data.repository.ModalityRepository
 import com.nramos.finance_report.data.repository.ReportRepository
 import com.nramos.finance_report.data.repository.SubcategoryRepository
+import com.nramos.finance_report.domain.model.Category
 import com.nramos.finance_report.domain.model.Report
 import com.nramos.finance_report.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +21,8 @@ import javax.inject.Inject
 class MovementsViewModel @Inject constructor(
     private val reportRepository: ReportRepository,
     private val categoryRepository: CategoryRepository,
-    private val subcategoryRepository: SubcategoryRepository
+    private val subcategoryRepository: SubcategoryRepository,
+    private val modalityRepository: ModalityRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(MovementsState())
@@ -29,6 +32,8 @@ class MovementsViewModel @Inject constructor(
 
     init {
         loadReports()
+        loadModalities()
+        loadAllCategories()
     }
 
     fun onEvent(event: MovementsEvent) {
@@ -37,7 +42,127 @@ class MovementsViewModel @Inject constructor(
                 _state.update { it.copy(selectedFilter = event.filter) }
                 loadReports(event.filter)
             }
+            is MovementsEvent.OnEditReport -> {
+                _state.update { it.copy(reportToEdit = event.report, showEditDialog = true) }
+            }
+            is MovementsEvent.OnDeleteReport -> {
+                deleteReport(event.reportId)
+            }
+            is MovementsEvent.OnUpdateReport -> {
+                updateReport(
+                    event.reportId,
+                    event.categoryId,
+                    event.subcategoryId,
+                    event.modalityId,
+                    event.concept,
+                    event.date,
+                    event.amount,
+                    event.type
+                )
+            }
+            is MovementsEvent.OnCloseEditDialog -> {
+                _state.update { it.copy(showEditDialog = false, reportToEdit = null) }
+            }
         }
+    }
+
+    private fun loadModalities() {
+        viewModelScope.launch {
+            modalityRepository.getModalities().collect { result ->
+                when (result) {
+                    is NetworkResult.Success -> {
+                        _state.update { it.copy(modalities = result.data ?: emptyList()) }
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun loadAllCategories() {
+        viewModelScope.launch {
+            val allCategories = mutableListOf<Category>()
+
+            categoryRepository.getCategoriesByType('I').collect { result ->
+                when (result) {
+                    is NetworkResult.Success -> {
+                        allCategories.addAll(result.data ?: emptyList())
+                    }
+                    else -> {}
+                }
+            }
+
+            categoryRepository.getCategoriesByType('E').collect { result ->
+                when (result) {
+                    is NetworkResult.Success -> {
+                        allCategories.addAll(result.data ?: emptyList())
+                        _state.update { it.copy(allCategories = allCategories) }
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun loadSubcategoriesForCategory(categoryId: String) {
+        viewModelScope.launch {
+            subcategoryRepository.getSubcategoriesByCategory(categoryId).collect { result ->
+                when (result) {
+                    is NetworkResult.Success -> {
+                        _state.update { it.copy(availableSubcategories = result.data ?: emptyList()) }
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun deleteReport(reportId: String) {
+        viewModelScope.launch {
+            reportRepository.deleteReport(reportId).collect { result ->
+                when (result) {
+                    is NetworkResult.Success -> {
+                        loadReports(_state.value.selectedFilter)
+                    }
+                    is NetworkResult.Error -> {
+                        _state.update { it.copy(error = result.message) }
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun updateReport(
+        reportId: String,
+        categoryId: String,
+        subcategoryId: String?,
+        modalityId: String,
+        concept: String?,
+        date: String,
+        amount: Double,
+        type: Char
+    ) {
+        viewModelScope.launch {
+            reportRepository.updateReport(
+                reportId, categoryId, subcategoryId, modalityId, concept, date, amount, type
+            ).collect { result ->
+                when (result) {
+                    is NetworkResult.Success -> {
+                        _state.update { it.copy(showEditDialog = false, reportToEdit = null) }
+                        loadReports(_state.value.selectedFilter)
+                    }
+                    is NetworkResult.Error -> {
+                        _state.update { it.copy(error = result.message) }
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    fun loadSubcategories(categoryId: String) {
+        loadSubcategoriesForCategory(categoryId)
     }
 
     private fun loadReports(filter: String? = null) {

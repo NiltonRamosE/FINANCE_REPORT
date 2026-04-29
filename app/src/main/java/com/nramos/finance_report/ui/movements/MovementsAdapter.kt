@@ -11,7 +11,9 @@ import java.text.NumberFormat
 import java.util.Locale
 
 class MovementsAdapter(
-    private val onItemClick: (EnrichedReport) -> Unit = {}
+    private val onItemClick: (EnrichedReport) -> Unit = {},
+    private val onEditClick: (EnrichedReport) -> Unit = {},
+    private val onDeleteClick: (EnrichedReport) -> Unit = {}
 ) : RecyclerView.Adapter<MovementsAdapter.MovementViewHolder>() {
 
     private var reports: List<EnrichedReport> = emptyList()
@@ -27,7 +29,7 @@ class MovementsAdapter(
             parent,
             false
         )
-        return MovementViewHolder(binding, onItemClick)
+        return MovementViewHolder(binding, onItemClick, onEditClick, onDeleteClick)
     }
 
     override fun onBindViewHolder(holder: MovementViewHolder, position: Int) {
@@ -38,25 +40,22 @@ class MovementsAdapter(
 
     class MovementViewHolder(
         private val binding: ItemMovementBinding,
-        private val onItemClick: (EnrichedReport) -> Unit
+        private val onItemClick: (EnrichedReport) -> Unit,
+        private val onEditClick: (EnrichedReport) -> Unit,
+        private val onDeleteClick: (EnrichedReport) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(report: EnrichedReport) {
             binding.apply {
-                // Configurar icono y color según tipo
                 when (report.type) {
                     'I' -> {
                         ivTypeIcon.setImageResource(R.drawable.ic_income)
-                        tvAmount.setTextColor(
-                            itemView.context.getColor(R.color.green)
-                        )
+                        tvAmount.setTextColor(itemView.context.getColor(R.color.green))
                         tvAmount.text = formatAmount(report.amount, true)
                     }
                     'E' -> {
                         ivTypeIcon.setImageResource(R.drawable.ic_expense)
-                        tvAmount.setTextColor(
-                            itemView.context.getColor(R.color.red)
-                        )
+                        tvAmount.setTextColor(itemView.context.getColor(R.color.red))
                         tvAmount.text = formatAmount(report.amount, false)
                     }
                 }
@@ -66,9 +65,9 @@ class MovementsAdapter(
                 tvConcept.text = report.concept ?: "Sin concepto"
                 tvDate.text = report.date.formatToDisplayDate()
 
-                root.setOnClickListener {
-                    onItemClick(report)
-                }
+                root.setOnClickListener { onItemClick(report) }
+                btnEdit.setOnClickListener { onEditClick(report) }
+                btnDelete.setOnClickListener { onDeleteClick(report) }
             }
         }
 

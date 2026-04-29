@@ -109,6 +109,122 @@ class ReportRepository @Inject constructor(
         }
     }
 
+    suspend fun updateReport(
+        reportId: String,
+        categoryId: String,
+        subcategoryId: String?,
+        modalityId: String,
+        concept: String?,
+        date: String,
+        amount: Double,
+        type: Char
+    ): Flow<NetworkResult<Report>> = flow {
+        emit(NetworkResult.Loading())
+
+        try {
+            val result = withContext(Dispatchers.IO) {
+                val token = tokenManager.getToken()
+                if (token == null) {
+                    throw Exception("No hay sesión activa")
+                }
+
+                val formattedDate = formatDateForApi(date)
+
+                val jsonBody = JSONObject().apply {
+                    put("category_id", categoryId)
+                    if (!subcategoryId.isNullOrEmpty()) {
+                        put("subcategory_id", subcategoryId)
+                    }
+                    put("modality_id", modalityId)
+                    put("concept", concept ?: "")
+                    put("date", formattedDate)
+                    put("amount", amount)
+                    put("type", type.toString())
+                }
+
+                val requestBody = jsonBody.toString().toRequestBody(jsonMediaType)
+                val url = "${BuildConfig.SUPABASE_URL}/rest/v1/reports?id=eq.$reportId"
+
+                val request = Request.Builder()
+                    .url(url)
+                    .patch(requestBody)
+                    .header("apikey", BuildConfig.SUPABASE_ANON_KEY)
+                    .header("Authorization", "Bearer $token")
+                    .header("Content-Type", "application/json")
+                    .header("Prefer", "return=representation")
+                    .build()
+
+                val response = client.newCall(request).execute()
+                val responseBody = response.body?.string() ?: ""
+
+                Triple(response.isSuccessful, response.code, responseBody)
+            }
+
+            val (isSuccessful, code, responseBody) = result
+
+            if (isSuccessful) {
+                val trimmedResponse = responseBody.trim()
+                val reportData = if (trimmedResponse.startsWith("[")) {
+                    JSONArray(trimmedResponse).getJSONObject(0)
+                } else {
+                    JSONObject(trimmedResponse)
+                }
+
+                val report = Report(
+                    reportId = reportData.getString("id"),
+                    categoryId = reportData.getString("category_id"),
+                    subcategoryId = reportData.optString("subcategory_id").takeIf { it.isNotEmpty() },
+                    modalityId = reportData.getString("modality_id"),
+                    concept = reportData.optString("concept").takeIf { it.isNotEmpty() },
+                    date = reportData.getString("date"),
+                    amount = reportData.getDouble("amount"),
+                    type = reportData.getString("type").first()
+                )
+
+                emit(NetworkResult.Success(report))
+            } else {
+                emit(NetworkResult.Error("Error al actualizar movimiento: código $code"))
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "Error de conexión"))
+        }
+    }
+
+    suspend fun deleteReport(reportId: String): Flow<NetworkResult<Unit>> = flow {
+        emit(NetworkResult.Loading())
+
+        try {
+            val result = withContext(Dispatchers.IO) {
+                val token = tokenManager.getToken()
+                if (token == null) {
+                    throw Exception("No hay sesión activa")
+                }
+
+                val url = "${BuildConfig.SUPABASE_URL}/rest/v1/reports?id=eq.$reportId"
+
+                val request = Request.Builder()
+                    .url(url)
+                    .delete()
+                    .header("apikey", BuildConfig.SUPABASE_ANON_KEY)
+                    .header("Authorization", "Bearer $token")
+                    .build()
+
+                val response = client.newCall(request).execute()
+                Pair(response.isSuccessful, response.code)
+            }
+
+            val (isSuccessful, code) = result
+
+            if (isSuccessful) {
+                emit(NetworkResult.Success(Unit))
+            } else {
+                emit(NetworkResult.Error("Error al eliminar movimiento: código $code"))
+            }
+        } catch (e: Exception) {
+            emit(NetworkResult.Error(e.message ?: "Error de conexión"))
+        }
+    }
+
     suspend fun getReports(
         type: Char? = null,
         startDate: String? = null,

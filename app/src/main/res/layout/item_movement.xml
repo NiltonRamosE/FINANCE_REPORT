@@ -12,7 +12,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:gravity="center_vertical">
 
         <!-- Icono según tipo -->
         <ImageView
@@ -78,7 +79,30 @@
             android:text="@string/default_amount_name"
             android:textSize="16sp"
             android:textStyle="bold"
-            android:layout_gravity="center_vertical" />
+            android:layout_gravity="center_vertical"
+            android:layout_marginEnd="12dp" />
+
+        <!-- Botón Editar -->
+        <ImageView
+            android:id="@+id/btnEdit"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_edit"
+            android:padding="6dp"
+            android:background="?attr/selectableItemBackground"
+            app:tint="?attr/colorPrimary"
+            android:contentDescription="Editar" />
+
+        <!-- Botón Eliminar -->
+        <ImageView
+            android:id="@+id/btnDelete"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:src="@drawable/ic_delete"
+            android:padding="6dp"
+            android:background="?attr/selectableItemBackground"
+            app:tint="?attr/colorError"
+            android:contentDescription="Eliminar" />
 
     </LinearLayout>
 
