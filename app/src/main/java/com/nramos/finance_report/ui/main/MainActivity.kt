@@ -16,6 +16,7 @@ import androidx.navigation.ui.setupWithNavController
 import com.bumptech.glide.Glide
 import de.hdodenhof.circleimageview.CircleImageView
 import com.google.android.material.navigation.NavigationView
+import com.google.firebase.messaging.FirebaseMessaging
 import com.nramos.finance_report.R
 import com.nramos.finance_report.data.auth.GoogleSignInManager
 import com.nramos.finance_report.databinding.ActivityMainBinding
@@ -72,7 +73,6 @@ class MainActivity : AppCompatActivity() {
         // También refrescar cuando se vuelve de ProfileActivity
         refreshUserInfo()
     }
-
     private fun setupNavigation() {
         drawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
