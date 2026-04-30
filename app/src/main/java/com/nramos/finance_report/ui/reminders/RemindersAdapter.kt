@@ -6,15 +6,17 @@ import androidx.recyclerview.widget.RecyclerView
 import com.nramos.finance_report.R
 import com.nramos.finance_report.databinding.ItemReminderBinding
 import com.nramos.finance_report.domain.model.Reminder
-import com.nramos.finance_report.utils.extensions.formatToDisplayDate
+import java.text.SimpleDateFormat
+import java.util.*
 
 class RemindersAdapter(
-    private val onToggleClick: (String, Boolean) -> Unit,  // Cambiado: (id, isActive)
+    private val onToggleClick: (String, Boolean) -> Unit,
     private val onEditClick: (Reminder) -> Unit,
     private val onDeleteClick: (Reminder) -> Unit
 ) : RecyclerView.Adapter<RemindersAdapter.ViewHolder>() {
 
     private var reminders: List<Reminder> = emptyList()
+    private val displayDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
 
     fun submitList(newList: List<Reminder>) {
         reminders = newList
@@ -27,7 +29,7 @@ class RemindersAdapter(
             parent,
             false
         )
-        return ViewHolder(binding, onToggleClick, onEditClick, onDeleteClick)
+        return ViewHolder(binding, onToggleClick, onEditClick, onDeleteClick, displayDateFormat)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -38,9 +40,10 @@ class RemindersAdapter(
 
     class ViewHolder(
         private val binding: ItemReminderBinding,
-        private val onToggleClick: (String, Boolean) -> Unit,  // Cambiado
+        private val onToggleClick: (String, Boolean) -> Unit,
         private val onEditClick: (Reminder) -> Unit,
-        private val onDeleteClick: (Reminder) -> Unit
+        private val onDeleteClick: (Reminder) -> Unit,
+        private val displayDateFormat: SimpleDateFormat
     ) : RecyclerView.ViewHolder(binding.root) {
 
         private var isBinding = false
@@ -53,17 +56,24 @@ class RemindersAdapter(
             binding.apply {
                 tvTitle.text = reminder.title
                 tvDescription.text = reminder.description ?: "Sin descripción"
-                tvDateTime.text = "Fecha: ${reminder.dateTime.formatToDisplayDate()}"
+
+                val dateString = try {
+                    val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val date = sdf.parse(reminder.date)
+                    displayDateFormat.format(date)
+                } catch (e: Exception) {
+                    reminder.date
+                }
+                tvDateTime.text = "$dateString - ${reminder.time}"
+
                 tvFrequency.text = when (reminder.frequency) {
                     "once" -> "Una sola vez"
                     "daily" -> "Diario"
                     "weekly" -> "Semanal"
                     "monthly" -> "Mensual"
-                    "yearly" -> "Anual"
                     else -> reminder.frequency
                 }
 
-                // Configurar el Switch sin listener
                 switchActive.setOnCheckedChangeListener(null)
                 switchActive.isChecked = reminder.isActive
 
@@ -78,7 +88,6 @@ class RemindersAdapter(
                 // Agregar el listener después de configurar el estado
                 switchActive.setOnCheckedChangeListener { _, isChecked ->
                     if (!isBinding && isChecked != reminder.isActive) {
-                        // Pasar solo el ID y el nuevo estado
                         onToggleClick(currentReminderId, isChecked)
                     }
                 }

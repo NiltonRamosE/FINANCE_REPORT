@@ -4,8 +4,7 @@ enum class Frequency(val displayName: String, val value: String) {
     ONCE("Una sola vez", "once"),
     DAILY("Diario", "daily"),
     WEEKLY("Semanal", "weekly"),
-    MONTHLY("Mensual", "monthly"),
-    YEARLY("Anual", "yearly");
+    MONTHLY("Mensual", "monthly");
 
     companion object {
         fun fromValue(value: String): Frequency {

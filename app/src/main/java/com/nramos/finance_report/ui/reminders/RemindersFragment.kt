@@ -1,6 +1,8 @@
 package com.nramos.finance_report.ui.reminders
 
+import android.annotation.SuppressLint
 import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.os.Bundle
 import android.view.View
 import android.widget.ArrayAdapter
@@ -104,13 +106,16 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders) {
         }
     }
 
+    @SuppressLint("DefaultLocale")
     private fun showCreateReminderDialog() {
         try {
             val dialogBinding = DialogReminderBinding.inflate(layoutInflater)
             var selectedDate = Calendar.getInstance()
+            var selectedTime = Calendar.getInstance()
 
             setupFrequencySpinner(dialogBinding)
 
+            // DatePicker
             dialogBinding.etDate.setOnClickListener {
                 val calendar = Calendar.getInstance()
                 DatePickerDialog(
@@ -129,9 +134,39 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders) {
                 ).show()
             }
 
+            // TimePicker
+            dialogBinding.etTime.setOnClickListener {
+                val calendar = Calendar.getInstance()
+                TimePickerDialog(
+                    requireContext(),
+                    { _, hour, minute ->
+                        val selected = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY, hour)
+                            set(Calendar.MINUTE, minute)
+                        }
+                        selectedTime = selected
+                        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                        dialogBinding.etTime.setText(timeFormat.format(selected.time))
+                    },
+                    calendar.get(Calendar.HOUR_OF_DAY),
+                    calendar.get(Calendar.MINUTE),
+                    true
+                ).show()
+            }
+
+            // Fecha actual por defecto
             val today = Calendar.getInstance()
             val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             dialogBinding.etDate.setText(dateFormat.format(today.time))
+
+            // Hora actual por defecto (9:00 AM)
+            val defaultTime = Calendar.getInstance().apply {
+                set(Calendar.HOUR_OF_DAY, 9)
+                set(Calendar.MINUTE, 0)
+            }
+            val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+            dialogBinding.etTime.setText(timeFormat.format(defaultTime.time))
+            selectedTime = defaultTime
 
             val dialog = MaterialAlertDialogBuilder(requireContext())
                 .setView(dialogBinding.root)
@@ -145,14 +180,21 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders) {
                         return@setPositiveButton
                     }
 
-                    val apiFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                    val dateTimeString = apiFormat.format(selectedDate.time)
+                    val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val dateString = apiDateFormat.format(selectedDate.time)
+
+                    val timeString = String.format(
+                        "%02d:%02d",
+                        selectedTime.get(Calendar.HOUR_OF_DAY),
+                        selectedTime.get(Calendar.MINUTE)
+                    )
 
                     viewModel.onEvent(
                         RemindersEvent.CreateReminder(
                             title = title,
                             description = description.takeIf { it.isNotEmpty() },
-                            dateTime = dateTimeString,
+                            date = dateString,
+                            time = timeString,
                             frequency = frequency
                         )
                     )
@@ -173,6 +215,7 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders) {
         }
     }
 
+    @SuppressLint("DefaultLocale")
     private fun showEditReminderDialog(reminder: Reminder) {
         try {
             val dialogBinding = DialogReminderBinding.inflate(layoutInflater)
@@ -180,18 +223,34 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders) {
             dialogBinding.etTitle.setText(reminder.title)
             dialogBinding.etDescription.setText(reminder.description ?: "")
 
-            val sdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            // Parsear fecha
+            val dateSdf = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+            val displayDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             val calendar = Calendar.getInstance()
             try {
-                calendar.time = sdf.parse(reminder.dateTime) ?: Date()
+                calendar.time = dateSdf.parse(reminder.date) ?: Date()
             } catch (e: Exception) {
                 calendar.time = Date()
             }
-
             var selectedDate = calendar
+            dialogBinding.etDate.setText(displayDateFormat.format(calendar.time))
+
+            // Parsear hora
+            var selectedTime = Calendar.getInstance()
+            try {
+                val timeParts = reminder.time.split(":")
+                if (timeParts.size == 2) {
+                    selectedTime.set(Calendar.HOUR_OF_DAY, timeParts[0].toInt())
+                    selectedTime.set(Calendar.MINUTE, timeParts[1].toInt())
+                    dialogBinding.etTime.setText(reminder.time)
+                }
+            } catch (e: Exception) {
+                dialogBinding.etTime.setText("09:00")
+            }
 
             setupFrequencySpinner(dialogBinding, reminder.frequency)
 
+            // DatePicker
             dialogBinding.etDate.setOnClickListener {
                 DatePickerDialog(
                     requireContext(),
@@ -200,8 +259,7 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders) {
                             set(year, month, day)
                         }
                         selectedDate = selected
-                        val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-                        dialogBinding.etDate.setText(dateFormat.format(selected.time))
+                        dialogBinding.etDate.setText(displayDateFormat.format(selected.time))
                     },
                     calendar.get(Calendar.YEAR),
                     calendar.get(Calendar.MONTH),
@@ -209,8 +267,25 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders) {
                 ).show()
             }
 
-            val displayFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-            dialogBinding.etDate.setText(displayFormat.format(calendar.time))
+            // TimePicker
+            dialogBinding.etTime.setOnClickListener {
+                val currentTime = Calendar.getInstance()
+                TimePickerDialog(
+                    requireContext(),
+                    { _, hour, minute ->
+                        val selected = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY, hour)
+                            set(Calendar.MINUTE, minute)
+                        }
+                        selectedTime = selected
+                        val timeFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+                        dialogBinding.etTime.setText(timeFormat.format(selected.time))
+                    },
+                    currentTime.get(Calendar.HOUR_OF_DAY),
+                    currentTime.get(Calendar.MINUTE),
+                    true
+                ).show()
+            }
 
             val dialog = MaterialAlertDialogBuilder(requireContext())
                 .setView(dialogBinding.root)
@@ -224,15 +299,22 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders) {
                         return@setPositiveButton
                     }
 
-                    val apiFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
-                    val dateTimeString = apiFormat.format(selectedDate.time)
+                    val apiDateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                    val dateString = apiDateFormat.format(selectedDate.time)
+
+                    val timeString = String.format(
+                        "%02d:%02d",
+                        selectedTime.get(Calendar.HOUR_OF_DAY),
+                        selectedTime.get(Calendar.MINUTE)
+                    )
 
                     viewModel.onEvent(
                         RemindersEvent.UpdateReminder(
                             id = reminder.id,
                             title = title,
                             description = description.takeIf { it.isNotEmpty() },
-                            dateTime = dateTimeString,
+                            date = dateString,
+                            time = timeString,
                             frequency = frequency,
                             isActive = reminder.isActive
                         )

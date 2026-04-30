@@ -8,17 +8,21 @@ sealed class RemindersEvent {
     data class CreateReminder(
         val title: String,
         val description: String?,
-        val dateTime: String,
+        val date: String,      // yyyy-MM-dd
+        val time: String,      // HH:mm
         val frequency: String
     ) : RemindersEvent()
+
     data class UpdateReminder(
         val id: String,
         val title: String,
         val description: String?,
-        val dateTime: String,
+        val date: String,      // yyyy-MM-dd
+        val time: String,      // HH:mm
         val frequency: String,
         val isActive: Boolean
     ) : RemindersEvent()
+
     data class DeleteReminder(val id: String) : RemindersEvent()
     data class ToggleReminderStatus(val id: String, val isActive: Boolean) : RemindersEvent()
     object ShowCreateDialog : RemindersEvent()

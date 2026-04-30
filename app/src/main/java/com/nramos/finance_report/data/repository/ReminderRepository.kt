@@ -1,5 +1,6 @@
 package com.nramos.finance_report.data.repository
 
+import android.util.Log
 import com.nramos.finance_report.BuildConfig
 import com.nramos.finance_report.data.datasource.local.TokenManager
 import com.nramos.finance_report.domain.model.Reminder
@@ -24,6 +25,7 @@ class ReminderRepository @Inject constructor(
 
     private val client = OkHttpClient()
     private val jsonMediaType = "application/json; charset=utf-8".toMediaType()
+
     companion object {
         private const val TAG = "ReminderRepository"
     }
@@ -39,7 +41,7 @@ class ReminderRepository @Inject constructor(
                 }
 
                 val userId = tokenManager.getUserProfileId()
-                val url = "${BuildConfig.SUPABASE_URL}/rest/v1/reminders?select=*&user_id=eq.$userId&order=date_time.asc"
+                val url = "${BuildConfig.SUPABASE_URL}/rest/v1/reminders?select=*&user_id=eq.$userId&order=date.asc"
 
                 val request = Request.Builder()
                     .url(url)
@@ -67,11 +69,13 @@ class ReminderRepository @Inject constructor(
                         userId = json.getString("user_id"),
                         title = json.getString("title"),
                         description = json.optString("description").takeIf { it.isNotEmpty() },
-                        dateTime = json.getString("date_time"), // YYYY-MM-DD
+                        date = json.getString("date"),
+                        time = json.getString("time"),
                         frequency = json.getString("frequency"),
                         isActive = json.getBoolean("is_active")
                     )
                     reminders.add(reminder)
+                    Log.d(TAG, "Recordatorio ${i+1}: ${reminder.title} - ${reminder.date} ${reminder.time}")
                 }
 
                 emit(NetworkResult.Success(reminders))
@@ -79,6 +83,7 @@ class ReminderRepository @Inject constructor(
                 emit(NetworkResult.Error("Error al cargar recordatorios"))
             }
         } catch (e: Exception) {
+            Log.e(TAG, "Excepción: ${e.message}", e)
             emit(NetworkResult.Error(e.message ?: "Error de conexión"))
         }
     }
@@ -86,7 +91,8 @@ class ReminderRepository @Inject constructor(
     suspend fun createReminder(
         title: String,
         description: String?,
-        dateTime: String,
+        date: String,
+        time: String,
         frequency: String
     ): Flow<NetworkResult<Reminder>> = flow {
         emit(NetworkResult.Loading())
@@ -100,8 +106,7 @@ class ReminderRepository @Inject constructor(
 
                 val userId = tokenManager.getUserProfileId()
 
-                // Extraer solo la fecha (YYYY-MM-DD) si viene con hora
-                val cleanDate = dateTime.split("T").first().take(10)
+                Log.d(TAG, "Creando recordatorio: title=$title, date=$date, time=$time, frequency=$frequency")
 
                 val jsonBody = JSONObject().apply {
                     put("user_id", userId)
@@ -109,10 +114,13 @@ class ReminderRepository @Inject constructor(
                     if (!description.isNullOrEmpty()) {
                         put("description", description)
                     }
-                    put("date_time", cleanDate)
+                    put("date", date)
+                    put("time", time)
                     put("frequency", frequency)
                     put("is_active", true)
                 }
+
+                Log.d(TAG, "JSON body: ${jsonBody.toString(2)}")
 
                 val requestBody = jsonBody.toString().toRequestBody(jsonMediaType)
                 val url = "${BuildConfig.SUPABASE_URL}/rest/v1/reminders"
@@ -147,16 +155,20 @@ class ReminderRepository @Inject constructor(
                     userId = jsonData.getString("user_id"),
                     title = jsonData.getString("title"),
                     description = jsonData.optString("description").takeIf { it.isNotEmpty() },
-                    dateTime = jsonData.getString("date_time"),
+                    date = jsonData.getString("date"),
+                    time = jsonData.getString("time"),
                     frequency = jsonData.getString("frequency"),
                     isActive = jsonData.getBoolean("is_active")
                 )
 
+                Log.d(TAG, "Recordatorio creado: ${reminder.id}")
                 emit(NetworkResult.Success(reminder))
             } else {
+                Log.e(TAG, "Error al crear recordatorio: código $code - $responseBody")
                 emit(NetworkResult.Error("Error al crear recordatorio"))
             }
         } catch (e: Exception) {
+            Log.e(TAG, "Excepción: ${e.message}", e)
             emit(NetworkResult.Error(e.message ?: "Error de conexión"))
         }
     }
@@ -165,7 +177,8 @@ class ReminderRepository @Inject constructor(
         id: String,
         title: String,
         description: String?,
-        dateTime: String,
+        date: String,
+        time: String,
         frequency: String,
         isActive: Boolean
     ): Flow<NetworkResult<Reminder>> = flow {
@@ -178,14 +191,13 @@ class ReminderRepository @Inject constructor(
                     throw Exception("No hay sesión activa")
                 }
 
-                val cleanDate = dateTime.split("T").first().take(10)
-
                 val jsonBody = JSONObject().apply {
                     put("title", title)
                     if (!description.isNullOrEmpty()) {
                         put("description", description)
                     }
-                    put("date_time", cleanDate)
+                    put("date", date)
+                    put("time", time)
                     put("frequency", frequency)
                     put("is_active", isActive)
                 }
@@ -223,7 +235,8 @@ class ReminderRepository @Inject constructor(
                     userId = jsonData.getString("user_id"),
                     title = jsonData.getString("title"),
                     description = jsonData.optString("description").takeIf { it.isNotEmpty() },
-                    dateTime = jsonData.getString("date_time"),
+                    date = jsonData.getString("date"),
+                    time = jsonData.getString("time"),
                     frequency = jsonData.getString("frequency"),
                     isActive = jsonData.getBoolean("is_active")
                 )
@@ -233,6 +246,7 @@ class ReminderRepository @Inject constructor(
                 emit(NetworkResult.Error("Error al actualizar recordatorio"))
             }
         } catch (e: Exception) {
+            Log.e(TAG, "Excepción: ${e.message}", e)
             emit(NetworkResult.Error(e.message ?: "Error de conexión"))
         }
     }
@@ -266,6 +280,7 @@ class ReminderRepository @Inject constructor(
                 emit(NetworkResult.Error("Error al eliminar recordatorio"))
             }
         } catch (e: Exception) {
+            Log.e(TAG, "Excepción: ${e.message}", e)
             emit(NetworkResult.Error(e.message ?: "Error de conexión"))
         }
     }

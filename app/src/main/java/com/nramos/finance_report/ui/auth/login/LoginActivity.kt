@@ -22,6 +22,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import com.nramos.finance_report.data.auth.GoogleSignInManager
 import com.nramos.finance_report.domain.usecase.auth.IsLoggedInUseCase
+import com.nramos.finance_report.service.FcmTokenService
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -34,6 +35,9 @@ class LoginActivity : AppCompatActivity() {
 
     @Inject
     lateinit var isLoggedInUseCase: IsLoggedInUseCase
+
+    @Inject
+    lateinit var fcmTokenService: FcmTokenService
 
     private val googleSignInLauncher = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
@@ -91,6 +95,7 @@ class LoginActivity : AppCompatActivity() {
 
                 if (state.isSuccess) {
                     showToast("Bienvenido ${state.user?.name}")
+                    fcmTokenService.refreshAndSaveToken()
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     finish()
                     viewModel.resetSuccess()

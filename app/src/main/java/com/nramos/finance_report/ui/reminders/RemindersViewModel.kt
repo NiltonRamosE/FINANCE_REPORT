@@ -31,14 +31,16 @@ class RemindersViewModel @Inject constructor(
             is RemindersEvent.CreateReminder -> createReminder(
                 event.title,
                 event.description,
-                event.dateTime,
+                event.date,
+                event.time,
                 event.frequency
             )
             is RemindersEvent.UpdateReminder -> updateReminder(
                 event.id,
                 event.title,
                 event.description,
-                event.dateTime,
+                event.date,
+                event.time,
                 event.frequency,
                 event.isActive
             )
@@ -84,14 +86,17 @@ class RemindersViewModel @Inject constructor(
         }
     }
 
+    // ui/reminders/RemindersViewModel.kt - actualiza los métodos
+
     private fun createReminder(
         title: String,
         description: String?,
-        dateTime: String,
+        date: String,
+        time: String,
         frequency: String
     ) {
         viewModelScope.launch {
-            reminderRepository.createReminder(title, description, dateTime, frequency).collect { result ->
+            reminderRepository.createReminder(title, description, date, time, frequency).collect { result ->
                 when (result) {
                     is NetworkResult.Success -> {
                         _state.update {
@@ -115,12 +120,13 @@ class RemindersViewModel @Inject constructor(
         id: String,
         title: String,
         description: String?,
-        dateTime: String,
+        date: String,
+        time: String,
         frequency: String,
         isActive: Boolean
     ) {
         viewModelScope.launch {
-            reminderRepository.updateReminder(id, title, description, dateTime, frequency, isActive).collect { result ->
+            reminderRepository.updateReminder(id, title, description, date, time, frequency, isActive).collect { result ->
                 when (result) {
                     is NetworkResult.Success -> {
                         _state.update {
@@ -141,6 +147,23 @@ class RemindersViewModel @Inject constructor(
         }
     }
 
+    private fun toggleReminderStatus(id: String, isActive: Boolean) {
+        val reminder = _state.value.reminders.find { it.id == id }
+        reminder?.let {
+            if (it.isActive != isActive) {
+                updateReminder(
+                    it.id,
+                    it.title,
+                    it.description,
+                    it.date,
+                    it.time,
+                    it.frequency,
+                    isActive
+                )
+            }
+        }
+    }
+
     private fun deleteReminder(id: String) {
         viewModelScope.launch {
             reminderRepository.deleteReminder(id).collect { result ->
@@ -157,21 +180,6 @@ class RemindersViewModel @Inject constructor(
         }
     }
 
-    private fun toggleReminderStatus(id: String, isActive: Boolean) {
-        val reminder = _state.value.reminders.find { it.id == id }
-        reminder?.let {
-            if (it.isActive != isActive) {
-                updateReminder(
-                    it.id,
-                    it.title,
-                    it.description,
-                    it.dateTime,
-                    it.frequency,
-                    isActive
-                )
-            }
-        }
-    }
     fun clearSuccess() {
         _state.update {
             it.copy(

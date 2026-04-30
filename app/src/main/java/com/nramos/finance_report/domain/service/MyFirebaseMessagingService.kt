@@ -1,4 +1,3 @@
-// domain/service/MyFirebaseMessagingService.kt
 package com.nramos.finance_report.domain.service
 
 import android.app.NotificationChannel
@@ -20,13 +19,11 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         private const val TAG = "FCMService"
         private const val CHANNEL_ID = "finance_reminders"
         private const val CHANNEL_NAME = "Recordatorios Finance"
-        private const val NOTIFICATION_ID = 1001
     }
 
     override fun onNewToken(token: String) {
         super.onNewToken(token)
         Log.d(TAG, "onNewToken: $token")
-        saveTokenToServer(token)
     }
 
     override fun onMessageReceived(remoteMessage: RemoteMessage) {
@@ -47,7 +44,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val pendingIntent = PendingIntent.getActivity(
             this,
-            NOTIFICATION_ID,
+            0,
             intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
@@ -62,7 +59,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             .build()
 
         val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        notificationManager.notify(NOTIFICATION_ID, notification)
+        notificationManager.notify(System.currentTimeMillis().toInt(), notification)
     }
 
     private fun createNotificationChannel() {
@@ -78,9 +75,5 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
         }
-    }
-
-    private fun saveTokenToServer(token: String) {
-        Log.d(TAG, "Token guardado: $token")
     }
 }

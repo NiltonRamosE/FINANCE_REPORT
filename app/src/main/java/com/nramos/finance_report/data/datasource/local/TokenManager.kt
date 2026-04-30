@@ -31,6 +31,7 @@ class TokenManager @Inject constructor(
         private val IS_LOGGED_IN_KEY = booleanPreferencesKey("is_logged_in")
 
         private val USER_AVATAR_URL_KEY = stringPreferencesKey("user_avatar_url")
+        private val TOKEN_FCM_KEY = stringPreferencesKey("token_firebase")
 
     }
 
@@ -79,6 +80,18 @@ class TokenManager @Inject constructor(
             preferences[USER_EMAIL_KEY] = userEmail
             preferences[IS_LOGGED_IN_KEY] = true
         }
+    }
+
+    suspend fun saveFcmToken(fcmToken: String) {
+        context.dataStore.edit { preferences ->
+            preferences[TOKEN_FCM_KEY] = fcmToken
+        }
+    }
+
+    suspend fun getFcmToken(): String {
+        return context.dataStore.data.map { preferences ->
+            preferences[TOKEN_FCM_KEY] ?: ""
+        }.first()
     }
 
     suspend fun getAvatarUrl(): String {
