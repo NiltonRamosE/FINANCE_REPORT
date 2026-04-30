@@ -3,6 +3,7 @@ package com.nramos.finance_report.di
 import com.nramos.finance_report.data.datasource.local.TokenManager
 import com.nramos.finance_report.data.repository.AuthRepository
 import com.nramos.finance_report.data.repository.ProfileRepository
+import com.nramos.finance_report.data.repository.ReminderRepository
 import com.nramos.finance_report.domain.repository.IAuthRepository
 import com.nramos.finance_report.domain.repository.IProfileRepository
 import dagger.Module
@@ -26,4 +27,10 @@ class RepositoryModule {
     fun provideProfileRepository(
         tokenManager: TokenManager
     ): IProfileRepository = ProfileRepository(tokenManager)
+
+    @Provides
+    @Singleton
+    fun provideReminderRepository(
+        tokenManager: TokenManager
+    ): ReminderRepository = ReminderRepository(tokenManager)
 }

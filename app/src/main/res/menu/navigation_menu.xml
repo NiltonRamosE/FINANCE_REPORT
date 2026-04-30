@@ -17,6 +17,10 @@
             android:id="@+id/nav_statistics"
             android:icon="@drawable/ic_statistics"
             android:title="@string/statistics" />
+        <item
+            android:id="@+id/nav_reminders"
+            android:icon="@drawable/ic_notifications"
+            android:title="Recordatorios" />
     </group>
 
     <item android:title="@string/config">
