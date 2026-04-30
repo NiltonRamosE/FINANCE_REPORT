@@ -82,11 +82,6 @@ class FcmTokenRepository @Inject constructor(
                 tokenManager.saveFcmToken(fcmToken)
             } else {
                 Log.e(TAG, "Error al guardar token FCM: ${response.code} - $responseBody")
-
-                // Si el error es 401, el token puede haber expirado
-                if (response.code == 401) {
-                    Log.e(TAG, "Token expirado. El usuario可能需要 volver a iniciar sesión")
-                }
             }
         } catch (e: Exception) {
             Log.e(TAG, "Excepción al guardar token FCM: ${e.message}", e)
