@@ -41,8 +41,8 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders) {
 
     private fun setupRecyclerView() {
         adapter = RemindersAdapter(
-            onToggleClick = { reminder ->
-                viewModel.onEvent(RemindersEvent.ToggleReminderStatus(reminder.id, !reminder.isActive))
+            onToggleClick = { id, isActive ->
+                viewModel.onEvent(RemindersEvent.ToggleReminderStatus(id, isActive))
             },
             onEditClick = { reminder ->
                 viewModel.onEvent(RemindersEvent.ShowEditDialog(reminder))
@@ -133,8 +133,6 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders) {
             val dateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             dialogBinding.etDate.setText(dateFormat.format(today.time))
 
-            dialogBinding.etTime.visibility = View.GONE
-
             val dialog = MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Nuevo Recordatorio")
                 .setView(dialogBinding.root)
@@ -214,8 +212,6 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders) {
 
             val displayFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
             dialogBinding.etDate.setText(displayFormat.format(calendar.time))
-
-            dialogBinding.etTime.visibility = View.GONE
 
             val dialog = MaterialAlertDialogBuilder(requireContext())
                 .setTitle("Editar Recordatorio")

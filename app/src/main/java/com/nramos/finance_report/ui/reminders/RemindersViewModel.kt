@@ -160,17 +160,18 @@ class RemindersViewModel @Inject constructor(
     private fun toggleReminderStatus(id: String, isActive: Boolean) {
         val reminder = _state.value.reminders.find { it.id == id }
         reminder?.let {
-            updateReminder(
-                it.id,
-                it.title,
-                it.description,
-                it.dateTime,
-                it.frequency,
-                isActive
-            )
+            if (it.isActive != isActive) {
+                updateReminder(
+                    it.id,
+                    it.title,
+                    it.description,
+                    it.dateTime,
+                    it.frequency,
+                    isActive
+                )
+            }
         }
     }
-
     fun clearSuccess() {
         _state.update {
             it.copy(

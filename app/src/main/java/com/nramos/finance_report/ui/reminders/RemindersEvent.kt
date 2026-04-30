@@ -4,6 +4,7 @@ import com.nramos.finance_report.domain.model.Reminder
 
 sealed class RemindersEvent {
     object LoadReminders : RemindersEvent()
+
     data class CreateReminder(
         val title: String,
         val description: String?,

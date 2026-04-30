@@ -7,8 +7,9 @@ import com.nramos.finance_report.R
 import com.nramos.finance_report.databinding.ItemReminderBinding
 import com.nramos.finance_report.domain.model.Reminder
 import com.nramos.finance_report.utils.extensions.formatToDisplayDate
+
 class RemindersAdapter(
-    private val onToggleClick: (Reminder) -> Unit,
+    private val onToggleClick: (String, Boolean) -> Unit,  // Cambiado: (id, isActive)
     private val onEditClick: (Reminder) -> Unit,
     private val onDeleteClick: (Reminder) -> Unit
 ) : RecyclerView.Adapter<RemindersAdapter.ViewHolder>() {
@@ -37,12 +38,18 @@ class RemindersAdapter(
 
     class ViewHolder(
         private val binding: ItemReminderBinding,
-        private val onToggleClick: (Reminder) -> Unit,
+        private val onToggleClick: (String, Boolean) -> Unit,  // Cambiado
         private val onEditClick: (Reminder) -> Unit,
         private val onDeleteClick: (Reminder) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
 
+        private var isBinding = false
+        private var currentReminderId: String = ""
+
         fun bind(reminder: Reminder) {
+            isBinding = true
+            currentReminderId = reminder.id
+
             binding.apply {
                 tvTitle.text = reminder.title
                 tvDescription.text = reminder.description ?: "Sin descripción"
@@ -56,6 +63,10 @@ class RemindersAdapter(
                     else -> reminder.frequency
                 }
 
+                // Configurar el Switch sin listener
+                switchActive.setOnCheckedChangeListener(null)
+                switchActive.isChecked = reminder.isActive
+
                 if (reminder.isActive) {
                     ivIcon.setImageResource(R.drawable.ic_notifications_active)
                     ivIcon.setColorFilter(androidx.core.content.ContextCompat.getColor(root.context, R.color.green))
@@ -64,9 +75,19 @@ class RemindersAdapter(
                     ivIcon.setColorFilter(androidx.core.content.ContextCompat.getColor(root.context, R.color.gray_dark))
                 }
 
+                // Agregar el listener después de configurar el estado
+                switchActive.setOnCheckedChangeListener { _, isChecked ->
+                    if (!isBinding && isChecked != reminder.isActive) {
+                        // Pasar solo el ID y el nuevo estado
+                        onToggleClick(currentReminderId, isChecked)
+                    }
+                }
+
                 root.setOnClickListener { onEditClick(reminder) }
                 btnDelete.setOnClickListener { onDeleteClick(reminder) }
             }
+
+            isBinding = false
         }
     }
 }
