@@ -312,7 +312,6 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
         } else {
             categoryAdapter?.notifyDataSetChanged()
             binding.etCategory.setText("", false)
-            binding.etCategory.hint = "No hay categorías - Haz clic para crear"
         }
     }
 
@@ -420,7 +419,6 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
         } else {
             subcategoryAdapter?.notifyDataSetChanged()
             binding.etSubcategory.setText("", false)
-            binding.etSubcategory.hint = "Subcategoría (opcional)"
         }
     }
 
@@ -494,7 +492,6 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
         } else {
             modalityAdapter?.notifyDataSetChanged()
             binding.etModality.setText("", false)
-            binding.etModality.hint = "No hay modalidades disponibles"
         }
     }
 
