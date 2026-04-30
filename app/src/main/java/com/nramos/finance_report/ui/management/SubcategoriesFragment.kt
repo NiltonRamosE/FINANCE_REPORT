@@ -119,7 +119,6 @@ class SubcategoriesFragment : Fragment(R.layout.fragment_subcategories_managemen
         }
 
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Nueva Subcategoría")
             .setView(dialogBinding.root)
             .setPositiveButton("Crear") { _, _ ->
                 val name = dialogBinding.etSubcategoryName.text.toString().trim()
@@ -138,7 +137,6 @@ class SubcategoriesFragment : Fragment(R.layout.fragment_subcategories_managemen
         dialogBinding.etSubcategoryName.setText(subcategory.name)
 
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Editar Subcategoría")
             .setView(dialogBinding.root)
             .setPositiveButton("Guardar") { _, _ ->
                 val name = dialogBinding.etSubcategoryName.text.toString().trim()

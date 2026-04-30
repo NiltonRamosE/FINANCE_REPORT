@@ -177,7 +177,6 @@ class MovementsFragment : Fragment(R.layout.fragment_movements) {
 
         // Crear y mostrar el diálogo
         val dialog = MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Editar Movimiento")
             .setView(dialogBinding.root)
             .setPositiveButton("Guardar") { _, _ ->
                 val concept = dialogBinding.etConcept.text.toString().trim()

@@ -221,7 +221,6 @@ class ProfileActivity : AppCompatActivity() {
     private fun showEditDialog() {
         val dialogView = layoutInflater.inflate(R.layout.dialog_edit_profile, null)
         val dialog = androidx.appcompat.app.AlertDialog.Builder(this)
-            .setTitle("Editar Perfil")
             .setView(dialogView)
             .setPositiveButton("Guardar") { _, _ ->
                 val name = dialogView.findViewById<com.google.android.material.textfield.TextInputEditText>(R.id.etEditName)?.text.toString()

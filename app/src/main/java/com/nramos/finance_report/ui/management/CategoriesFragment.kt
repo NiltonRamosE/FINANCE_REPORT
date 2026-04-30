@@ -116,7 +116,6 @@ class CategoriesFragment : Fragment(R.layout.fragment_categories_management) {
         }
 
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Nueva Categoría")
             .setView(dialogBinding.root)
             .setPositiveButton("Crear") { _, _ ->
                 val name = dialogBinding.etCategoryName.text.toString().trim()
@@ -174,7 +173,6 @@ class CategoriesFragment : Fragment(R.layout.fragment_categories_management) {
         }
 
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Editar Categoría")
             .setView(dialogBinding.root)
             .setPositiveButton("Guardar") { _, _ ->
                 val name = dialogBinding.etCategoryName.text.toString().trim()

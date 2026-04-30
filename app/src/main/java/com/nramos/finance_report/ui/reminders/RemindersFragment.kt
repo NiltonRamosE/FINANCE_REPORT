@@ -134,7 +134,6 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders) {
             dialogBinding.etDate.setText(dateFormat.format(today.time))
 
             val dialog = MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Nuevo Recordatorio")
                 .setView(dialogBinding.root)
                 .setPositiveButton("Crear") { _, _ ->
                     val title = dialogBinding.etTitle.text.toString().trim()
@@ -214,7 +213,6 @@ class RemindersFragment : Fragment(R.layout.fragment_reminders) {
             dialogBinding.etDate.setText(displayFormat.format(calendar.time))
 
             val dialog = MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Editar Recordatorio")
                 .setView(dialogBinding.root)
                 .setPositiveButton("Guardar") { _, _ ->
                     val title = dialogBinding.etTitle.text.toString().trim()

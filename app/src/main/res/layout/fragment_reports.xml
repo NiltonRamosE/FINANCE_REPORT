@@ -110,7 +110,7 @@
                         <AutoCompleteTextView
                             android:id="@+id/etCategory"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="50dp"
                             android:hint="@string/select_category"
                             android:inputType="none"
                             android:textColor="?attr/textPrimary"
@@ -169,7 +169,7 @@
                         <AutoCompleteTextView
                             android:id="@+id/etSubcategory"
                             android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="50dp"
                             android:hint="@string/select_subcategory"
                             android:inputType="none"
                             android:textColor="?attr/textPrimary"
@@ -228,7 +228,7 @@
                     <AutoCompleteTextView
                         android:id="@+id/etModality"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:hint="@string/select_modality"
                         android:inputType="none"
                         android:textColor="?attr/textPrimary"
@@ -265,7 +265,7 @@
                     <AutoCompleteTextView
                         android:id="@+id/etConcept"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="50dp"
                         android:hint="@string/example_concept"
                         android:maxLines="2"
                         android:inputType="textMultiLine"

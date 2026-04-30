@@ -351,7 +351,6 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
         }
 
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Nueva Categoría")
             .setView(dialogBinding.root)
             .setPositiveButton("Crear") { _, _ ->
                 val name = dialogBinding.etCategoryName.text.toString().trim()
@@ -438,7 +437,6 @@ class ReportsFragment : Fragment(R.layout.fragment_reports) {
         dialogBinding.etParentCategory.isEnabled = false
 
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Nueva Subcategoría")
             .setView(dialogBinding.root)
             .setPositiveButton("Crear") { _, _ ->
                 val name = dialogBinding.etSubcategoryName.text.toString().trim()

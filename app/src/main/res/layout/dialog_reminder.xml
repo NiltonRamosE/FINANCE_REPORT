@@ -3,13 +3,39 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?attr/cardBackground">
+    android:background="?attr/cardBackground"
+    android:scrollbars="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:padding="20dp">
+
+        <!-- Título del diálogo con icono -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp">
+
+            <ImageView
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:src="@drawable/ic_notifications"
+                app:tint="?attr/colorPrimary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:text="Nuevo Recordatorio"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="?attr/colorPrimary" />
+
+        </LinearLayout>
 
         <!-- Título -->
         <com.google.android.material.textfield.TextInputLayout
@@ -17,15 +43,22 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
             app:boxBackgroundColor="?attr/inputBackground"
-            app:boxStrokeColor="?attr/inputStroke">
+            app:boxStrokeColor="?attr/inputStroke"
+            app:boxStrokeWidth="1dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Título"
-                android:textColor="?attr/textPrimary" />
+                android:hint="Título del recordatorio"
+                android:maxLines="1"
+                android:textColor="?attr/textPrimary"
+                android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -35,8 +68,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
             app:boxBackgroundColor="?attr/inputBackground"
-            app:boxStrokeColor="?attr/inputStroke">
+            app:boxStrokeColor="?attr/inputStroke"
+            app:boxStrokeWidth="1dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDescription"
@@ -44,29 +82,72 @@
                 android:layout_height="wrap_content"
                 android:hint="Descripción (opcional)"
                 android:maxLines="3"
-                android:textColor="?attr/textPrimary" />
+                android:minLines="2"
+                android:gravity="top"
+                android:textColor="?attr/textPrimary"
+                android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Separador decorativo -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginVertical="8dp">
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="?attr/colorSecondary"
+                android:alpha="0.3" />
+
+            <ImageView
+                android:layout_width="12dp"
+                android:layout_height="12dp"
+                android:layout_marginHorizontal="8dp"
+                android:src="@drawable/ic_calendar"
+                app:tint="?attr/colorPrimary"
+                android:alpha="0.6" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1"
+                android:background="?attr/colorSecondary"
+                android:alpha="0.3" />
+
+        </LinearLayout>
 
         <!-- Fecha -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
             app:endIconMode="custom"
+            app:endIconDrawable="@drawable/ic_calendar"
+            app:endIconTint="?attr/colorPrimary"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
             app:boxBackgroundColor="?attr/inputBackground"
-            app:boxStrokeColor="?attr/inputStroke">
+            app:boxStrokeColor="?attr/inputStroke"
+            app:boxStrokeWidth="1dp">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDate"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Fecha"
+                android:hint="Selecciona una fecha"
                 android:focusable="false"
                 android:clickable="true"
                 android:inputType="none"
-                android:textColor="?attr/textPrimary" />
+                android:textColor="?attr/textPrimary"
+                android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -75,20 +156,66 @@
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="12dp"
             app:endIconMode="dropdown_menu"
+            app:boxCornerRadiusTopStart="16dp"
+            app:boxCornerRadiusTopEnd="16dp"
+            app:boxCornerRadiusBottomStart="16dp"
+            app:boxCornerRadiusBottomEnd="16dp"
             app:boxBackgroundColor="?attr/inputBackground"
-            app:boxStrokeColor="?attr/inputStroke">
+            app:boxStrokeColor="?attr/inputStroke"
+            app:boxStrokeWidth="1dp">
 
             <AutoCompleteTextView
                 android:id="@+id/etFrequency"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Frecuencia"
+                android:layout_height="50dp"
+                android:hint="Frecuencia del recordatorio"
                 android:inputType="none"
-                android:textColor="?attr/textPrimary" />
+                android:dropDownSelector="?attr/colorPrimaryContainer"
+                android:textColor="?attr/textPrimary"
+                android:textSize="14sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- Tarjeta informativa de frecuencias -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="4dp"
+            app:cardCornerRadius="12dp"
+            app:cardBackgroundColor="?attr/colorPrimaryContainer"
+            app:cardElevation="0dp"
+            app:strokeColor="?attr/colorOutlineVariant"
+            app:strokeWidth="0.5dp">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="12dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="ℹ️ ¿Cómo funcionan las frecuencias?"
+                    android:textSize="11sp"
+                    android:textStyle="bold"
+                    android:textColor="?attr/colorPrimary"
+                    android:layout_marginBottom="6dp" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="• Una sola vez: Notificación única\n• Diario: Se repite todos los días\n• Semanal: Se repite cada semana\n• Mensual: Se repite cada mes"
+                    android:textSize="10sp"
+                    android:textColor="?attr/textSecondary"
+                    android:lineSpacingExtra="3dp" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
 
     </LinearLayout>
 
