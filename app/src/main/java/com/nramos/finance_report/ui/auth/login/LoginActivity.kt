@@ -97,7 +97,7 @@ class LoginActivity : AppCompatActivity() {
         binding.apply {
             btnGoogleLogin.setOnClickListener {
                 viewModel.onEvent(LoginEvent.OnGoogleLoginClick)
-                val signInIntent = googleSignInManager.getSignInIntent()
+                val signInIntent = googleSignInManager.getSignInIntentWithAccountSelection()
                 googleSignInLauncher.launch(signInIntent)
             }
             btnInstagram.setOnClickListener {

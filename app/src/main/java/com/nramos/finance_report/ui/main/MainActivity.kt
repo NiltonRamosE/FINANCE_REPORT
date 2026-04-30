@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import de.hdodenhof.circleimageview.CircleImageView
 import com.google.android.material.navigation.NavigationView
 import com.nramos.finance_report.R
+import com.nramos.finance_report.data.auth.GoogleSignInManager
 import com.nramos.finance_report.databinding.ActivityMainBinding
 import com.nramos.finance_report.domain.model.UserProfile
 import com.nramos.finance_report.domain.usecase.auth.GetCurrentUserUseCase
@@ -36,7 +37,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var drawerLayout: DrawerLayout
-
+    @Inject
+    lateinit var googleSignInManager: GoogleSignInManager
     @Inject
     lateinit var logoutUseCase: LogoutUseCase
 
@@ -185,6 +187,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun performLogout() {
         lifecycleScope.launch {
+            googleSignInManager.signOut()
             logoutUseCase().collect { result ->
                 when (result) {
                     is NetworkResult.Loading -> {

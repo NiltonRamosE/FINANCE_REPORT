@@ -31,6 +31,15 @@ class GoogleSignInManager @Inject constructor(
         return googleSignInClient.signInIntent
     }
 
+    fun getSignInIntentWithAccountSelection(): Intent {
+        // Primero cerramos sesión en Google para que no recuerde la última cuenta
+        googleSignInClient.signOut()
+        // Agregamos el parámetro para forzar selección
+        return googleSignInClient.signInIntent.apply {
+            putExtra("prompt", "select_account")
+        }
+    }
+
     suspend fun handleSignInResult(data: Intent?): Result<GoogleSignInResult> = suspendCancellableCoroutine { continuation ->
         try {
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
@@ -60,10 +69,6 @@ class GoogleSignInManager @Inject constructor(
 
     suspend fun signOut() {
         googleSignInClient.signOut().await()
-    }
-
-    fun isSignedIn(): Boolean {
-        return GoogleSignIn.getLastSignedInAccount(context) != null
     }
 }
 
