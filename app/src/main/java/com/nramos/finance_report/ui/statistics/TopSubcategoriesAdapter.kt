@@ -1,4 +1,3 @@
-// ui/statistics/TopSubcategoriesAdapter.kt
 package com.nramos.finance_report.ui.statistics
 
 import android.view.LayoutInflater

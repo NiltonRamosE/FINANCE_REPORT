@@ -1,4 +1,3 @@
-// ui/management/ManagementPagerAdapter.kt
 package com.nramos.finance_report.ui.management
 
 import androidx.fragment.app.Fragment

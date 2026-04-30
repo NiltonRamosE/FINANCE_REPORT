@@ -16,7 +16,6 @@ import com.nramos.finance_report.R
 import com.nramos.finance_report.databinding.DialogEditMovementBinding
 import com.nramos.finance_report.databinding.FragmentMovementsBinding
 import com.nramos.finance_report.utils.extensions.formatToDisplayDate
-import com.nramos.finance_report.utils.extensions.showToast
 import com.nramos.finance_report.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest

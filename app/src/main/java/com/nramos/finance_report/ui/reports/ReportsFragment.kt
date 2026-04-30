@@ -19,7 +19,6 @@ import com.nramos.finance_report.databinding.FragmentReportsBinding
 import com.nramos.finance_report.domain.model.Category
 import com.nramos.finance_report.domain.model.Modality
 import com.nramos.finance_report.domain.model.Subcategory
-import com.nramos.finance_report.utils.extensions.showToast
 import com.nramos.finance_report.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest

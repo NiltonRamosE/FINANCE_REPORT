@@ -14,7 +14,6 @@ import com.nramos.finance_report.databinding.FragmentSubcategoriesManagementBind
 import com.nramos.finance_report.databinding.DialogEditSubcategoryBinding
 import com.nramos.finance_report.domain.model.Category
 import com.nramos.finance_report.domain.model.Subcategory
-import com.nramos.finance_report.utils.extensions.showToast
 import com.nramos.finance_report.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -29,7 +28,6 @@ class SubcategoriesFragment : Fragment(R.layout.fragment_subcategories_managemen
     private lateinit var adapter: SubcategoriesManagementAdapter
     private var categoryNames = mutableMapOf<String, String>()
 
-    // Cache para el diálogo
     private var cachedCategories: List<Category> = emptyList()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

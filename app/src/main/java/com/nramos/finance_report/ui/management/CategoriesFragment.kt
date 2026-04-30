@@ -14,7 +14,6 @@ import com.nramos.finance_report.databinding.DialogCreateCategoryBinding
 import com.nramos.finance_report.databinding.FragmentCategoriesManagementBinding
 import com.nramos.finance_report.databinding.DialogEditCategoryBinding
 import com.nramos.finance_report.domain.model.Category
-import com.nramos.finance_report.utils.extensions.showToast
 import com.nramos.finance_report.utils.showToast
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
