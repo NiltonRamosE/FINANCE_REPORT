@@ -1,9 +1,11 @@
 package com.nramos.finance_report.ui.reminders
 
+import android.app.Application
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.nramos.finance_report.data.repository.ReminderRepository
 import com.nramos.finance_report.domain.model.Reminder
+import com.nramos.finance_report.domain.service.ReminderScheduler
 import com.nramos.finance_report.utils.NetworkResult
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,13 +17,16 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RemindersViewModel @Inject constructor(
-    private val reminderRepository: ReminderRepository
+    private val reminderRepository: ReminderRepository,
+    private val application: Application
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(RemindersState())
     val state: StateFlow<RemindersState> = _state.asStateFlow()
+    private lateinit var reminderScheduler: ReminderScheduler
 
     init {
+        reminderScheduler = ReminderScheduler(application)
         loadReminders()
     }
 
@@ -86,8 +91,6 @@ class RemindersViewModel @Inject constructor(
         }
     }
 
-    // ui/reminders/RemindersViewModel.kt - actualiza los métodos
-
     private fun createReminder(
         title: String,
         description: String?,
@@ -99,6 +102,11 @@ class RemindersViewModel @Inject constructor(
             reminderRepository.createReminder(title, description, date, time, frequency).collect { result ->
                 when (result) {
                     is NetworkResult.Success -> {
+                        result.data?.let { reminder ->
+                            if (reminder.isActive) {
+                                reminderScheduler.scheduleReminder(reminder)
+                            }
+                        }
                         _state.update {
                             it.copy(
                                 showCreateDialog = false,
@@ -129,6 +137,12 @@ class RemindersViewModel @Inject constructor(
             reminderRepository.updateReminder(id, title, description, date, time, frequency, isActive).collect { result ->
                 when (result) {
                     is NetworkResult.Success -> {
+                        result.data?.let { reminder ->
+                            reminderScheduler.cancelReminder(reminder.id)
+                            if (reminder.isActive) {
+                                reminderScheduler.scheduleReminder(reminder)
+                            }
+                        }
                         _state.update {
                             it.copy(
                                 showEditDialog = false,
@@ -136,6 +150,23 @@ class RemindersViewModel @Inject constructor(
                                 reminderUpdated = result.data
                             )
                         }
+                        loadReminders()
+                    }
+                    is NetworkResult.Error -> {
+                        _state.update { it.copy(error = result.message) }
+                    }
+                    else -> {}
+                }
+            }
+        }
+    }
+
+    private fun deleteReminder(id: String) {
+        viewModelScope.launch {
+            reminderRepository.deleteReminder(id).collect { result ->
+                when (result) {
+                    is NetworkResult.Success -> {
+                        reminderScheduler.cancelReminder(id)
                         loadReminders()
                     }
                     is NetworkResult.Error -> {
@@ -160,22 +191,6 @@ class RemindersViewModel @Inject constructor(
                     it.frequency,
                     isActive
                 )
-            }
-        }
-    }
-
-    private fun deleteReminder(id: String) {
-        viewModelScope.launch {
-            reminderRepository.deleteReminder(id).collect { result ->
-                when (result) {
-                    is NetworkResult.Success -> {
-                        loadReminders()
-                    }
-                    is NetworkResult.Error -> {
-                        _state.update { it.copy(error = result.message) }
-                    }
-                    else -> {}
-                }
             }
         }
     }
