@@ -94,7 +94,6 @@ class LoginActivity : AppCompatActivity() {
                 }
 
                 if (state.isSuccess) {
-                    showToast("Bienvenido ${state.user?.name}")
                     fcmTokenService.refreshAndSaveToken()
                     startActivity(Intent(this@LoginActivity, MainActivity::class.java))
                     finish()

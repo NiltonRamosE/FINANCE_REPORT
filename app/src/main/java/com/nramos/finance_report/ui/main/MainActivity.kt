@@ -26,6 +26,7 @@ import com.nramos.finance_report.domain.usecase.auth.GetCurrentUserUseCase
 import com.nramos.finance_report.domain.usecase.auth.LogoutUseCase
 import com.nramos.finance_report.ui.auth.login.LoginActivity
 import com.nramos.finance_report.ui.profile.ProfileActivity
+import com.nramos.finance_report.ui.theme.ThemeDialog
 import com.nramos.finance_report.utils.NetworkResult
 import com.nramos.finance_report.utils.ProfileUpdateEvent
 import com.nramos.finance_report.utils.showToast
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity() {
         setupLogout()
         setupProfileClick()
         observeProfileUpdates()
+        setupThemeSelection()
     }
 
     override fun onStart() {
@@ -173,6 +175,47 @@ class MainActivity : AppCompatActivity() {
         val navView = binding.navView
         navView.setNavigationItemSelectedListener { menuItem ->
             when (menuItem.itemId) {
+                R.id.nav_logout -> {
+                    drawerLayout.closeDrawers()
+                    performLogout()
+                    true
+                }
+                else -> {
+                    val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+                    val navController = navHostFragment.navController
+                    val handled = try {
+                        navController.navigate(
+                            menuItem.itemId,
+                            null,
+                            NavOptions.Builder()
+                                .setPopUpTo(navController.graph.startDestinationId, false)
+                                .build()
+                        )
+                        true
+                    } catch (e: Exception) {
+                        false
+                    }
+                    if (handled) {
+                        drawerLayout.closeDrawers()
+                    }
+                    handled
+                }
+            }
+        }
+    }
+
+    private fun setupThemeSelection() {
+        val navView = binding.navView
+        navView.setNavigationItemSelectedListener { menuItem ->
+            when (menuItem.itemId) {
+                R.id.nav_theme -> {
+                    drawerLayout.closeDrawers()
+                    ThemeDialog.show(this) {
+                        // Recargar la actividad para aplicar el tema
+                        recreate()
+                    }
+                    true
+                }
                 R.id.nav_logout -> {
                     drawerLayout.closeDrawers()
                     performLogout()
