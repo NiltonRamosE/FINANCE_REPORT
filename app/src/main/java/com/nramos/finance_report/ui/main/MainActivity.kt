@@ -19,6 +19,7 @@ import com.google.android.material.navigation.NavigationView
 import com.google.firebase.messaging.FirebaseMessaging
 import com.nramos.finance_report.R
 import com.nramos.finance_report.data.auth.GoogleSignInManager
+import com.nramos.finance_report.data.datasource.local.TokenManager
 import com.nramos.finance_report.databinding.ActivityMainBinding
 import com.nramos.finance_report.domain.model.UserProfile
 import com.nramos.finance_report.domain.usecase.auth.GetCurrentUserUseCase
@@ -38,8 +39,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var appBarConfiguration: AppBarConfiguration
     private lateinit var drawerLayout: DrawerLayout
+
+    @Inject
+    lateinit var tokenManager: TokenManager
+
     @Inject
     lateinit var googleSignInManager: GoogleSignInManager
+
     @Inject
     lateinit var logoutUseCase: LogoutUseCase
 
@@ -70,9 +76,10 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        // También refrescar cuando se vuelve de ProfileActivity
         refreshUserInfo()
+        checkTokenExpiration()
     }
+
     private fun setupNavigation() {
         drawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
@@ -98,6 +105,16 @@ class MainActivity : AppCompatActivity() {
             val user = getCurrentUserUseCase()
             user?.let {
                 updateNavHeader(it)
+            }
+        }
+    }
+
+    private fun checkTokenExpiration() {
+        lifecycleScope.launch {
+            if (tokenManager.isTokenExpired()) {
+                Log.d("MainActivity", "Token expirado, cerrando sesión")
+                showToast("Tu sesión ha expirado. Por favor, inicia sesión nuevamente.")
+                performLogout()
             }
         }
     }

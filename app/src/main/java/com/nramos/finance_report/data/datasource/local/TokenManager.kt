@@ -32,7 +32,7 @@ class TokenManager @Inject constructor(
 
         private val USER_AVATAR_URL_KEY = stringPreferencesKey("user_avatar_url")
         private val TOKEN_FCM_KEY = stringPreferencesKey("token_firebase")
-
+        private val TOKEN_EXPIRY_KEY = longPreferencesKey("token_expiry")
     }
 
     suspend fun saveAuthData(
@@ -46,12 +46,15 @@ class TokenManager @Inject constructor(
         gender: Char? = null,
         avatarUrl: String? = null
     ) {
+        val expiryTime = System.currentTimeMillis() + (60 * 60 * 1000)
+
         context.dataStore.edit { preferences ->
             preferences[TOKEN_KEY] = token
             preferences[TOKEN_TYPE_KEY] = tokenType
             preferences[USER_PROFILE_ID_KEY] = profileId
             preferences[USER_EMAIL_KEY] = userEmail
             preferences[IS_LOGGED_IN_KEY] = true
+            preferences[TOKEN_EXPIRY_KEY] = expiryTime
 
             if (userName.isNotBlank()) {
                 preferences[USER_NAME_KEY] = userName
@@ -155,5 +158,15 @@ class TokenManager @Inject constructor(
             preferences[USER_GENDER_KEY] ?: ""
         }.first()
         return gender.takeIf { it.isNotEmpty() }?.firstOrNull()
+    }
+
+    suspend fun isTokenExpired(): Boolean {
+        val expiryTime = context.dataStore.data.map { preferences ->
+            preferences[TOKEN_EXPIRY_KEY] ?: 0L
+        }.first()
+
+        if (expiryTime == 0L) return false
+
+        return System.currentTimeMillis() >= expiryTime
     }
 }
